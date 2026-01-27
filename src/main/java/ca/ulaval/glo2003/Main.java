@@ -1,5 +1,6 @@
 package ca.ulaval.glo2003;
 
+import ca.ulaval.glo2003.resources.VendeurResource;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -10,7 +11,8 @@ public class Main {
 
     public static void startServer() {
         final ResourceConfig rc = new ResourceConfig()
-                .register(new HealthResource());
+                .register(new HealthResource())
+                .register(new VendeurResource());
 
         GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }
