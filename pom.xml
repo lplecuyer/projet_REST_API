@@ -48,8 +48,8 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>TP1/src/main/java</sourceDirectory>
-        <testSourceDirectory>TP1/src/test/java</testSourceDirectory>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
 
         <plugins>
             <plugin>
