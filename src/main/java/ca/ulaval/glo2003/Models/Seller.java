@@ -4,42 +4,44 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.time.Period;
+import jakarta.json.bind.annotation.JsonbTransient;
 
-public class Vendeur {
+public class Seller {
     // id unique incremental
     private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
     private final int id = NEXT_ID.getAndIncrement();
 
-    @NotBlank(message = "Le nom est obligatoire")
+    @NotEmpty(message = "MISSING_PARAMETER: Name is mandatory")
     private String name;
 
+    @Past(message = "INVALID_PARAMETER: Date of birth cannot be set in the future")
+    private LocalDate birthdate;
+
     // micro methode qui verifie si la date recue date de plus de 18 ans
-    @AssertTrue(message = "Le vendeur doit avoir 18 ans ou plus")
+    @AssertTrue(message = "INVALID_PARAMETER: Seller must at least 18 years old")
+    @JsonbTransient
     public boolean isAdult() {
-        System.out.println("birthdate = " + birthdate);
         if (birthdate == null) return false;
-        System.out.println("birthdate = " + birthdate);
         return Period.between(birthdate, LocalDate.now()).getYears() >= 18;
     }
-    @Past(message = "La date de naissance doit être dans le passé")
-    private LocalDate birthdate;
 
     // date de creation de l'usager (non modifiable)
     private final LocalDate createdAt = LocalDate.now();
 
-    @Email(message = "Email invalide")
-    @NotBlank(message = "L'addresse courriel est obligatoire")
+    @Email(message = "INVALID_PARAMETER: Invalid email")
+    @NotBlank(message = "MISSING_PARAMETER: Email address is mandatory")
     private String email;
 
-    @NotBlank(message = "Le numero de telephone est obligatoire")
+    @NotBlank(message = "MISSING_PARAMETER: Phone number is mandatory")
     private String phoneNumber;
 
-    @NotBlank(message = "La bio est obligatoire")
+    @NotBlank(message = "MISSING_PARAMETER: Bio is mandatory")
     private String bio;
 
-    public Vendeur() {}
+    public Seller() {}
 
     // getters ~ setters
+    public int getId() { return id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
