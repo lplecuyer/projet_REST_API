@@ -1,7 +1,9 @@
 package ca.ulaval.glo2003;
 
+import ca.ulaval.glo2003.resources.SellerResource;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.validation.ValidationFeature;
 
 import java.net.URI;
 
@@ -10,7 +12,10 @@ public class Main {
 
     public static void startServer() {
         final ResourceConfig rc = new ResourceConfig()
-                .register(new HealthResource());
+                .register(ValidationFeature.class)
+                .register(ca.ulaval.glo2003.ExceptionHandlers.ValidationExceptionMapper.class)
+                .register(new HealthResource())
+                .register(new SellerResource());
 
         GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }
