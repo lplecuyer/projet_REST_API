@@ -9,28 +9,24 @@ public class Product{
 
     private final int id = NEXT_ID.getAndIncrement();
 
-    @NotBlank(message = "Le titre ne peut être vide")
+    @NotBlank(message = "MISSING_PARAMETER: title is mandatory")
     private String title;
 
-    @NotBlank(message = "La description ne peut être vide")
+    @NotBlank(message = "MISSING_PARAMETER: description is mandatory")
     private String description;
 
-    @NotBlank(message = "Le produit doit être associé à  une catégorie")
+    @NotBlank(message = "MISSING_PARAMETER: product must be associated with a category")
     private String category;
 
-    @AssertTrue(message = "Le prix suggéré doit être d'au minimum 1$")
+    @AssertTrue(message = "INVALID_PARAMETER: suggested price must be higher than 1$")
+    @NotBlank(message = "MISSING_PARAMETER: price is mandatory")
     boolean isPriceValid(){ return 1f <= suggestedPrice;}
     private float suggestedPrice;
 
 
     private final LocalDate creationDate = LocalDate.now();
 
-    public Product(String title,  String description, String category, float suggestedPrice){
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.suggestedPrice = suggestedPrice;
-    }
+    public Product(){}
 
     public int getId() {return id;}
 
