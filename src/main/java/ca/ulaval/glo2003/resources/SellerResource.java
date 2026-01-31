@@ -13,12 +13,11 @@ import java.net.URI;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class SellerResource {
-    private SellerRepository sellerRepository;
 
     // cree un vendeur et renvoie ses attributs avec le header contenant son id
     @POST
     public Response create(@Valid Seller seller, @Context UriInfo uriInfo) {
-        sellerRepository.save(seller);
+        SellerRepository.INSTANCE.save(seller);
         URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(seller.getId())).build();
         return Response.created(location).entity(seller).build();
     }
