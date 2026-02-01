@@ -30,13 +30,15 @@ public class ProductResource {
             seller.addProduct(product);
             response = Response.created(location).entity(product).build();
         }
+        else response = createNotFoundResponse(sellerId);
 
-        else {
-            String message = "Seller with ID " + sellerId + " does not exist";
-            response = Response.status(Response.Status.NOT_FOUND)
-                    .entity(new ErrorResponse("NOT_FOUND", message))
-                    .build();
-        }
         return response;
+    }
+
+    private Response createNotFoundResponse(int sellerId) {
+        String message = "Seller with ID " + sellerId + " does not exist";
+        return Response.status(Response.Status.NOT_FOUND)
+                .entity(new ErrorResponse("NOT_FOUND", message))
+                .build();
     }
 }
