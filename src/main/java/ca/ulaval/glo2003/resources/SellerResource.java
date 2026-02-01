@@ -1,5 +1,6 @@
 package ca.ulaval.glo2003.resources;
 
+import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
 import ca.ulaval.glo2003.Models.Seller;
 import ca.ulaval.glo2003.Models.SellerRepository;
 import jakarta.validation.Valid;
@@ -20,5 +21,23 @@ public class SellerResource {
         SellerRepository.INSTANCE.save(seller);
         URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(seller.getId())).build();
         return Response.created(location).entity(seller).build();
+    }
+
+    // obtient un vendeur à partir de son identifiant et
+    // retourne le vendeur ou un message d'erreur s'il n'est pas trouvé
+    @Path("/{id}")
+    @GET
+    public Response getSeller(@PathParam("id") int id) {
+        Seller seller = SellerRepository.INSTANCE.get(id);
+
+        if (seller == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ErrorResponse("NOT_FOUND", "Seller with id " + id + " not found"))
+                    .build();
+        }
+
+        return Response.status(Response.Status.OK)
+                .entity(seller)
+                .build();
     }
 }
