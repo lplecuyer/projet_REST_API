@@ -18,11 +18,8 @@ public class Product{
     @NotBlank(message = "MISSING_PARAMETER: product must be associated with a category")
     private String category;
 
-    @AssertTrue(message = "INVALID_PARAMETER: suggested price must be higher than 1$")
-    @NotBlank(message = "MISSING_PARAMETER: price is mandatory")
-    boolean isPriceValid(){ return 1f <= suggestedPrice;}
+    @DecimalMin(value = "1", message = "INVALID_PARAMETER: suggested price must be higher than 1$")
     private float suggestedPrice;
-
 
     private final LocalDate creationDate = LocalDate.now();
 

@@ -2,6 +2,9 @@ package ca.ulaval.glo2003.Models;
 
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.time.Period;
 import jakarta.json.bind.annotation.JsonbTransient;
@@ -38,7 +41,19 @@ public class Seller {
     @NotBlank(message = "MISSING_PARAMETER: Bio is mandatory")
     private String bio;
 
+    private final Map<Integer, Product> associatedProducts = new ConcurrentHashMap<>();
+
     public Seller() {}
+
+    //Associe un produit un vendeur
+    public void addProduct(Product product){
+        associatedProducts.put(product.getId(), product);
+    }
+
+    //Retourne tous les produits associés au vendeur
+    public Collection<Product> getProducts(){
+        return associatedProducts.values();
+    }
 
     // getters ~ setters
     public int getId() { return id; }
