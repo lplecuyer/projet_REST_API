@@ -41,7 +41,8 @@ public class Product{
         return offers.size();
     }
 
-    public float getAvgOfferAmount(){
+    public Float getAvgOfferAmount(){
+        if (offers.isEmpty()) return null;
         float total = 0.0f;
         for (Offer offer : offers){
             total+=offer.getAmount();
