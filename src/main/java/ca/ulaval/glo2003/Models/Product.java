@@ -1,9 +1,6 @@
 package ca.ulaval.glo2003.Models;
 
-import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.validation.constraints.*;
-
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.time.LocalDate;
@@ -33,6 +30,13 @@ public class Product{
 
     public Product(){}
 
+    public Product(String title, String description, String category, float suggestedPrice){
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.suggestedPrice = suggestedPrice;
+    }
+
     public void addOffer(Offer offer){
         offers.add(offer);
     }
@@ -45,7 +49,7 @@ public class Product{
         if (offers.isEmpty()) return null;
         float total = 0.0f;
         for (Offer offer : offers){
-            total+=offer.getAmount();
+            total += offer.getAmount();
         }
         return total/offers.size();
     }

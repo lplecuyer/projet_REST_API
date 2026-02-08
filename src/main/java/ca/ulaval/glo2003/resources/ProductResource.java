@@ -31,6 +31,8 @@ public class ProductResource {
         else return createNotFoundResponse("Seller", sellerId);
     }
 
+    // Obtient un Product à partir de son identifiant et
+    // retourne un ProductRecord ou un message d'erreur s'il n'est pas trouvé
     @Path("/{productId}")
     @GET
     public Response getProduct(@PathParam("productId") int productId){
@@ -44,12 +46,15 @@ public class ProductResource {
 
     }
 
+    //Enregistre le produit dans le stockage du domaine et
+    // fait les liens nécessaires avec son vendeur.
     private void registerProduct(Product product, Seller seller) {
         product.setSeller(seller);
         seller.addProduct(product);
         ProductRepository.INSTANCE.save(product);
     }
 
+    //Retourne une Response NOT_FOUND selon le nom de l'objet et son id
     private Response createNotFoundResponse(String objectType, int sellerId) {
         String message = objectType + " with ID " + sellerId + " does not exist";
         return Response.status(Response.Status.NOT_FOUND)
