@@ -1,8 +1,8 @@
 package ca.ulaval.glo2003.Models;
 
 public class Offer {
-    private final float amount;
-    private final String message;
+    private float amount;
+    private String message;
 
     public Offer(float amount, String message){
         this.amount =  amount;

@@ -26,9 +26,9 @@ public class ProductResource {
         if (seller != null) {
             registerProduct(product, seller);
             return Response.created(location).entity(
-                    ProductRecordCreator.makeProductRecord(product)).build();
+                    ProductRecordFactory.makeProductRecord(product)).build();
         }
-        else return createNotFoundResponse("Seller", sellerId);
+        else return ErrorResponse.createNotFoundResponse("Seller", sellerId);
     }
 
     // Obtient un Product à partir de son identifiant et
@@ -40,9 +40,9 @@ public class ProductResource {
 
         if (product != null) {
             return Response.status(Response.Status.OK).entity(
-                    ProductRecordCreator.makeProductRecord(product)).build();
+                    ProductRecordFactory.makeProductRecord(product)).build();
         }
-        else return createNotFoundResponse("Product", productId);
+        else return ErrorResponse.createNotFoundResponse("Product", productId);
 
     }
 
@@ -54,10 +54,4 @@ public class ProductResource {
         ProductRepository.INSTANCE.save(product);
     }
 
-    //Retourne une Response NOT_FOUND selon le nom de l'objet et son id
-    private Response createNotFoundResponse(String objectType, int sellerId) {
-        String message = objectType + " with ID " + sellerId + " does not exist";
-        return Response.status(Response.Status.NOT_FOUND)
-                .entity(new ErrorResponse("NOT_FOUND", message)).build();
-    }
 }
