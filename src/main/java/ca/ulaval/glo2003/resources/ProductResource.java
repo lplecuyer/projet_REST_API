@@ -1,10 +1,7 @@
 package ca.ulaval.glo2003.resources;
 
 import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
-import ca.ulaval.glo2003.Models.Product;
-import ca.ulaval.glo2003.Models.ProductRepository;
-import ca.ulaval.glo2003.Models.Seller;
-import ca.ulaval.glo2003.Models.SellerRepository;
+import ca.ulaval.glo2003.Models.*;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
@@ -27,14 +24,35 @@ public class ProductResource {
         Seller seller = SellerRepository.INSTANCE.get(sellerId);
         ProductRepository.INSTANCE.save(product);
 
-        Response response;
         if (seller != null) {
-            seller.addProduct(product);
-            response = Response.created(location).entity(product).build();
+            registerProduct(product, seller);
+            return Response.created(location).entity(
+                    ProductRecordFactory.makeProductRecord(product)).build();
         }
-        else response = createNotFoundResponse(sellerId);
+        else return ErrorResponse.createNotFoundResponse("Seller", sellerId);
+    }
 
-        return response;
+    // Obtient un Product à partir de son identifiant et
+    // retourne un ProductRecord ou un message d'erreur s'il n'est pas trouvé
+    @Path("/{productId}")
+    @GET
+    public Response getProduct(@PathParam("productId") int productId){
+        Product product = ProductRepository.INSTANCE.get(productId);
+
+        if (product != null) {
+            return Response.status(Response.Status.OK).entity(
+                    ProductRecordFactory.makeProductRecord(product)).build();
+        }
+        else return ErrorResponse.createNotFoundResponse("Product", productId);
+
+    }
+
+    //Enregistre le produit dans le stockage du domaine et
+    // fait les liens nécessaires avec son vendeur.
+    private void registerProduct(Product product, Seller seller) {
+        product.setSeller(seller);
+        seller.addProduct(product);
+        ProductRepository.INSTANCE.save(product);
     }
 
     @GET

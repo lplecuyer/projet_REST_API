@@ -1,6 +1,7 @@
 package ca.ulaval.glo2003.Models;
 
 import jakarta.validation.constraints.*;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.time.LocalDate;
 
@@ -20,9 +21,37 @@ public class Product{
     @DecimalMin(value = "1", message = "INVALID_PARAMETER: suggested price must be higher than 1$")
     private float suggestedPrice;
 
-    private final LocalDate creationDate = LocalDate.now();
+    private final LocalDate createdAt = LocalDate.now();
+
+    private Seller seller = null;
+
+    private final ArrayList<Offer> offers = new ArrayList<>();
 
     public Product(){}
+
+    public Product(String title, String description, String category, float suggestedPrice){
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.suggestedPrice = suggestedPrice;
+    }
+
+    public void addOffer(Offer offer){
+        offers.add(offer);
+    }
+
+    public int getOfferCount(){
+        return offers.size();
+    }
+
+    public Float getAvgOfferAmount(){
+        if (offers.isEmpty()) return null;
+        float total = 0.0f;
+        for (Offer offer : offers){
+            total += offer.getAmount();
+        }
+        return total/offers.size();
+    }
 
     public int getId() {return id;}
 
@@ -38,5 +67,9 @@ public class Product{
     public float getSuggestedPrice() {return suggestedPrice;}
     public void setSuggestedPrice(float suggestedPrice) {this.suggestedPrice = suggestedPrice;}
 
-    public LocalDate getCreationDate() {return creationDate;}
+    public LocalDate getCreatedAt() {return createdAt;}
+
+    public Seller getSeller() {return seller;}
+
+    public void setSeller(Seller seller){this.seller = seller;}
 }
