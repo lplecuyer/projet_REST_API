@@ -17,19 +17,24 @@ public class ProductResource {
     //Si le sellerId passé en header ne correspond pas à une instance,
     //Response.Status.NOT_FOUND sera envoyée.
     @POST
-    public Response create(@Valid Product product,
-                           @Context UriInfo uriInfo,
-                           @HeaderParam("X-Seller-Id") int sellerId){
+    public Response create(@Valid Product product, @Context UriInfo uriInfo, @HeaderParam("X-Seller-Id") int sellerId){
         URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(product.getId())).build();
         Seller seller = SellerRepository.INSTANCE.get(sellerId);
         ProductRepository.INSTANCE.save(product);
 
         if (seller != null) {
             registerProduct(product, seller);
-            return Response.created(location).entity(
-                    ProductRecordFactory.makeProductRecord(product)).build();
+            return Response.created(location).entity(ProductRecordFactory.makeProductRecord(product)).build();
         }
         else return ErrorResponse.createNotFoundResponse("Seller", sellerId);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAll(@Context UriInfo uriInfo){
+        var products = ProductRepository.INSTANCE.getAll().stream().map(ProductRecordFactory::makeProductRecord).toList();
+
+        return Response.ok(new ProductRecordFactory.ProductsResponse(products)).build();
     }
 
     // Obtient un Product à partir de son identifiant et
@@ -53,12 +58,6 @@ public class ProductResource {
         product.setSeller(seller);
         seller.addProduct(product);
         ProductRepository.INSTANCE.save(product);
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll(@Context UriInfo uriInfo){
-        return Response.ok(ProductRepository.INSTANCE.getAll()).build();
     }
 
     private Response createNotFoundResponse(int sellerId) {

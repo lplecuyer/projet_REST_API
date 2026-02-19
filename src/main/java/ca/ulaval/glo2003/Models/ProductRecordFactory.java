@@ -4,6 +4,7 @@ import jakarta.json.bind.annotation.JsonbNillable;
 import jakarta.validation.Valid;
 
 import java.time.LocalDate;
+import java.util.Collection;
 
 //Classe qui permet de créer un ProductRecord (DTO) pour l'envoi des requêtes
 public final class ProductRecordFactory {
@@ -25,6 +26,9 @@ public final class ProductRecordFactory {
     //Record (Classe DTO) pour la classe Product
     public record ProductRecord(int id, String title, String description, String category, float suggestedPrice,
                                 LocalDate createdAt, SellerView seller, OfferView offers){}
+
+    public record ProductsResponse(java.util.List<ca.ulaval.glo2003.Models.ProductRecordFactory.ProductRecord> products) {}
+
     //Record destiné uniquement pour le ProductRecord
     public record SellerView(int id, String name) { }
 
