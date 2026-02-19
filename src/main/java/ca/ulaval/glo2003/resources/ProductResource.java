@@ -2,6 +2,7 @@ package ca.ulaval.glo2003.resources;
 
 import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
 import ca.ulaval.glo2003.Models.Product;
+import ca.ulaval.glo2003.Models.ProductRepository;
 import ca.ulaval.glo2003.Models.Seller;
 import ca.ulaval.glo2003.Models.SellerRepository;
 import jakarta.validation.Valid;
@@ -24,6 +25,7 @@ public class ProductResource {
                            @HeaderParam("X-Seller-Id") int sellerId){
         URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(product.getId())).build();
         Seller seller = SellerRepository.INSTANCE.get(sellerId);
+        ProductRepository.INSTANCE.save(product);
 
         Response response;
         if (seller != null) {
@@ -33,6 +35,12 @@ public class ProductResource {
         else response = createNotFoundResponse(sellerId);
 
         return response;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAll(@Context UriInfo uriInfo){
+        return Response.ok(ProductRepository.INSTANCE.getAll()).build();
     }
 
     private Response createNotFoundResponse(int sellerId) {

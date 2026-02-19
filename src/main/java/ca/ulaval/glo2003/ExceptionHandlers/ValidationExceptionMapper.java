@@ -23,8 +23,6 @@ public class ValidationExceptionMapper implements ExceptionMapper<ConstraintViol
 
         System.out.println(error);
 
-        return Response.status(Response.Status.BAD_REQUEST)
-                .entity(new ErrorResponse(error, description))
-                .build();
+        return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse(error, description)).build();
     }
 }

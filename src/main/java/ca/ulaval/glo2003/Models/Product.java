@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 public class Product{
     private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
-
     private final int id = NEXT_ID.getAndIncrement();
 
     @NotBlank(message = "MISSING_PARAMETER: title is mandatory")
