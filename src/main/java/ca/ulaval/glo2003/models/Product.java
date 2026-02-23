@@ -71,5 +71,7 @@ public class Product{
 
     public Seller getSeller() {return seller;}
 
+    public int getSellerId(){return seller.getId();}
+
     public void setSeller(Seller seller){this.seller = seller;}
 }

@@ -13,8 +13,10 @@ public class Main {
 
     public static void startServer() {
         final ResourceConfig rc = new ResourceConfig()
+                .packages("ca.ulaval.glo2003")
                 .register(ValidationFeature.class)
                 .register(ca.ulaval.glo2003.exceptionhandlers.ValidationExceptionMapper.class)
+                .register(ca.ulaval.glo2003.exceptionhandlers.ProcessingExceptionMapper.class)
                 .register(new HealthResource())
                 .register(new SellerResource())
                 .register(new ProductResource());

@@ -5,6 +5,8 @@ import ca.ulaval.glo2003.models.*;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
+
+import java.io.Console;
 import java.net.URI;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -37,17 +39,17 @@ public class ProductResource {
             @QueryParam("category") ProductCategory category,
             @QueryParam("sellerId") String sellerId,
             @QueryParam("title") String title,
-            @QueryParam("minPrice") float minPrice,
-            @QueryParam("maxPrice") float maxPrice
+            @QueryParam("minPrice") @DefaultValue("0") float minPrice,
+            @QueryParam("maxPrice") @DefaultValue("3.4028235E38") float maxPrice
             )
     {
+        Integer sellerIdInt = Integer.parseInt(sellerId.trim());
+
         var products = ProductRepository.INSTANCE.getAll().stream()
+                .filter(p -> sellerIdInt == null || p.getSeller().getId() == sellerIdInt)
+                .filter(p -> title == null || p.getTitle().toLowerCase().contains(title.toLowerCase()))
                 .filter(p -> category == null || p.getCategory() == category)
-                .filter(p -> sellerId == null || p.getSeller().getId() == Integer.parseInt(sellerId))
-                .filter(p -> title == null || title.isBlank()
-                        || p.getTitle().toLowerCase().contains(title.toLowerCase()))
-                .filter(p -> p.getSuggestedPrice() >= minPrice)
-                .filter(p -> p.getSuggestedPrice() <= maxPrice)
+                .filter(p -> p.getSuggestedPrice() >= minPrice && p.getSuggestedPrice() <= maxPrice)
                 .map(ProductRecordFactory::makeProductRecord)
                 .toList();
 
