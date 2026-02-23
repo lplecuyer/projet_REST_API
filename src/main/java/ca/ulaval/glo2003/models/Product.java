@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.Models;
+package ca.ulaval.glo2003.models;
 
 import jakarta.validation.constraints.*;
 import java.util.ArrayList;
@@ -15,8 +15,8 @@ public class Product{
     @NotBlank(message = "MISSING_PARAMETER: description is mandatory")
     private String description;
 
-    @NotBlank(message = "MISSING_PARAMETER: product must be associated with a category")
-    private String category;
+    @NotNull(message = "MISSING_PARAMETER: Category is mandatory")
+    private ProductCategory category;
 
     @DecimalMin(value = "1", message = "INVALID_PARAMETER: suggested price must be higher than 1$")
     private float suggestedPrice;
@@ -29,7 +29,7 @@ public class Product{
 
     public Product(){}
 
-    public Product(String title, String description, String category, float suggestedPrice){
+    public Product(String title, String description, ProductCategory category, float suggestedPrice){
         this.title = title;
         this.description = description;
         this.category = category;
@@ -61,8 +61,8 @@ public class Product{
     public String getDescription() {return description;}
     public void setDescription(String description) {this.description = description;}
 
-    public String getCategory() {return category;}
-    public void setCategory(String category) {this.category = category;}
+    public ProductCategory getCategory() {return category;}
+    public void setCategory(ProductCategory category) {this.category = category;}
 
     public float getSuggestedPrice() {return suggestedPrice;}
     public void setSuggestedPrice(float suggestedPrice) {this.suggestedPrice = suggestedPrice;}

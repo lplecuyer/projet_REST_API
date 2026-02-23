@@ -1,8 +1,8 @@
 package ca.ulaval.glo2003.resources;
 
-import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
-import ca.ulaval.glo2003.Models.Seller;
-import ca.ulaval.glo2003.Models.SellerRepository;
+import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
+import ca.ulaval.glo2003.models.Seller;
+import ca.ulaval.glo2003.models.SellerRepository;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;

@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.Models;
+package ca.ulaval.glo2003.models;
 
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;

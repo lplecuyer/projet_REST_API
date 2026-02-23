@@ -1,12 +1,13 @@
 package ca.ulaval.glo2003.resources;
 
-import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
-import ca.ulaval.glo2003.Models.*;
+import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
+import ca.ulaval.glo2003.models.*;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
-
 import java.net.URI;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 @Path("/products")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -31,8 +32,25 @@ public class ProductResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll(@Context UriInfo uriInfo){
-        var products = ProductRepository.INSTANCE.getAll().stream().map(ProductRecordFactory::makeProductRecord).toList();
+    public Response getAll(
+            @Context UriInfo uriInfo,
+            @QueryParam("category") ProductCategory category,
+            @QueryParam("sellerId") String sellerId,
+            @QueryParam("title") String title,
+            @QueryParam("minPrice") float minPrice,
+            @QueryParam("maxPrice") float maxPrice
+            )
+    {
+        var products = ProductRepository.INSTANCE.getAll().stream()
+                .filter(p -> category == null || p.getCategory() == category)
+                .filter(p -> sellerId == null || p.getSeller().getId() == Integer.parseInt(sellerId))
+                .filter(p -> title == null || title.isBlank()
+                        || p.getTitle().toLowerCase().contains(title.toLowerCase()))
+                .filter(p -> p.getSuggestedPrice() >= minPrice)
+                .filter(p -> p.getSuggestedPrice() <= maxPrice)
+                .map(ProductRecordFactory::makeProductRecord)
+                .toList();
+
 
         return Response.ok(new ProductRecordFactory.ProductsResponse(products)).build();
     }

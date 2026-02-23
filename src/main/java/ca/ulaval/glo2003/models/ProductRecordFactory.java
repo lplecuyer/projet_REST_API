@@ -1,10 +1,9 @@
-package ca.ulaval.glo2003.Models;
+package ca.ulaval.glo2003.models;
 
 import jakarta.json.bind.annotation.JsonbNillable;
 import jakarta.validation.Valid;
 
 import java.time.LocalDate;
-import java.util.Collection;
 
 //Classe qui permet de créer un ProductRecord (DTO) pour l'envoi des requêtes
 public final class ProductRecordFactory {
@@ -16,7 +15,7 @@ public final class ProductRecordFactory {
         int id = product.getId();
         String title = product.getTitle();
         String description = product.getDescription();
-        String category = product.getCategory();
+        String category = product.getCategory().toString();
         float suggestedPrice = product.getSuggestedPrice();
         LocalDate createdAt = product.getCreatedAt();
         SellerView seller =  new SellerView(product.getSeller().getId(), product.getSeller().getName());
@@ -27,7 +26,7 @@ public final class ProductRecordFactory {
     public record ProductRecord(int id, String title, String description, String category, float suggestedPrice,
                                 LocalDate createdAt, SellerView seller, OfferView offers){}
 
-    public record ProductsResponse(java.util.List<ca.ulaval.glo2003.Models.ProductRecordFactory.ProductRecord> products) {}
+    public record ProductsResponse(java.util.List<ca.ulaval.glo2003.models.ProductRecordFactory.ProductRecord> products) {}
 
     //Record destiné uniquement pour le ProductRecord
     public record SellerView(int id, String name) { }

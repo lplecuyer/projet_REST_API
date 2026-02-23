@@ -14,7 +14,7 @@ public class Main {
     public static void startServer() {
         final ResourceConfig rc = new ResourceConfig()
                 .register(ValidationFeature.class)
-                .register(ca.ulaval.glo2003.ExceptionHandlers.ValidationExceptionMapper.class)
+                .register(ca.ulaval.glo2003.exceptionhandlers.ValidationExceptionMapper.class)
                 .register(new HealthResource())
                 .register(new SellerResource())
                 .register(new ProductResource());
