@@ -12,7 +12,7 @@ import jakarta.json.bind.annotation.JsonbTransient;
 public class Seller {
     // id unique incremental
     private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
-    private final int id = NEXT_ID.getAndIncrement();
+    private final String id = String.valueOf(NEXT_ID.getAndIncrement());
 
     @NotEmpty(message = "MISSING_PARAMETER: Name is mandatory")
     private String name;
@@ -41,7 +41,7 @@ public class Seller {
     @NotBlank(message = "MISSING_PARAMETER: Bio is mandatory")
     private String bio;
 
-    private final Map<Integer, Product> associatedProducts = new ConcurrentHashMap<>();
+    private final Map<String, Product> associatedProducts = new ConcurrentHashMap<>();
 
     public Seller() {}
 
@@ -56,7 +56,7 @@ public class Seller {
     }
 
     // getters ~ setters
-    public int getId() { return id; }
+    public String getId() { return id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

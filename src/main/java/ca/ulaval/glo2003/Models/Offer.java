@@ -4,6 +4,7 @@ import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Offer {
@@ -16,17 +17,17 @@ public class Offer {
 
     @NotNull(message = "MISSING_PARAMETER: amount is mandatory")
     @DecimalMin(value = "1", message = "INVALID_PARAMETER: amount must be higher than 1$")
-    private Double amount;
+    private Float amount;
 
     @NotBlank(message = "MISSING_PARAMETER: message is mandatory")
     @Size(min = 50, message = "INVALID_PARAMETER: message must be at least 50 characters")
     private String message;
 
-    private final LocalDate createdAt = LocalDate.now();
+    private final LocalDateTime createdAt = LocalDateTime.now();
 
     public Offer() {}
 
-    public Offer(double amount, String message) {
+    public Offer(float amount, String message) {
         this.amount = amount;
         this.message = message;
     }
@@ -49,10 +50,10 @@ public class Offer {
         this.buyerUsername = buyerUsername;
     }
 
-    public double getAmount() {
+    public float getAmount() {
         return amount;
     }
-    public void setAmount(double amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
@@ -63,7 +64,7 @@ public class Offer {
         this.message = message;
     }
 
-    public LocalDate getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 

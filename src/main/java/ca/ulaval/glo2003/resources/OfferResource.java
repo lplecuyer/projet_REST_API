@@ -29,7 +29,7 @@ public class OfferResource {
                     .build();
         }
 
-        Product product = ProductRepository.INSTANCE.get(Integer.parseInt(productId));
+        Product product = ProductRepository.INSTANCE.get(productId);
 
         if (product == null) {
 
@@ -48,7 +48,7 @@ public class OfferResource {
                     .build();
 
         } else if (offerForSameProductAndUserAlreadyExists(
-                ProductRepository.INSTANCE.get(Integer.parseInt(productId)),
+                ProductRepository.INSTANCE.get(productId),
                 buyerUsername
         )) {
 

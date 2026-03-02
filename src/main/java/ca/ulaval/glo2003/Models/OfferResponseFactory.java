@@ -2,7 +2,7 @@ package ca.ulaval.glo2003.Models;
 
 import jakarta.validation.Valid;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public final class OfferResponseFactory {
 
@@ -14,11 +14,11 @@ public final class OfferResponseFactory {
         double amount = offer.getAmount();
         String message = offer.getMessage();
         String buyerUsername = offer.getBuyerUsername();
-        LocalDate offerCreatedDate = offer.getCreatedAt();
+        LocalDateTime offerCreatedDate = offer.getCreatedAt();
         return new OfferResponse(offerId, productId, amount, message, buyerUsername, offerCreatedDate);
     }
 
     public record OfferResponse(int offerId, String productId, double amount, String message, String buyerUsername,
-                                LocalDate offerCreatedDate) {
+                                LocalDateTime offerCreatedDate) {
     }
 }

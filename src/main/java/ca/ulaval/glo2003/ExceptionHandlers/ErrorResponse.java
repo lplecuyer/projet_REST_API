@@ -13,7 +13,7 @@ public class ErrorResponse {
         this.description = description;
     }
 
-    public static Response createNotFoundResponse(String objectType, int Id) {
+    public static Response createNotFoundResponse(String objectType, String Id) {
         String message = objectType + " with ID " + Id + " does not exist";
         return Response.status(Response.Status.NOT_FOUND)
                 .entity(new ErrorResponse("NOT_FOUND", message)).build();

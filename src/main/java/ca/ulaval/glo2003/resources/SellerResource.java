@@ -3,6 +3,7 @@ package ca.ulaval.glo2003.resources;
 import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
 import ca.ulaval.glo2003.Models.Seller;
 import ca.ulaval.glo2003.Models.SellerRepository;
+import ca.ulaval.glo2003.Models.SellerResponseFactory;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
@@ -27,7 +28,7 @@ public class SellerResource {
     // retourne le vendeur ou un message d'erreur s'il n'est pas trouvé
     @Path("/{id}")
     @GET
-    public Response getSeller(@PathParam("id") int id) {
+    public Response getSeller(@PathParam("id") String id) {
         Seller seller = SellerRepository.INSTANCE.get(id);
 
         if (seller == null) {
@@ -37,7 +38,7 @@ public class SellerResource {
         }
 
         return Response.status(Response.Status.OK)
-                .entity(seller)
+                .entity(SellerResponseFactory.makeSellerResponse(seller))
                 .build();
     }
 }

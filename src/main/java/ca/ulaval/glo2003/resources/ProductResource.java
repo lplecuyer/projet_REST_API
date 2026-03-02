@@ -19,7 +19,7 @@ public class ProductResource {
     @POST
     public Response create(@Valid Product product,
                            @Context UriInfo uriInfo,
-                           @HeaderParam("X-Seller-Id") int sellerId){
+                           @HeaderParam("X-Seller-Id") String sellerId){
         URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(product.getId())).build();
         Seller seller = SellerRepository.INSTANCE.get(sellerId);
 
@@ -35,7 +35,7 @@ public class ProductResource {
     // retourne un ProductRecord ou un message d'erreur s'il n'est pas trouvé
     @Path("/{productId}")
     @GET
-    public Response getProduct(@PathParam("productId") int productId){
+    public Response getProduct(@PathParam("productId") String productId){
         Product product = ProductRepository.INSTANCE.get(productId);
 
         if (product != null) {
