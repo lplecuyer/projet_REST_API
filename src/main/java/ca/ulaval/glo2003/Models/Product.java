@@ -68,6 +68,10 @@ public class Product{
     public float getSuggestedPrice() {return suggestedPrice;}
     public void setSuggestedPrice(float suggestedPrice) {this.suggestedPrice = suggestedPrice;}
 
+    public ArrayList<Offer> getOffers() {
+        return offers;
+    }
+
     public LocalDate getCreatedAt() {return createdAt;}
 
     public Seller getSeller() {return seller;}

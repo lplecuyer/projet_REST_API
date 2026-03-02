@@ -26,7 +26,7 @@ public class ProductResource {
         if (seller != null) {
             registerProduct(product, seller);
             return Response.created(location).entity(
-                    ProductRecordFactory.makeProductRecord(product)).build();
+                    ProductResponseFactory.makeProductResponse(product)).build();
         }
         else return ErrorResponse.createNotFoundResponse("Seller", sellerId);
     }
@@ -40,7 +40,7 @@ public class ProductResource {
 
         if (product != null) {
             return Response.status(Response.Status.OK).entity(
-                    ProductRecordFactory.makeProductRecord(product)).build();
+                    ProductResponseFactory.makeProductResponse(product)).build();
         }
         else return ErrorResponse.createNotFoundResponse("Product", productId);
 
