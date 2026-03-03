@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.resources;
+package ca.ulaval.glo2003.Resources;
 
 import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
 import ca.ulaval.glo2003.Models.*;
