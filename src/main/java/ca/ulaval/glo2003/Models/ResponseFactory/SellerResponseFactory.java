@@ -1,5 +1,9 @@
-package ca.ulaval.glo2003.Models;
+package ca.ulaval.glo2003.Models.ResponseFactory;
 
+import ca.ulaval.glo2003.Models.Offer;
+import ca.ulaval.glo2003.Models.Product;
+import ca.ulaval.glo2003.Models.ProductCategory;
+import ca.ulaval.glo2003.Models.Seller;
 import jakarta.json.bind.annotation.JsonbNillable;
 import jakarta.validation.Valid;
 import java.time.LocalDate;

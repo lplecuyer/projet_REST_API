@@ -2,8 +2,8 @@ package ca.ulaval.glo2003.Resources;
 
 import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
 import ca.ulaval.glo2003.Models.Seller;
-import ca.ulaval.glo2003.Models.SellerRepository;
-import ca.ulaval.glo2003.Models.SellerResponseFactory;
+import ca.ulaval.glo2003.Models.Repository.SellerRepository;
+import ca.ulaval.glo2003.Models.ResponseFactory.SellerResponseFactory;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
@@ -16,7 +16,6 @@ import java.net.URI;
 @Produces(MediaType.APPLICATION_JSON)
 public class SellerResource {
 
-  // cree un vendeur et renvoie ses attributs avec le header contenant son id
   @POST
   public Response create(@Valid Seller seller, @Context UriInfo uriInfo) {
     SellerRepository.INSTANCE.save(seller);
@@ -24,8 +23,6 @@ public class SellerResource {
     return Response.created(location).entity(seller).build();
   }
 
-  // obtient un vendeur à partir de son identifiant et
-  // retourne le vendeur ou un message d'erreur s'il n'est pas trouvé
   @Path("/{id}")
   @GET
   public Response getSeller(@PathParam("id") String id) {

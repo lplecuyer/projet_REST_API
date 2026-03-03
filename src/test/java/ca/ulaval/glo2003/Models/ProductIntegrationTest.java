@@ -3,6 +3,8 @@ package ca.ulaval.glo2003.Models;
 import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
 import ca.ulaval.glo2003.ExceptionHandlers.ProcessingExceptionMapper;
 import ca.ulaval.glo2003.ExceptionHandlers.ValidationExceptionMapper;
+import ca.ulaval.glo2003.Models.Repository.IProductRepository;
+import ca.ulaval.glo2003.Models.Repository.ISellerRepository;
 import ca.ulaval.glo2003.Resources.ProductResource;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;

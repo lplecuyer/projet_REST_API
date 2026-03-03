@@ -1,5 +1,7 @@
-package ca.ulaval.glo2003.Models;
+package ca.ulaval.glo2003.Models.ResponseFactory;
 
+import ca.ulaval.glo2003.Models.Product;
+import ca.ulaval.glo2003.Models.ProductCategory;
 import jakarta.json.bind.annotation.JsonbNillable;
 import jakarta.validation.Valid;
 
@@ -23,6 +25,8 @@ public final class ProductResponseFactory {
 
     public record ProductResponse(String id, String title, String description, ProductCategory category, float suggestedPrice,
                                   LocalDateTime createdAt, PartialSellerResponse seller, PartialOfferResponse offers){}
+
+    public record ProductsResponse(java.util.Collection<ProductResponseFactory.ProductResponse> products) {}
 
     public record PartialSellerResponse(String id, String name) { }
 

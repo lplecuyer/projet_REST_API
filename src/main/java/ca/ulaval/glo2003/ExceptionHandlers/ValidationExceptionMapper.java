@@ -11,7 +11,6 @@ public class ValidationExceptionMapper implements ExceptionMapper<ConstraintViol
     @Override
     public Response toResponse(ConstraintViolationException e) {
 
-        // ex: "MISSING_PARAMETER: Name is mandatory"
         String raw = e.getConstraintViolations().isEmpty()
                 ? "INVALID_PARAMETER: Validation error"
                 : e.getConstraintViolations().iterator().next().getMessage();

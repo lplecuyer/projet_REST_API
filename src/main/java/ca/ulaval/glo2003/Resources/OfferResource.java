@@ -3,6 +3,8 @@ package ca.ulaval.glo2003.Resources;
 import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
 import ca.ulaval.glo2003.Models.*;
 import ca.ulaval.glo2003.Models.Offer;
+import ca.ulaval.glo2003.Models.Repository.ProductRepository;
+import ca.ulaval.glo2003.Models.ResponseFactory.OfferResponseFactory;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;

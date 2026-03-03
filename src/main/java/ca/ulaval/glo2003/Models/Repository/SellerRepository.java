@@ -1,9 +1,10 @@
-package ca.ulaval.glo2003.Models;
+package ca.ulaval.glo2003.Models.Repository;
+
+import ca.ulaval.glo2003.Models.Seller;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
-// Cette classe permet de stocker les vendeurs cote domaine par hashmap
 public enum SellerRepository implements ISellerRepository {
     INSTANCE;
 

@@ -2,6 +2,9 @@ package ca.ulaval.glo2003.Resources;
 
 import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
 import ca.ulaval.glo2003.Models.*;
+import ca.ulaval.glo2003.Models.Repository.IProductRepository;
+import ca.ulaval.glo2003.Models.Repository.ISellerRepository;
+import ca.ulaval.glo2003.Models.ResponseFactory.ProductResponseFactory;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -25,9 +28,7 @@ public class ProductResource {
     this.sellerRepository = sellers;
   }
 
-  //Crée un produit et renvoie le JSON correspondant.
-  //Si le sellerId passé en header ne correspond pas à une instance,
-  //Response.Status.NOT_FOUND sera envoyée.
+
   @POST
   public Response create(@Valid Product product, @Context UriInfo uriInfo, @HeaderParam("X-Seller-Id") String sellerId){
     URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(product.getId())).build();
@@ -54,20 +55,18 @@ public class ProductResource {
   )
   {
 
-    Collection<ProductRecordFactory.ProductRecord> products = productRepository.getAll().stream()
+    Collection<ProductResponseFactory.ProductResponse> products = productRepository.getAll().stream()
         .filter(product -> sellerId == null || Objects.equals(product.getSeller().getId(), sellerId))
         .filter(product -> title == null || product.getTitle().toLowerCase().contains(title.toLowerCase()))
         .filter(product -> category == null || product.getCategory() == category)
         .filter(product -> product.getSuggestedPrice() >= minPrice && product.getSuggestedPrice() <= maxPrice)
-        .map(ProductRecordFactory::makeProductRecord)
+        .map(ProductResponseFactory::makeProductResponse)
         .toList();
 
 
-    return Response.ok(new ProductRecordFactory.ProductsResponse(products)).build();
+    return Response.ok(new ProductResponseFactory.ProductsResponse(products)).build();
   }
 
-  // Obtient un Product à partir de son identifiant et
-  // retourne un ProductRecord ou un message d'erreur s'il n'est pas trouvé
   @Path("/{productId}")
   @GET
   public Response getProduct(@PathParam("productId") String productId){
@@ -81,8 +80,6 @@ public class ProductResource {
 
   }
 
-  //Enregistre le produit dans le stockage du domaine et
-  // fait les liens nécessaires avec son vendeur.
   private void registerProduct(Product product, Seller seller) {
     product.setSeller(seller);
     seller.addProduct(product);

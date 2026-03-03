@@ -1,8 +1,9 @@
-package ca.ulaval.glo2003.Models;
+package ca.ulaval.glo2003.Models.Repository;
+
+import ca.ulaval.glo2003.Models.Product;
 
 import java.util.Collection;
 
-// permet le mock
 public interface IProductRepository {
     void save(Product product);
 

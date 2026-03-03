@@ -1,9 +1,10 @@
 package ca.ulaval.glo2003;
 
-import ca.ulaval.glo2003.Models.IProductRepository;
-import ca.ulaval.glo2003.Models.ISellerRepository;
-import ca.ulaval.glo2003.Models.ProductRepository;
-import ca.ulaval.glo2003.Models.SellerRepository;
+import ca.ulaval.glo2003.Models.Repository.IProductRepository;
+import ca.ulaval.glo2003.Models.Repository.ISellerRepository;
+import ca.ulaval.glo2003.Models.Repository.ProductRepository;
+import ca.ulaval.glo2003.Models.Repository.SellerRepository;
+import ca.ulaval.glo2003.Resources.HealthResource;
 import ca.ulaval.glo2003.Resources.OfferResource;
 import ca.ulaval.glo2003.Resources.ProductResource;
 import ca.ulaval.glo2003.Resources.SellerResource;

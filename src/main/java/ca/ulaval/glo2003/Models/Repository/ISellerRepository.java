@@ -1,8 +1,7 @@
-package ca.ulaval.glo2003.Models;
+package ca.ulaval.glo2003.Models.Repository;
 
-import java.util.Collection;
+import ca.ulaval.glo2003.Models.Seller;
 
-// permet le mock
 public interface ISellerRepository {
 
     void save(Seller seller);
