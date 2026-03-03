@@ -1,9 +1,11 @@
 package ca.ulaval.glo2003.Resources;
 
 import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
+import ca.ulaval.glo2003.Models.Repository.ISellerRepository;
 import ca.ulaval.glo2003.Models.Seller;
 import ca.ulaval.glo2003.Models.Repository.SellerRepository;
 import ca.ulaval.glo2003.Models.ResponseFactory.SellerResponseFactory;
+import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
@@ -16,9 +18,16 @@ import java.net.URI;
 @Produces(MediaType.APPLICATION_JSON)
 public class SellerResource {
 
+  private final ISellerRepository sellerRepository;
+
+  @Inject
+  public SellerResource(ISellerRepository sellers) {
+    this.sellerRepository = sellers;
+  }
+
   @POST
   public Response create(@Valid Seller seller, @Context UriInfo uriInfo) {
-    SellerRepository.INSTANCE.save(seller);
+    sellerRepository.save(seller);
     URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(seller.getId())).build();
     return Response.created(location).entity(seller).build();
   }
@@ -26,7 +35,7 @@ public class SellerResource {
   @Path("/{id}")
   @GET
   public Response getSeller(@PathParam("id") String id) {
-    Seller seller = SellerRepository.INSTANCE.get(id);
+    Seller seller = sellerRepository.get(id);
 
     if (seller == null) {
       return Response.status(Response.Status.NOT_FOUND)

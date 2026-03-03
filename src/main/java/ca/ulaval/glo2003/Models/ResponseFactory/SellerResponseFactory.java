@@ -17,13 +17,14 @@ public final class SellerResponseFactory {
 
     public static SellerResponse makeSellerResponse(@Valid Seller seller) {
         String id = seller.getId();
-        LocalDateTime createdAt = LocalDateTime.now();
+        String createdAt = seller.getCreatedAt().toString();
         String name = seller.getName();
-        LocalDate birthdate = seller.getBirthdate();
+        String birthdate = seller.getBirthdate().toString();
         String email = seller.getEmail();
         String phoneNumber = seller.getPhoneNumber();
         String bio = seller.getBio();
         Collection<SellerResponseFactory.PartialProductResponse> products = makePartialProductResponse(seller);
+
         return new SellerResponse(id, createdAt, name, birthdate, email, phoneNumber, bio, products);
     }
 
@@ -32,7 +33,7 @@ public final class SellerResponseFactory {
 
         for (Product product : seller.getProducts()) {
             String Pid = product.getId();
-            LocalDateTime PcreatedAt = product.getCreatedAt();
+            String PcreatedAt = product.getCreatedAt().toString();
             String title = product.getTitle();
             String description = product.getDescription();
             float suggestedPrice = product.getSuggestedPrice();
@@ -41,7 +42,7 @@ public final class SellerResponseFactory {
             Collection<SellerResponseFactory.PartialItemResponse> items = new ArrayList<>();
 
             for (Offer item : product.getOffers()) {
-                items.add(new PartialItemResponse(item.getBuyerUsername(), item.getCreatedAt(), item.getAmount(), item.getMessage()));
+                items.add(new PartialItemResponse(item.getBuyerUsername(), item.getCreatedAt().toString(), item.getAmount(), item.getMessage()));
             }
 
             SellerResponseFactory.PartialOfferResponse offers = new PartialOfferResponse(product.getOfferCount(), product.getAvgOfferAmount(), product.getMinOfferAmount(), product.getMaxOfferAmount(), items);
@@ -51,16 +52,16 @@ public final class SellerResponseFactory {
     }
 
     public record SellerResponse(String id,
-                                 LocalDateTime createdAt,
+                                 String createdAt,
                                  String name,
-                                 LocalDate birthdate,
+                                 String birthdate,
                                  String email,
                                  String phoneNumber,
                                  String bio,
                                  Collection<SellerResponseFactory.PartialProductResponse> products){}
 
     public record PartialProductResponse(String id,
-                                         LocalDateTime createdAt,
+                                         String createdAt,
                                          String title,
                                          String description,
                                          float suggestedPrice,
@@ -74,7 +75,7 @@ public final class SellerResponseFactory {
                                        Collection<SellerResponseFactory.PartialItemResponse> items) {}
 
     public record PartialItemResponse(String username,
-                                      LocalDateTime createdAt,
+                                      String createdAt,
                                       float amount,
                                       String message) {
     }

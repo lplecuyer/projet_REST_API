@@ -25,7 +25,7 @@ public class Main {
                 .register(ca.ulaval.glo2003.ExceptionHandlers.ValidationExceptionMapper.class)
                 .register(ca.ulaval.glo2003.ExceptionHandlers.ProcessingExceptionMapper.class)
                 .register(new HealthResource())
-                .register(new SellerResource())
+                .register(SellerResource.class)
                 .register(ProductResource.class)
                 .register(new OfferResource())
                 .register(new AbstractBinder() {
