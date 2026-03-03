@@ -1,5 +1,6 @@
 package ca.ulaval.glo2003.Models;
 
+import ca.ulaval.glo2003.Models.Repository.ProductRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
@@ -12,7 +13,7 @@ import java.time.Period;
 import jakarta.json.bind.annotation.JsonbTransient;
 
 public class Seller {
-    // id unique incremental
+
     private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
     private final String id = String.valueOf(NEXT_ID.getAndIncrement());
 
@@ -24,7 +25,6 @@ public class Seller {
     @Past(message = "INVALID_PARAMETER: Date of birth cannot be set in the future")
     private LocalDate birthdate;
 
-    // micro methode qui verifie si la date recue date de plus de 18 ans
     @AssertTrue(message = "INVALID_PARAMETER: Seller must at least 18 years old")
     @JsonbTransient
     public boolean isAdult() {
@@ -32,7 +32,6 @@ public class Seller {
         return Period.between(birthdate, LocalDate.now()).getYears() >= 18;
     }
 
-    // date de creation de l'usager (non modifiable)
     private final LocalDateTime createdAt = LocalDateTime.now();
 
     @Size(min = 1, message = "INVALID_PARAMETER: Email cannot be empty")
@@ -52,17 +51,14 @@ public class Seller {
 
     public Seller() {}
 
-    //Associe un produit un vendeur
     public void addProduct(Product product){
         associatedProducts.put(product.getId(), product);
     }
 
-    //Retourne tous les produits associés au vendeur
     public Collection<Product> getProducts(){
         return associatedProducts.values();
     }
 
-    // getters ~ setters
     public String getId() { return id; }
 
     public String getName() { return name; }

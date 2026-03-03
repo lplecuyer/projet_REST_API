@@ -13,7 +13,7 @@ class ProductTest {
     private static final String PRODUCT_TITLE2 = "Samsung";
     private static final String PRODUCT_DESC1 = "Iphone 13";
     private static final String PRODUCT_DESC2 = "Samsung Galaxy";
-    private static final String PRODUCT_CATEGORY = "Cellphone";
+    private static final ProductCategory PRODUCT_CATEGORY = ProductCategory.electronics;
 
     private static final Offer offer1 = new Offer(PRICE_1, MESSAGE);
     private static final Offer offer2 = new Offer(PRICE_2, MESSAGE);

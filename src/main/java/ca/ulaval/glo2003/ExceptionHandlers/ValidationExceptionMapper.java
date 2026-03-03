@@ -11,20 +11,14 @@ public class ValidationExceptionMapper implements ExceptionMapper<ConstraintViol
     @Override
     public Response toResponse(ConstraintViolationException e) {
 
-        String raw = e.getConstraintViolations()
-                .iterator()
-                .next()
-                .getMessage(); // ex: "MISSING_PARAMETER: Name is mandatory"
+        String raw = e.getConstraintViolations().isEmpty()
+                ? "INVALID_PARAMETER: Validation error"
+                : e.getConstraintViolations().iterator().next().getMessage();
 
         String[] parts = raw.split(":", 2);
-
         String error = parts[0];
         String description = parts.length > 1 ? parts[1].trim() : raw;
 
-        System.out.println(error);
-
-        return Response.status(Response.Status.BAD_REQUEST)
-                .entity(new ErrorResponse(error, description))
-                .build();
+        return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse(error, description)).build();
     }
 }
