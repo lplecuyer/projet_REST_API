@@ -1,5 +1,6 @@
 package ca.ulaval.glo2003.Models;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -73,4 +74,9 @@ public class Seller {
     public LocalDate getBirthdate() { return birthdate; }
     public void setBirthdate(LocalDate birthdate) { this.birthdate = birthdate; }
 
+    public void registerProduct(@Valid Product product) {
+        product.setSeller(this);
+        this.addProduct(product);
+        ProductRepository.INSTANCE.save(product);
+    }
 }

@@ -1,15 +1,12 @@
 package ca.ulaval.glo2003.Models;
-
-import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.validation.constraints.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Offer {
     private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
-    private final int offerId = NEXT_ID.getAndIncrement();
+    private final String offerId = String.valueOf(NEXT_ID.getAndIncrement());
 
     private String productId;
 
@@ -27,12 +24,12 @@ public class Offer {
 
     public Offer() {}
 
-    public Offer(float amount, String message) {
-        this.amount = amount;
+    public Offer(Float amount, String message) {
+        if (amount != null) this.amount = amount;
         this.message = message;
     }
 
-    public int getOfferId() {
+    public String getOfferId() {
         return offerId;
     }
 
@@ -68,4 +65,9 @@ public class Offer {
         return createdAt;
     }
 
+    public void registerOffer(Product product, String buyerUsername) {
+        this.setProductId(product.getId());
+        this.setBuyerUsername(buyerUsername);
+        product.addOffer(this);
+    }
 }
