@@ -1,0 +1,31 @@
+on:
+  push:
+    branches:
+      - main
+      - newFeat/**
+      - enhanceFeat/**
+  pull_request:
+
+jobs:
+  Integration-Continue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Verification du formatage
+        run: mvn editorconfig:check
+
+      - name: Compilation
+        run: mvn compile
+
+      - name: Tests
+        run: mvn test

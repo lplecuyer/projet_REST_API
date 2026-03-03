@@ -1,5 +1,4 @@
 package ca.ulaval.glo2003.Models;
-
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
@@ -7,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Offer {
     private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
-    private final int offerId = NEXT_ID.getAndIncrement();
+    private final String offerId = String.valueOf(NEXT_ID.getAndIncrement());
 
     private String productId;
 
@@ -17,7 +16,7 @@ public class Offer {
     @DecimalMin(value = "1", message = "INVALID_PARAMETER: amount must be higher than 1$")
     private Float amount;
 
-    @NotBlank(message = "MISSING_PARAMETER: message is mandatory")
+    @NotNull(message = "MISSING_PARAMETER: message is mandatory")
     @Size(min = 50, message = "INVALID_PARAMETER: message must be at least 50 characters")
     private String message;
 
@@ -25,12 +24,12 @@ public class Offer {
 
     public Offer() {}
 
-    public Offer(float amount, String message) {
-        this.amount = amount;
+    public Offer(Float amount, String message) {
+        if (amount != null) this.amount = amount;
         this.message = message;
     }
 
-    public int getOfferId() {
+    public String getOfferId() {
         return offerId;
     }
 
@@ -66,4 +65,9 @@ public class Offer {
         return createdAt;
     }
 
+    public void registerOffer(Product product, String buyerUsername) {
+        this.setProductId(product.getId());
+        this.setBuyerUsername(buyerUsername);
+        product.addOffer(this);
+    }
 }

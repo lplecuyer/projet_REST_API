@@ -99,4 +99,12 @@ public class Product{
         }
         return max == Float.MIN_VALUE ? null : max;
     }
+
+    public boolean offerForSameProductAndUserAlreadyExists(String buyerUsername) {
+        boolean alreadyExists = false;
+        for (Offer offer : this.getOffers()) {
+            alreadyExists = offer.getBuyerUsername().equals(buyerUsername);
+        }
+        return alreadyExists;
+    }
 }
