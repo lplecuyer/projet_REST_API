@@ -18,7 +18,7 @@ jobs:
           cache: maven
 
       - name: Verification du formatage
-        run: mvn checkstyle:check
+        run: mvn editorconfig:check
 
       - name: Compilation
         run: mvn compile
