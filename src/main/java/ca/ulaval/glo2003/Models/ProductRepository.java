@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 // Cette classe permet de stocker les produits cote domaine par hashmap
-public enum ProductRepository {
+public enum ProductRepository implements IProductRepository {
     INSTANCE;
 
     private final Map<String, Product> products = new ConcurrentHashMap<>();

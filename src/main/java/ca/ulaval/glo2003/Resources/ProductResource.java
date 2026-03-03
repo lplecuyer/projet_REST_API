@@ -2,6 +2,7 @@ package ca.ulaval.glo2003.Resources;
 
 import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
 import ca.ulaval.glo2003.Models.*;
+import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
@@ -15,6 +16,15 @@ import java.util.Objects;
 @Produces(MediaType.APPLICATION_JSON)
 public class ProductResource {
 
+    private final IProductRepository productRepository;
+    private final ISellerRepository sellerRepository;
+
+    @Inject
+    public ProductResource(IProductRepository products, ISellerRepository sellers) {
+        this.productRepository = products;
+        this.sellerRepository = sellers;
+    }
+
     //Crée un produit et renvoie le JSON correspondant.
     //Si le sellerId passé en header ne correspond pas à une instance,
     //Response.Status.NOT_FOUND sera envoyée.
@@ -23,8 +33,8 @@ public class ProductResource {
                            @Context UriInfo uriInfo,
                            @HeaderParam("X-Seller-Id") String sellerId){
         URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(product.getId())).build();
-        Seller seller = SellerRepository.INSTANCE.get(sellerId);
-        ProductRepository.INSTANCE.save(product);
+        Seller seller = sellerRepository.get(sellerId);
+        productRepository.save(product);
 
         if (seller != null) {
             registerProduct(product, seller);
@@ -46,7 +56,7 @@ public class ProductResource {
             )
     {
 
-        Collection<ProductRecordFactory.ProductRecord> products = ProductRepository.INSTANCE.getAll().stream()
+        Collection<ProductRecordFactory.ProductRecord> products = productRepository.getAll().stream()
                 .filter(product -> sellerId == null || Objects.equals(product.getSeller().getId(), sellerId))
                 .filter(product -> title == null || product.getTitle().toLowerCase().contains(title.toLowerCase()))
                 .filter(product -> category == null || product.getCategory() == category)
@@ -63,7 +73,7 @@ public class ProductResource {
     @Path("/{productId}")
     @GET
     public Response getProduct(@PathParam("productId") String productId){
-        Product product = ProductRepository.INSTANCE.get(productId);
+        Product product = productRepository.get(productId);
 
         if (product != null) {
             return Response.status(Response.Status.OK).entity(
@@ -78,7 +88,7 @@ public class ProductResource {
     private void registerProduct(Product product, Seller seller) {
         product.setSeller(seller);
         seller.addProduct(product);
-        ProductRepository.INSTANCE.save(product);
+        productRepository.save(product);
     }
 
 }

@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 // Cette classe permet de stocker les vendeurs cote domaine par hashmap
-public enum SellerRepository {
+public enum SellerRepository implements ISellerRepository {
     INSTANCE;
 
     private final Map<String, Seller> sellers = new ConcurrentHashMap<>();
