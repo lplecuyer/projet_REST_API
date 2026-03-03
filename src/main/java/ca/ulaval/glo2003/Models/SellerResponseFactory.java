@@ -13,7 +13,7 @@ public final class SellerResponseFactory {
 
     public static SellerResponse makeSellerResponse(@Valid Seller seller) {
         String id = seller.getId();
-        String createdAt = LocalDateTime.now().toString();
+        String createdAt = seller.getCreatedAt().toString();
         String name = seller.getName();
         String birthdate = seller.getBirthdate().toString();
         String email = seller.getEmail();

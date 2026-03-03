@@ -18,6 +18,10 @@ class OfferTest {
     private static final String INVALID_SHORT_MESSAGE = "Too short";
     private static final String INVALID_EMPTY_MESSAGE = "";
     private static final String INVALID_NULL_MESSAGE = null;
+
+    private static final String MISSING_PARAMETER = "MISSING_PARAMETER:";
+    private static final String INVALID_PARAMETER = "INVALID_PARAMETER:";
+
     private static Validator validator;
 
     @BeforeAll
@@ -36,57 +40,57 @@ class OfferTest {
     }
 
     @Test
-    void givenNullAmount_whenValidate_thenViolation() {
+    void givenNullAmount_whenValidate_thenMissingParameter() {
         Offer offer = new Offer();
         offer.setMessage(VALID_MESSAGE);
 
         Set<ConstraintViolation<Offer>> violations = validator.validate(offer);
 
-        assertFalse(violations.isEmpty());
+        assertTrue(violations.iterator().next().getMessage().contains(MISSING_PARAMETER));
     }
 
     @Test
-    void givenAmountLowerThanOne_whenValidate_thenViolation() {
+    void givenAmountLowerThanOne_whenValidate_thenInvalidParameter() {
         Offer offer = new Offer(INVALID_TOO_LOW_AMOUNT, VALID_MESSAGE);
 
         Set<ConstraintViolation<Offer>> violations = validator.validate(offer);
 
-        assertFalse(violations.isEmpty());
+        assertTrue(violations.iterator().next().getMessage().contains(INVALID_PARAMETER));
     }
 
     @Test
-    void givenAmountNull_whenValidate_thenViolation() {
+    void givenAmountNull_whenValidate_thenMissingParameter() {
         Offer offer = new Offer(INVALID_NULL_AMOUNT, VALID_MESSAGE);
 
         Set<ConstraintViolation<Offer>> violations = validator.validate(offer);
 
-        assertFalse(violations.isEmpty());
+        assertTrue(violations.iterator().next().getMessage().contains(MISSING_PARAMETER));
     }
 
     @Test
-    void givenMessageTooShort_whenValidate_thenViolation() {
+    void givenMessageTooShort_whenValidate_thenInvalidParameter() {
         Offer offer = new Offer(VALID_AMOUNT, INVALID_SHORT_MESSAGE);
 
         Set<ConstraintViolation<Offer>> violations = validator.validate(offer);
 
-        assertFalse(violations.isEmpty());
+        assertTrue(violations.iterator().next().getMessage().contains(INVALID_PARAMETER));
     }
 
     @Test
-    void givenMessageEmpty_whenValidate_thenViolation() {
+    void givenMessageEmpty_whenValidate_thenInvalidParameter() {
         Offer offer = new Offer(VALID_AMOUNT, INVALID_EMPTY_MESSAGE);
 
         Set<ConstraintViolation<Offer>> violations = validator.validate(offer);
 
-        assertFalse(violations.isEmpty());
+        assertTrue(violations.iterator().next().getMessage().contains(INVALID_PARAMETER));
     }
 
     @Test
-    void givenMessageNull_whenValidate_thenViolation() {
+    void givenMessageNull_whenValidate_thenMissingParameter() {
         Offer offer = new Offer(VALID_AMOUNT, INVALID_NULL_MESSAGE);
 
         Set<ConstraintViolation<Offer>> violations = validator.validate(offer);
 
-        assertFalse(violations.isEmpty());
+        assertTrue(violations.iterator().next().getMessage().contains(MISSING_PARAMETER));
     }
 }

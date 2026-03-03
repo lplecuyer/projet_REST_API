@@ -3,6 +3,7 @@ package ca.ulaval.glo2003.Models;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,9 +16,11 @@ public class Seller {
     private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
     private final String id = String.valueOf(NEXT_ID.getAndIncrement());
 
-    @NotEmpty(message = "MISSING_PARAMETER: Name is mandatory")
+    @Size(min = 1, message = "INVALID_PARAMETER: name cannot be empty")
+    @NotNull(message = "MISSING_PARAMETER: Name is mandatory")
     private String name;
 
+    @NotNull(message = "MISSING_PARAMETER: Birthdate is mandatory")
     @Past(message = "INVALID_PARAMETER: Date of birth cannot be set in the future")
     private LocalDate birthdate;
 
@@ -30,16 +33,19 @@ public class Seller {
     }
 
     // date de creation de l'usager (non modifiable)
-    private final LocalDate createdAt = LocalDate.now();
+    private final LocalDateTime createdAt = LocalDateTime.now();
 
+    @Size(min = 1, message = "INVALID_PARAMETER: Email cannot be empty")
     @Email(message = "INVALID_PARAMETER: Invalid email")
-    @NotBlank(message = "MISSING_PARAMETER: Email address is mandatory")
+    @NotNull(message = "MISSING_PARAMETER: Email address is mandatory")
     private String email;
 
-    @NotBlank(message = "MISSING_PARAMETER: Phone number is mandatory")
+    @Size(min = 1, message = "INVALID_PARAMETER: Phone number cannot be empty")
+    @NotNull(message = "MISSING_PARAMETER: Phone number is mandatory")
     private String phoneNumber;
 
-    @NotBlank(message = "MISSING_PARAMETER: Bio is mandatory")
+    @Size(min = 1, message = "INVALID_PARAMETER: Bio cannot be empty")
+    @NotNull(message = "MISSING_PARAMETER: Bio is mandatory")
     private String bio;
 
     private final Map<String, Product> associatedProducts = new ConcurrentHashMap<>();
@@ -73,6 +79,10 @@ public class Seller {
 
     public LocalDate getBirthdate() { return birthdate; }
     public void setBirthdate(LocalDate birthdate) { this.birthdate = birthdate; }
+
+    public LocalDateTime getCreatedAt() {
+      return createdAt;
+    }
 
     public void registerProduct(@Valid Product product) {
         product.setSeller(this);
