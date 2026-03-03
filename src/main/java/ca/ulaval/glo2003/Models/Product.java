@@ -12,17 +12,19 @@ public class Product{
 
     private final String id = String.valueOf(NEXT_ID.getAndIncrement());
 
-    @NotBlank(message = "MISSING_PARAMETER: title is mandatory")
-    private String title;
+    @NotNull(message = "MISSING_PARAMETER: title is mandatory")
+    @NotEmpty(message = "INVALID_PARAMETER: title cannot be empty")
+    private String title = null;
 
-    @NotBlank(message = "MISSING_PARAMETER: description is mandatory")
-    private String description;
+    @NotNull(message = "MISSING_PARAMETER: description is mandatory")
+    @NotEmpty(message = "INVALID_PARAMETER: description cannot be empty")
+    private String description = null;
 
     @NotNull(message = "MISSING_PARAMETER: Category is mandatory")
     private ProductCategory category;
 
     @DecimalMin(value = "1", message = "INVALID_PARAMETER: suggested price must be higher than 1$")
-    private float suggestedPrice;
+    private float suggestedPrice = 0;
 
     private final LocalDateTime createdAt = LocalDateTime.now();
 

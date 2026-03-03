@@ -63,13 +63,19 @@ public class ProductIntegrationTest extends JerseyTest {
         seller1Id = seller1.getId();
         seller2Id = seller2.getId();
 
-        Product product1 = new Product("P1", "D1", ProductCategory.beauty, 10);
-        Product product2 = new Product("P2", "D2", ProductCategory.apparel, 20);
+        Product product1 = new Product("iPhone Case", "desc", ProductCategory.electronics, 15);
+        product1.setSeller(seller1);
+
+        Product product2 = new Product("Lipstick", "desc", ProductCategory.beauty, 25);
+        product2.setSeller(seller1);
+
+        Product product3 = new Product("T-Shirt", "desc", ProductCategory.apparel, 40);
+        product3.setSeller(seller2);
 
         when(sellerRepo.get(seller1Id)).thenReturn(seller1);
         when(sellerRepo.get(seller2Id)).thenReturn(seller2);
 
-        when(productRepo.getAll()).thenReturn(java.util.List.of(product1, product2));
+        when(productRepo.getAll()).thenReturn(java.util.List.of(product1, product2, product3));
         when(productRepo.get(product1.getId())).thenReturn(product1);
         when(productRepo.get(product2.getId())).thenReturn(product2);
     }
@@ -88,12 +94,92 @@ public class ProductIntegrationTest extends JerseyTest {
         assertEquals(201, response.getStatus());
     }
 
+    @Test
+    void GivenMissingTitle_WhenCreateProduct_Then400() {
+        Map<String, Object> data = validProductPayload();
+        data.remove("title");
+
+        System.out.println(data);
+
+        Response response = postProduct(seller1Id, data);
+
+        assertEquals(400, response.getStatus());
+        verify(productRepo, never()).save(any());
+
+        ErrorResponse err = response.readEntity(ErrorResponse.class);
+        assertEquals("MISSING_PARAMETER", err.error);
+    }
+
+    @Test
+    void GivenEmptyDescription_WhenCreateProduct_Then400() {
+        Map<String, Object> data = validProductPayload();
+        data.put("description", "");
+
+        Response response = postProduct(seller1Id, data);
+
+        assertEquals(400, response.getStatus());
+        verify(productRepo, never()).save(any());
+
+        ErrorResponse err = response.readEntity(ErrorResponse.class);
+        assertEquals("INVALID_PARAMETER", err.error);
+    }
+
+    @Test
+    void GivenInvalidCategory_WhenCreateProduct_Then400() {
+        Map<String, Object> data = validProductPayload();
+        data.put("category", "not_a_real_category");
+
+        Response response = postProduct(seller1Id, data);
+
+        assertEquals(400, response.getStatus());
+        verify(productRepo, never()).save(any());
+
+        ErrorResponse err = response.readEntity(ErrorResponse.class);
+        assertEquals("INVALID_PARAMETER", err.error);
+    }
+
+    @Test
+    void GivenNegativeSuggestedPrice_WhenCreateProduct_Then400() {
+        Map<String, Object> data = validProductPayload();
+        data.put("suggestedPrice", -10);
+
+        Response response = postProduct(seller1Id, data);
+
+        assertEquals(400, response.getStatus());
+        verify(productRepo, never()).save(any());
+
+        ErrorResponse err = response.readEntity(ErrorResponse.class);
+        assertEquals("INVALID_PARAMETER", err.error);
+    }
+
+    @Test
+    void GivenNonNumericSuggestedPrice_WhenCreateProduct_Then400() {
+        Map<String, Object> data = validProductPayload();
+        data.put("suggestedPrice", "banana");
+
+        Response response = postProduct(seller1Id, data);
+
+        assertEquals(400, response.getStatus());
+        verify(productRepo, never()).save(any());
+
+        ErrorResponse err = response.readEntity(ErrorResponse.class);
+        assertEquals("INVALID_PARAMETER", err.error);
+    }
+
     // pour ne pas repeter le POST
     private Response postProduct(String sellerId, Map<String, Object> data) {
         return target("products")
                 .request(MediaType.APPLICATION_JSON)
                 .header("X-Seller-Id", sellerId)
                 .post(Entity.json(data));
+    }
+
+    private Response getProducts(Map<String, Object> params) {
+        var t = target("products");
+        for (var e : params.entrySet()) {
+            t = t.queryParam(e.getKey(), e.getValue());
+        }
+        return t.request(MediaType.APPLICATION_JSON).get();
     }
 
     // pour ne pas repeter la creation du produit
