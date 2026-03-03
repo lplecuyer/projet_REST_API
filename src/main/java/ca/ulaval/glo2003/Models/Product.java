@@ -1,5 +1,6 @@
 package ca.ulaval.glo2003.Models;
 
+import ca.ulaval.glo2003.Models.Repository.ProductRepository;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
@@ -13,18 +14,19 @@ public class Product{
     private final String id = String.valueOf(NEXT_ID.getAndIncrement());
 
     @NotNull(message = "MISSING_PARAMETER: title is mandatory")
-    @Size(min = 1, max = 50)
+    @Size(min = 1, message = "INVALID_PARAMETER: title must not be blank")
     private String title = null;
 
     @NotNull(message = "MISSING_PARAMETER: description is mandatory")
-    @NotEmpty(message = "INVALID_PARAMETER: description cannot be empty")
+    @Size(min = 1, message = "INVALID_PARAMETER: description must not be blank")
     private String description = null;
 
     @NotNull(message = "MISSING_PARAMETER: Category is mandatory")
     private ProductCategory category;
 
+    @NotNull(message = "MISSING_PARAMETER: suggested price is mandatory")
     @DecimalMin(value = "1", message = "INVALID_PARAMETER: suggested price must be higher than 1$")
-    private float suggestedPrice = 0;
+    private Float suggestedPrice = 0F;
 
     private final LocalDateTime createdAt = LocalDateTime.now();
 
@@ -34,7 +36,7 @@ public class Product{
 
     public Product(){}
 
-    public Product(String title, String description, ProductCategory category, float suggestedPrice){
+    public Product(String title, String description, ProductCategory category, Float suggestedPrice){
         this.title = title;
         this.description = description;
         this.category = category;
@@ -69,8 +71,8 @@ public class Product{
     public ProductCategory getCategory() {return category;}
     public void setCategory(ProductCategory category) {this.category = category;}
 
-    public float getSuggestedPrice() {return suggestedPrice;}
-    public void setSuggestedPrice(float suggestedPrice) {this.suggestedPrice = suggestedPrice;}
+    public Float getSuggestedPrice() {return suggestedPrice;}
+    public void setSuggestedPrice(Float suggestedPrice) {this.suggestedPrice = suggestedPrice;}
 
     public ArrayList<Offer> getOffers() {
         return offers;

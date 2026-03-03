@@ -65,13 +65,13 @@ public class ProductIntegrationTest extends JerseyTest {
         seller1Id = seller1.getId();
         seller2Id = seller2.getId();
 
-        Product product1 = new Product("iPhone Case", "desc", ProductCategory.electronics, 15);
+        Product product1 = new Product("iPhone Case", "desc", ProductCategory.electronics, 15F);
         product1.setSeller(seller1);
 
-        Product product2 = new Product("Lipstick", "desc", ProductCategory.beauty, 25);
+        Product product2 = new Product("Lipstick", "desc", ProductCategory.beauty, 25F);
         product2.setSeller(seller1);
 
-        Product product3 = new Product("T-Shirt", "desc", ProductCategory.apparel, 40);
+        Product product3 = new Product("T-Shirt", "desc", ProductCategory.apparel, 40F);
         product3.setSeller(seller2);
 
         when(sellerRepo.get(seller1Id)).thenReturn(seller1);
