@@ -3,7 +3,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  Integration-Continue:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -17,8 +17,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Verify formatting
-        run: mvn verify
+      - name: Verification du formatage
+        run: mvn checkstyle:check
 
       - name: Compilation
         run: mvn compile
