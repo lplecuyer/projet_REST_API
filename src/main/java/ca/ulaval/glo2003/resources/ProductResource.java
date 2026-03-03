@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.*;
 
 import java.io.Console;
 import java.net.URI;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -45,11 +46,11 @@ public class ProductResource {
     {
         Integer sellerIdInt = Integer.parseInt(sellerId.trim());
 
-        var products = ProductRepository.INSTANCE.getAll().stream()
-                .filter(p -> sellerIdInt == null || p.getSeller().getId() == sellerIdInt)
-                .filter(p -> title == null || p.getTitle().toLowerCase().contains(title.toLowerCase()))
-                .filter(p -> category == null || p.getCategory() == category)
-                .filter(p -> p.getSuggestedPrice() >= minPrice && p.getSuggestedPrice() <= maxPrice)
+        Collection<ProductRecordFactory.ProductRecord> products = ProductRepository.INSTANCE.getAll().stream()
+                .filter(product -> sellerIdInt == null || product.getSeller().getId() == sellerIdInt)
+                .filter(product -> title == null || product.getTitle().toLowerCase().contains(title.toLowerCase()))
+                .filter(product -> category == null || product.getCategory() == category)
+                .filter(product -> product.getSuggestedPrice() >= minPrice && product.getSuggestedPrice() <= maxPrice)
                 .map(ProductRecordFactory::makeProductRecord)
                 .toList();
 

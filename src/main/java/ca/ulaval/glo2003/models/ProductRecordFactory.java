@@ -26,7 +26,7 @@ public final class ProductRecordFactory {
     public record ProductRecord(int id, String title, String description, String category, float suggestedPrice,
                                 LocalDate createdAt, SellerView seller, OfferView offers){}
 
-    public record ProductsResponse(java.util.List<ca.ulaval.glo2003.models.ProductRecordFactory.ProductRecord> products) {}
+    public record ProductsResponse(java.util.Collection<ca.ulaval.glo2003.models.ProductRecordFactory.ProductRecord> products) {}
 
     //Record destiné uniquement pour le ProductRecord
     public record SellerView(int id, String name) { }
