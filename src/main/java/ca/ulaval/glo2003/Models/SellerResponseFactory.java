@@ -19,6 +19,11 @@ public final class SellerResponseFactory {
         String email = seller.getEmail();
         String phoneNumber = seller.getPhoneNumber();
         String bio = seller.getBio();
+        Collection<SellerResponseFactory.PartialProductResponse> products = makePartialProductResponse(seller);
+        return new SellerResponse(id, createdAt, name, birthdate, email, phoneNumber, bio, products);
+    }
+
+    public static Collection<PartialProductResponse> makePartialProductResponse(Seller seller) {
         Collection<PartialProductResponse> products = new ArrayList<>();
 
         for (Product product : seller.getProducts()) {
@@ -28,19 +33,17 @@ public final class SellerResponseFactory {
             String description = product.getDescription();
             float suggestedPrice = product.getSuggestedPrice();
             String category = product.getCategory();
+
             Collection<SellerResponseFactory.PartialItemResponse> items = new ArrayList<>();
+
             for (Offer item : product.getOffers()) {
                 items.add(new PartialItemResponse(item.getBuyerUsername(), item.getCreatedAt(), item.getAmount(), item.getMessage()));
             }
-            SellerResponseFactory.PartialOfferResponse offers = new PartialOfferResponse(product.getOfferCount(),
-                    product.getAvgOfferAmount(),
-                    product.getMinOfferAmount(),
-                    product.getMaxOfferAmount(),
-                    items);
 
+            SellerResponseFactory.PartialOfferResponse offers = new PartialOfferResponse(product.getOfferCount(), product.getAvgOfferAmount(), product.getMinOfferAmount(), product.getMaxOfferAmount(), items);
             products.add(new PartialProductResponse(Pid, PcreatedAt, title, description, suggestedPrice, category, offers));
         }
-        return new SellerResponse(id, createdAt, name, birthdate, email, phoneNumber, bio, products);
+        return products;
     }
 
     public record SellerResponse(String id,
