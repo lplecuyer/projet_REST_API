@@ -19,14 +19,14 @@ public class ProductResource {
     @POST
     public Response create(@Valid Product product,
                            @Context UriInfo uriInfo,
-                           @HeaderParam("X-Seller-Id") int sellerId){
+                           @HeaderParam("X-Seller-Id") String sellerId){
         URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(product.getId())).build();
         Seller seller = SellerRepository.INSTANCE.get(sellerId);
 
         if (seller != null) {
-            registerProduct(product, seller);
+            seller.registerProduct(product);
             return Response.created(location).entity(
-                    ProductRecordFactory.makeProductRecord(product)).build();
+                    ProductResponseFactory.makeProductResponse(product)).build();
         }
         else return ErrorResponse.createNotFoundResponse("Seller", sellerId);
     }
@@ -35,23 +35,14 @@ public class ProductResource {
     // retourne un ProductRecord ou un message d'erreur s'il n'est pas trouvé
     @Path("/{productId}")
     @GET
-    public Response getProduct(@PathParam("productId") int productId){
+    public Response getProduct(@PathParam("productId") String productId){
         Product product = ProductRepository.INSTANCE.get(productId);
 
         if (product != null) {
             return Response.status(Response.Status.OK).entity(
-                    ProductRecordFactory.makeProductRecord(product)).build();
+                    ProductResponseFactory.makeProductResponse(product)).build();
         }
         else return ErrorResponse.createNotFoundResponse("Product", productId);
 
     }
-
-    //Enregistre le produit dans le stockage du domaine et
-    // fait les liens nécessaires avec son vendeur.
-    private void registerProduct(Product product, Seller seller) {
-        product.setSeller(seller);
-        seller.addProduct(product);
-        ProductRepository.INSTANCE.save(product);
-    }
-
 }

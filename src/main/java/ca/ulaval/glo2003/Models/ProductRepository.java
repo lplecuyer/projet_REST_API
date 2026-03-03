@@ -7,13 +7,13 @@ import java.util.Map;
 public enum ProductRepository {
     INSTANCE;
 
-    private final Map<Integer, Product> products = new ConcurrentHashMap<>();
+    private final Map<String, Product> products = new ConcurrentHashMap<>();
 
     public void save(Product product) {
         products.put(product.getId(), product);
     }
 
-    public Product get(int id) {
+    public Product get(String id) {
         return products.get(id);
     }
 }
