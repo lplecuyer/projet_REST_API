@@ -29,14 +29,12 @@ public class ProductResource {
     //Si le sellerId passé en header ne correspond pas à une instance,
     //Response.Status.NOT_FOUND sera envoyée.
     @POST
-    public Response create(@Valid Product product,
-                           @Context UriInfo uriInfo,
-                           @HeaderParam("X-Seller-Id") String sellerId){
+    public Response create(@Valid Product product, @Context UriInfo uriInfo, @HeaderParam("X-Seller-Id") String sellerId){
         URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(product.getId())).build();
         Seller seller = sellerRepository.get(sellerId);
-        productRepository.save(product);
 
         if (seller != null) {
+            productRepository.save(product);
             registerProduct(product, seller);
             return Response.created(location).entity(
                     ProductResponseFactory.makeProductResponse(product)).build();

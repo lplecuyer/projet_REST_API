@@ -13,7 +13,7 @@ public class Product{
     private final String id = String.valueOf(NEXT_ID.getAndIncrement());
 
     @NotNull(message = "MISSING_PARAMETER: title is mandatory")
-    @NotEmpty(message = "INVALID_PARAMETER: title cannot be empty")
+    @Size(min = 1, max = 50)
     private String title = null;
 
     @NotNull(message = "MISSING_PARAMETER: description is mandatory")

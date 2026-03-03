@@ -85,6 +85,12 @@ public class ProductIntegrationTest extends JerseyTest {
         super.tearDown();
     }
 
+    @SuppressWarnings("unchecked")
+    private java.util.List<Map<String, Object>> readProducts(Response response) {
+        Map<String, Object> body = response.readEntity(Map.class);
+        return (java.util.List<Map<String, Object>>) body.get("products");
+    }
+
     @Test
     void GivenCorrectProduct_WhenCreateProduct_ThenProductIsCreated() {
         Map<String, Object> data = validProductPayload();
@@ -99,8 +105,6 @@ public class ProductIntegrationTest extends JerseyTest {
         Map<String, Object> data = validProductPayload();
         data.remove("title");
 
-        System.out.println(data);
-
         Response response = postProduct(seller1Id, data);
 
         assertEquals(400, response.getStatus());
@@ -108,6 +112,19 @@ public class ProductIntegrationTest extends JerseyTest {
 
         ErrorResponse err = response.readEntity(ErrorResponse.class);
         assertEquals("MISSING_PARAMETER", err.error);
+    }
+
+    @Test
+    void GivenInvalidSeller_WhenCreateProduct_Then400() {
+        Map<String, Object> data = validProductPayload();
+
+        Response response = postProduct("invalidId", data);
+
+        assertEquals(404, response.getStatus());
+        verify(productRepo, never()).save(any());
+
+        ErrorResponse err = response.readEntity(ErrorResponse.class);
+        assertEquals("NOT_FOUND", err.error);
     }
 
     @Test
@@ -166,6 +183,90 @@ public class ProductIntegrationTest extends JerseyTest {
         assertEquals("INVALID_PARAMETER", err.error);
     }
 
+    @Test
+    void GivenNoFilters_WhenGetAll_ThenReturnsAll() {
+        Response response = target("products")
+                .request(MediaType.APPLICATION_JSON)
+                .get();
+
+        assertEquals(200, response.getStatus());
+
+        var list = readProducts(response);
+        assertEquals(3, list.size());
+    }
+
+    @Test
+    void GivenSellerId_WhenGetAll_ThenOnlySellerProducts() {
+        Response response = target("products")
+                .queryParam("sellerId", seller1Id)
+                .request(MediaType.APPLICATION_JSON)
+                .get();
+
+        assertEquals(200, response.getStatus());
+
+        var list = readProducts(response);
+        assertEquals(2, list.size());
+    }
+
+    @Test
+    void GivenTitle_WhenGetAll_ThenMatchesTitleContains() {
+        Response response = target("products")
+                .queryParam("title", "iphone")
+                .request(MediaType.APPLICATION_JSON)
+                .get();
+
+        assertEquals(200, response.getStatus());
+
+        var list = readProducts(response);
+        assertEquals(1, list.size());
+        assertEquals("iPhone Case", list.get(0).get("title"));
+    }
+
+    @Test
+    void GivenCategory_WhenGetAll_ThenOnlyThatCategory() {
+        Response response = target("products")
+                .queryParam("category", "beauty") // ou "BEAUTY" selon ton enum
+                .request(MediaType.APPLICATION_JSON)
+                .get();
+
+        assertEquals(200, response.getStatus());
+
+        var list = readProducts(response);
+        assertEquals(1, list.size());
+        assertEquals("Lipstick", list.get(0).get("title"));
+    }
+
+    @Test
+    void GivenMinMaxPrice_WhenGetAll_ThenOnlyInRange() {
+        Response response = target("products")
+                .queryParam("minPrice", 20)
+                .queryParam("maxPrice", 40)
+                .request(MediaType.APPLICATION_JSON)
+                .get();
+
+        assertEquals(200, response.getStatus());
+
+        var list = readProducts(response);
+        assertEquals(2, list.size()); // 25 et 40
+    }
+
+    @Test
+    void GivenCombinedFilters_WhenGetAll_ThenIntersection() {
+        Response response = target("products")
+                .queryParam("sellerId", seller1Id)
+                .queryParam("category", "beauty") // ou "BEAUTY"
+                .queryParam("minPrice", 20)
+                .queryParam("maxPrice", 30)
+                .request(MediaType.APPLICATION_JSON)
+                .get();
+
+        assertEquals(200, response.getStatus());
+
+        var list = readProducts(response);
+        assertEquals(1, list.size());
+        assertEquals("Lipstick", list.get(0).get("title"));
+    }
+
     // pour ne pas repeter le POST
     private Response postProduct(String sellerId, Map<String, Object> data) {
         return target("products")
@@ -174,6 +275,7 @@ public class ProductIntegrationTest extends JerseyTest {
                 .post(Entity.json(data));
     }
 
+    // pour ne pas repeter le GET
     private Response getProducts(Map<String, Object> params) {
         var t = target("products");
         for (var e : params.entrySet()) {
