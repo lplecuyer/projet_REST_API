@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.models;
+package ca.ulaval.glo2003.Models;
 
 import java.util.Collection;
 import java.util.Map;
@@ -8,13 +8,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public enum ProductRepository {
     INSTANCE;
 
-    private final Map<Integer, Product> products = new ConcurrentHashMap<>();
+    private final Map<String, Product> products = new ConcurrentHashMap<>();
 
     public void save(Product product) {
         products.put(product.getId(), product);
     }
 
-    public Product get(int id) {
+    public Product get(String id) {
         return products.get(id);
     }
 

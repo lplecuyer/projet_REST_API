@@ -1,13 +1,16 @@
-package ca.ulaval.glo2003.models;
+package ca.ulaval.glo2003.Models;
 
 import jakarta.validation.constraints.*;
+
+import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.time.LocalDate;
 
 public class Product{
     private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
-    private final int id = NEXT_ID.getAndIncrement();
+
+    private final String id = String.valueOf(NEXT_ID.getAndIncrement());
 
     @NotBlank(message = "MISSING_PARAMETER: title is mandatory")
     private String title;
@@ -21,7 +24,7 @@ public class Product{
     @DecimalMin(value = "1", message = "INVALID_PARAMETER: suggested price must be higher than 1$")
     private float suggestedPrice;
 
-    private final LocalDate createdAt = LocalDate.now();
+    private final LocalDateTime createdAt = LocalDateTime.now();
 
     private Seller seller = null;
 
@@ -53,7 +56,7 @@ public class Product{
         return total/offers.size();
     }
 
-    public int getId() {return id;}
+    public String getId() {return id;}
 
     public String getTitle() {return title;}
     public void setTitle(String title) {this.title = title;}
@@ -67,11 +70,31 @@ public class Product{
     public float getSuggestedPrice() {return suggestedPrice;}
     public void setSuggestedPrice(float suggestedPrice) {this.suggestedPrice = suggestedPrice;}
 
-    public LocalDate getCreatedAt() {return createdAt;}
+    public ArrayList<Offer> getOffers() {
+        return offers;
+    }
+
+    public LocalDateTime getCreatedAt() {return createdAt;}
 
     public Seller getSeller() {return seller;}
 
-    public int getSellerId(){return seller.getId();}
+    public String getSellerId(){return seller.getId();}
 
     public void setSeller(Seller seller){this.seller = seller;}
+
+    public Float getMinOfferAmount() {
+        float min = Float.MAX_VALUE;
+        for (Offer offer : offers) {
+            if (min > offer.getAmount()) min = offer.getAmount();
+        }
+        return min == Float.MAX_VALUE ? null : min;
+    }
+
+    public Float getMaxOfferAmount() {
+        float max = Float.MIN_VALUE;
+        for (Offer offer : offers) {
+            if (max < offer.getAmount()) max = offer.getAmount();
+        }
+        return max == Float.MIN_VALUE ? null : max;
+    }
 }

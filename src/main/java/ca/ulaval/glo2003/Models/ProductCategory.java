@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.models;
+package ca.ulaval.glo2003.Models;
 
 public enum ProductCategory {
     beauty,

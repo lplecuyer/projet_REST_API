@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.models;
+package ca.ulaval.glo2003.Models;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,16 +1,14 @@
-package ca.ulaval.glo2003.resources;
+package ca.ulaval.glo2003.Resources;
 
-import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
-import ca.ulaval.glo2003.models.*;
+import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
+import ca.ulaval.glo2003.Models.*;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
-import java.io.Console;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 @Path("/products")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -21,14 +19,17 @@ public class ProductResource {
     //Si le sellerId passé en header ne correspond pas à une instance,
     //Response.Status.NOT_FOUND sera envoyée.
     @POST
-    public Response create(@Valid Product product, @Context UriInfo uriInfo, @HeaderParam("X-Seller-Id") int sellerId){
+    public Response create(@Valid Product product,
+                           @Context UriInfo uriInfo,
+                           @HeaderParam("X-Seller-Id") String sellerId){
         URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(product.getId())).build();
         Seller seller = SellerRepository.INSTANCE.get(sellerId);
         ProductRepository.INSTANCE.save(product);
 
         if (seller != null) {
             registerProduct(product, seller);
-            return Response.created(location).entity(ProductRecordFactory.makeProductRecord(product)).build();
+            return Response.created(location).entity(
+                    ProductResponseFactory.makeProductResponse(product)).build();
         }
         else return ErrorResponse.createNotFoundResponse("Seller", sellerId);
     }
@@ -44,10 +45,9 @@ public class ProductResource {
             @QueryParam("maxPrice") @DefaultValue("3.4028235E38") float maxPrice
             )
     {
-        Integer sellerIdInt = Integer.parseInt(sellerId.trim());
 
         Collection<ProductRecordFactory.ProductRecord> products = ProductRepository.INSTANCE.getAll().stream()
-                .filter(product -> sellerIdInt == null || product.getSeller().getId() == sellerIdInt)
+                .filter(product -> sellerId == null || Objects.equals(product.getSeller().getId(), sellerId))
                 .filter(product -> title == null || product.getTitle().toLowerCase().contains(title.toLowerCase()))
                 .filter(product -> category == null || product.getCategory() == category)
                 .filter(product -> product.getSuggestedPrice() >= minPrice && product.getSuggestedPrice() <= maxPrice)
@@ -62,12 +62,12 @@ public class ProductResource {
     // retourne un ProductRecord ou un message d'erreur s'il n'est pas trouvé
     @Path("/{productId}")
     @GET
-    public Response getProduct(@PathParam("productId") int productId){
+    public Response getProduct(@PathParam("productId") String productId){
         Product product = ProductRepository.INSTANCE.get(productId);
 
         if (product != null) {
             return Response.status(Response.Status.OK).entity(
-                    ProductRecordFactory.makeProductRecord(product)).build();
+                    ProductResponseFactory.makeProductResponse(product)).build();
         }
         else return ErrorResponse.createNotFoundResponse("Product", productId);
 
@@ -81,10 +81,4 @@ public class ProductResource {
         ProductRepository.INSTANCE.save(product);
     }
 
-    private Response createNotFoundResponse(int sellerId) {
-        String message = "Seller with ID " + sellerId + " does not exist";
-        return Response.status(Response.Status.NOT_FOUND)
-                .entity(new ErrorResponse("NOT_FOUND", message))
-                .build();
-    }
 }
