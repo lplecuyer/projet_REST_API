@@ -16,4 +16,8 @@ public enum SellerRepository {
     public Seller get(String id) {
         return sellers.get(id);
     }
+
+    public void clear() {
+        sellers.clear();
+    }
 }

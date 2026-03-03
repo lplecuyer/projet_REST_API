@@ -19,4 +19,8 @@ public enum ProductRepository {
     }
 
     public Collection<Product> getAll() {return products.values();}
+
+    public void clear() {
+        products.clear();
+    }
 }
