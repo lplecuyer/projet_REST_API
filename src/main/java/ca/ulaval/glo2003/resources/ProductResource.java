@@ -24,7 +24,7 @@ public class ProductResource {
         Seller seller = SellerRepository.INSTANCE.get(sellerId);
 
         if (seller != null) {
-            registerProduct(product, seller);
+            seller.registerProduct(product);
             return Response.created(location).entity(
                     ProductResponseFactory.makeProductResponse(product)).build();
         }
@@ -45,13 +45,4 @@ public class ProductResource {
         else return ErrorResponse.createNotFoundResponse("Product", productId);
 
     }
-
-    //Enregistre le produit dans le stockage du domaine et
-    // fait les liens nécessaires avec son vendeur.
-    private void registerProduct(Product product, Seller seller) {
-        product.setSeller(seller);
-        seller.addProduct(product);
-        ProductRepository.INSTANCE.save(product);
-    }
-
 }

@@ -4,9 +4,7 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.time.LocalDate;
 
 public class Product{
     private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
@@ -95,5 +93,13 @@ public class Product{
             if (max < offer.getAmount()) max = offer.getAmount();
         }
         return max == Float.MIN_VALUE ? null : max;
+    }
+
+    public boolean offerForSameProductAndUserAlreadyExists(String buyerUsername) {
+        boolean alreadyExists = false;
+        for (Offer offer : this.getOffers()) {
+            alreadyExists = offer.getBuyerUsername().equals(buyerUsername);
+        }
+        return alreadyExists;
     }
 }

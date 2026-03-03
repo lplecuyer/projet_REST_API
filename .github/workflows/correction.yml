@@ -1,0 +1,54 @@
+# Placez ce fichier dans .github/workflows/correction.yml
+# Déclenchez via Actions > Correction > Run workflow
+name: Correction
+on:
+  workflow_dispatch:
+    inputs:
+      tp:
+        description: 'Numéro du TP'
+        required: true
+        type: choice
+        options:
+          - '1'
+          - '2'
+          - '3'
+jobs:
+  correction:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    services:
+      db:
+        image: mongo:7.0
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
+        ports:
+          - 27017:27017
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: echo "${{ secrets.CORRECTION_TOKEN }}" | docker login ghcr.io -u student --password-stdin
+
+      - run: docker build -t student-app .
+
+      - run: docker run -d --name app --network host -e PORT=8080 -e MONGO_CLUSTER_URL=mongodb://root:example@localhost:27017 -e MONGO_DATABASE=floppa-test -e API_VERSION=${{ inputs.tp }} student-app
+
+      - name: Exécuter les tests
+        run: |
+          mkdir -p reports && chmod 777 reports
+          docker run --rm --network host \
+            -v ${{ github.workspace }}/reports:/workdir/reports \
+            -e GITHUB_TOKEN=${{ github.token }} \
+            -e GITHUB_REPOSITORY=${{ github.repository }} \
+            -e GITHUB_SHA=${{ github.sha }} \
+            -e CORRECTION_TOKEN=${{ secrets.CORRECTION_TOKEN }} \
+            ghcr.io/glo2003/trial/law-student:latest \
+            floppa --tp ${{ inputs.tp }} --url http://localhost:8080
+
+      - if: always()
+        run: cat reports/*.md >> $GITHUB_STEP_SUMMARY 2>/dev/null || true
+
+      - if: always()
+        run: docker stop app 2>/dev/null || true

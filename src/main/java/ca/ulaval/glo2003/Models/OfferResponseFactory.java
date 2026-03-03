@@ -9,7 +9,7 @@ public final class OfferResponseFactory {
     private OfferResponseFactory() { }
 
     public static OfferResponse makeOfferResponse(@Valid Offer offer) {
-        int offerId = offer.getOfferId();
+        String offerId = offer.getOfferId();
         String productId = offer.getProductId();
         double amount = offer.getAmount();
         String message = offer.getMessage();
@@ -18,7 +18,7 @@ public final class OfferResponseFactory {
         return new OfferResponse(offerId, productId, amount, message, buyerUsername, offerCreatedDate);
     }
 
-    public record OfferResponse(int offerId, String productId, double amount, String message, String buyerUsername,
+    public record OfferResponse(String offerId, String productId, double amount, String message, String buyerUsername,
                                 LocalDateTime offerCreatedDate) {
     }
 }
