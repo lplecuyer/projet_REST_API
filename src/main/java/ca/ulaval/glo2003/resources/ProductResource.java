@@ -51,7 +51,7 @@ public class ProductResource {
             @QueryParam("title") String title,
             @QueryParam("minPrice") @DefaultValue("0") float minPrice,
             @QueryParam("maxPrice") @DefaultValue("3.4028235E38") float maxPrice
-    )
+            )
     {
 
         Collection<ProductRecordFactory.ProductRecord> products = productRepository.getAll().stream()
