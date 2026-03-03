@@ -1,8 +1,14 @@
 package ca.ulaval.glo2003;
 
-import ca.ulaval.glo2003.resources.OfferResource;
-import ca.ulaval.glo2003.resources.ProductResource;
-import ca.ulaval.glo2003.resources.SellerResource;
+import ca.ulaval.glo2003.Models.Repository.IProductRepository;
+import ca.ulaval.glo2003.Models.Repository.ISellerRepository;
+import ca.ulaval.glo2003.Models.Repository.ProductRepository;
+import ca.ulaval.glo2003.Models.Repository.SellerRepository;
+import ca.ulaval.glo2003.Resources.HealthResource;
+import ca.ulaval.glo2003.Resources.OfferResource;
+import ca.ulaval.glo2003.Resources.ProductResource;
+import ca.ulaval.glo2003.Resources.SellerResource;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.validation.ValidationFeature;
@@ -14,12 +20,21 @@ public class Main {
 
     public static void startServer() {
         final ResourceConfig rc = new ResourceConfig()
+                .packages("ca.ulaval.glo2003")
                 .register(ValidationFeature.class)
                 .register(ca.ulaval.glo2003.ExceptionHandlers.ValidationExceptionMapper.class)
+                .register(ca.ulaval.glo2003.ExceptionHandlers.ProcessingExceptionMapper.class)
                 .register(new HealthResource())
                 .register(new SellerResource())
-                .register(new ProductResource())
-                .register(new OfferResource());
+                .register(ProductResource.class)
+                .register(new OfferResource())
+                .register(new AbstractBinder() {
+                    @Override
+                    protected void configure() {
+                        bind(ProductRepository.INSTANCE).to(IProductRepository.class);
+                        bind(SellerRepository.INSTANCE).to(ISellerRepository.class);
+                    }
+                });
 
         GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }

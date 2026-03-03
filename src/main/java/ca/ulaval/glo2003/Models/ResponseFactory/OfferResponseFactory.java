@@ -1,5 +1,6 @@
-package ca.ulaval.glo2003.Models;
+package ca.ulaval.glo2003.Models.ResponseFactory;
 
+import ca.ulaval.glo2003.Models.Offer;
 import jakarta.validation.Valid;
 
 import java.time.LocalDateTime;
