@@ -75,7 +75,7 @@ public class SellerIntegrationTest extends JerseyTest {
     sellerValide.setEmail(VALID_EMAIL);
     sellerValide.setPhoneNumber(VALID_PHONENUMBER);
     sellerValide.setBio(VALID_BIO);
-    sellerValide.addProduct(new Product("iPhone Case", "desc", ProductCategory.electronics, 15));
+    sellerValide.addProduct(new Product("iPhone Case", "desc", ProductCategory.electronics, 15F));
 
     seller1Id = sellerValide.getId();
 
