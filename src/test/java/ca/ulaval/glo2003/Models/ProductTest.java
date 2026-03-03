@@ -1,46 +1,135 @@
 package ca.ulaval.glo2003.Models;
 
+
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import jakarta.validation.*;
+
+import java.util.Set;
+
+import static org.junit.Assert.assertTrue;
 
 class ProductTest {
-    private static final float PRICE_1 = 40.1f;
-    private static final float PRICE_2 = 98.9f;
-    private static final float PRICE_3 = 20.4f;
-    private static final String MESSAGE = "J'aimerais acheter ce téléphone";
-    private static final String PRODUCT_TITLE1 = "Apple";
-    private static final String PRODUCT_TITLE2 = "Samsung";
-    private static final String PRODUCT_DESC1 = "Iphone 13";
-    private static final String PRODUCT_DESC2 = "Samsung Galaxy";
-    private static final ProductCategory PRODUCT_CATEGORY = ProductCategory.electronics;
+  private static final String MISSING_PARAMETER = "MISSING_PARAMETER";
+  private static final String INVALID_PARAMETER = "INVALID_PARAMETER";
+  private static final float VALID_PRICE_1 = 40.1f;
+  private static final float VALID_PRICE_2 = 98.9f;
+  private static final float VALID_PRICE_3 = 20.4f;
+  private static final String OFFER_MESSAGE = "J'aimerais acheter ce téléphone";
+  private static final String VALID_TITLE = "Apple";
+  private static final String VALID_DESC = "Iphone 13";
+  private static final ProductCategory VALID_CATEGORY = ProductCategory.electronics;
+  private static final String EMPTY_STRING = "";
+  private static final Float INVALID_PRICE = 0F;
 
-    private static final Offer offer1 = new Offer(PRICE_1, MESSAGE);
-    private static final Offer offer2 = new Offer(PRICE_2, MESSAGE);
-    private static final Offer offer3 = new Offer(PRICE_3, MESSAGE);
-    Product productWithNoOffers;
-    Product productWithOffers;
+  private static Validator validator;
+  private static final Offer offer1 = new Offer(VALID_PRICE_1, OFFER_MESSAGE);
+  private static final Offer offer2 = new Offer(VALID_PRICE_2, OFFER_MESSAGE);
+  private static final Offer offer3 = new Offer(VALID_PRICE_3, OFFER_MESSAGE);
+  private static Product validProduct;
+  private static Product product;
+  private static Product productWithNoOffers;
+  private static Product productWithOffers;
 
-    @BeforeEach
-    void initialize(){
-        productWithNoOffers = new Product(PRODUCT_TITLE1,PRODUCT_DESC1, PRODUCT_CATEGORY, PRICE_3);
-        productWithOffers = new Product(PRODUCT_TITLE2,PRODUCT_DESC2, PRODUCT_CATEGORY, PRICE_1);
-        productWithOffers.addOffer(offer1);
-        productWithOffers.addOffer(offer2);
-        productWithOffers.addOffer(offer3);
-    }
+  @BeforeAll
+  static void initialize(){
+    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    validator =  factory.getValidator();
+  }
 
-    @Test
-    void givenProductWithNoOffers_whenGetAvgOfferAmount_ReturnsNull() {
-        Assertions.assertEquals(0, productWithNoOffers.getOfferCount());
-        Assertions.assertNull(productWithNoOffers.getAvgOfferAmount());
-    }
+  @BeforeEach
+  void setup(){
+    validProduct = new Product(VALID_TITLE, VALID_DESC, VALID_CATEGORY, VALID_PRICE_1);
+    product = new Product(VALID_TITLE, VALID_DESC, VALID_CATEGORY, VALID_PRICE_1);
+    productWithNoOffers = new Product(VALID_TITLE, VALID_DESC, VALID_CATEGORY, VALID_PRICE_1);
+    productWithOffers = new Product(VALID_TITLE, VALID_DESC, VALID_CATEGORY, VALID_PRICE_1);
+    productWithOffers.addOffer(offer1);
+    productWithOffers.addOffer(offer2);
+    productWithOffers.addOffer(offer3);
+  }
 
-    @Test
-    void givenProductWith3Offers_whenGetAvgOfferAmount_ReturnsAverage(){
-        float expectedAverage = (PRICE_1 + PRICE_2 + PRICE_3)/3;
-        float actualAverage = productWithOffers.getAvgOfferAmount();
-        float errorMargin = 0.001f;
-        Assertions.assertEquals(expectedAverage, actualAverage, errorMargin);
-    }
+  @Test
+  void givenProductWithNoOffers_whenGetAvgOfferAmount_ReturnsNull() {
+    Assertions.assertEquals(0, productWithNoOffers.getOfferCount());
+    Assertions.assertNull(productWithNoOffers.getAvgOfferAmount());
+  }
+
+  @Test
+  void givenValidParameters_whenValide_thenNoViolation(){
+    Set<ConstraintViolation<Product>> violations = validator.validate(validProduct);
+    assertTrue(violations.isEmpty());
+  }
+
+  @Test
+  void givenNullTitle_whenValidate_createsViolation() {
+    product.setTitle(null);
+    Set<ConstraintViolation<Product>> violations = validator.validate(product);
+
+    String actualMessage = violations.iterator().next().getMessage();
+    Assertions.assertTrue(actualMessage.contains(MISSING_PARAMETER));
+  }
+
+  @Test
+  void givenEmptyTitle_whenValidate_createsViolation() {
+    product.setTitle(EMPTY_STRING);
+    Set<ConstraintViolation<Product>> violations = validator.validate(product);
+
+    String actualMessage = violations.iterator().next().getMessage();
+    Assertions.assertTrue(actualMessage.contains(INVALID_PARAMETER));
+  }
+
+  @Test
+  void givenNullDescription_whenValidate_createsViolation() {
+    product.setDescription(null);
+    Set<ConstraintViolation<Product>> violations = validator.validate(product);
+
+    String actualMessage = violations.iterator().next().getMessage();
+    Assertions.assertTrue(actualMessage.contains(MISSING_PARAMETER));
+  }
+
+  @Test
+  void givenEmptyDescription_whenValidate_createsViolation() {
+    product.setDescription(EMPTY_STRING);
+    Set<ConstraintViolation<Product>> violations = validator.validate(product);
+
+    String actualMessage = violations.iterator().next().getMessage();
+    Assertions.assertTrue(actualMessage.contains(INVALID_PARAMETER));
+  }
+
+  @Test
+  void givenNullCategory_whenValidate_createsViolation() {
+    product.setCategory(null);
+    Set<ConstraintViolation<Product>> violations = validator.validate(product);
+
+    String actualMessage = violations.iterator().next().getMessage();
+    Assertions.assertTrue(actualMessage.contains(MISSING_PARAMETER));
+  }
+
+  @Test
+  void givenNullSuggestedPrice_whenValidate_createsViolation() {
+    product.setSuggestedPrice(null);
+    Set<ConstraintViolation<Product>> violations = validator.validate(product);
+
+    String actualMessage = violations.iterator().next().getMessage();
+    Assertions.assertTrue(actualMessage.contains(MISSING_PARAMETER));
+  }
+
+  @Test
+  void givenInvalidPrice_whenValidate_createsViolation() {
+    product.setSuggestedPrice(INVALID_PRICE);
+    Set<ConstraintViolation<Product>> violations = validator.validate(product);
+
+    String actualMessage = violations.iterator().next().getMessage();
+    Assertions.assertTrue(actualMessage.contains(INVALID_PARAMETER));
+  }
+
+  @Test
+  void givenProductWith3offers_whenGetAvgOfferAmount_ReturnsAverage(){
+    float expectedAverage = (VALID_PRICE_1 + VALID_PRICE_2 + VALID_PRICE_3)/3;
+    float actualAverage = productWithOffers.getAvgOfferAmount();
+    float errorMargin = 0.001f;
+    Assertions.assertEquals(expectedAverage, actualAverage, errorMargin);
+  }
 }

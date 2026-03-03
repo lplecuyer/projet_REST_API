@@ -35,8 +35,7 @@ public class ProductResource {
     Seller seller = sellerRepository.get(sellerId);
 
     if (seller != null) {
-      productRepository.save(product);
-      registerProduct(product, seller);
+      seller.registerProduct(product);
       return Response.created(location).entity(
           ProductResponseFactory.makeProductResponse(product)).build();
     }
@@ -78,12 +77,6 @@ public class ProductResource {
     }
     else return ErrorResponse.createNotFoundResponse("Product", productId);
 
-  }
-
-  private void registerProduct(Product product, Seller seller) {
-    product.setSeller(seller);
-    seller.addProduct(product);
-    productRepository.save(product);
   }
 
 }
