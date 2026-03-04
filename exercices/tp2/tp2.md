@@ -22,11 +22,11 @@
 ## Architecture
 ### Explication et Problèmes identifiés
 
-Commençons par l'API : les classes OfferResource, ProductResource et SellerResource s'occupent des requêtes reçues par le serveur. Elles retournent des  instances des DTO OfferResponse, ProductResponse et de SellerResponse. Elles créent créent à partir des requêtes les objets du domaine, Offer, Product et Seller, qui sont ensuite stockés dans ProductRepository et SellerRepository. Les Offer sont contenus dans les instances des Product.
+Commençons par l'API : les classes OfferResource, ProductResource et SellerResource s'occupent des requêtes reçues par le serveur. Elles retournent des instances DTO OfferResponse, ProductResponse et de SellerResponse. Elles créent à partir des requêtes les objets du domaine, Offer, Product et Seller, qui sont ensuite stockés dans ProductRepository et SellerRepository. Les Offer sont contenus dans les instances des Product.
 
 Les classes permettent une navigation plus aisée de la base de code : elles ont une seule responsabilité. Les Classe Resource ne font que recevoir les requêtes et envoyer les Response, les objets du modèle décrivent leurs attributs et les valident et enfin les repository les recense. Les packages séparent les grands rôles de l'application : l'API est l'interface de communication du système avec l'extérieur et le domaine gère et stocke ces informations.
 
-L'API déborde un peu sur le domaine; depuis les objets json les objets Offer, Product et Seller sont directement créés, puis les classes Resource appellent directement certaines de leurs méthodes pour finalement les ajouter au Repository approprié. Les classes Resource devraient créer à partir des json des DTO-requête, qui seraient envoyés vers des classes transition : des Assembleur qui convertirait les objets requêtes en objets du domaine et qui créerait des objets réponses en retour et ce afin de mieux controller la conversion et le partage d'informations entre les classes.
+L'API déborde un peu sur le domaine; depuis les objets json les objets Offer, Product et Seller sont directement créés, puis les classes Resource appellent directement certaines de leurs méthodes pour finalement les ajouter au Repository approprié. Les classes Resource devraient créer à partir des json des DTO-requête, qui seraient envoyés vers des classes de transition : des Assembleur qui convertiraient les objets requêtes en objets du domaine et qui créeraient des objets réponses en retour, et ce afin de mieux controller la conversion et le partage d'informations entre les classes.
 
 
 
