@@ -12,6 +12,10 @@ on:
           - '1'
           - '2'
           - '3'
+      image:
+        description: "URL de l'image Docker (requis pour TP3)"
+        required: false
+        type: string
 jobs:
   correction:
     runs-on: ubuntu-latest
@@ -20,7 +24,7 @@ jobs:
       contents: read
     services:
       db:
-        image: mongo:7.0
+        image: mongo:8
         env:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: example
@@ -31,7 +35,30 @@ jobs:
 
       - run: echo "${{ secrets.CORRECTION_TOKEN }}" | docker login ghcr.io -u student --password-stdin
 
-      - run: docker build -t student-app .
+      - name: Build app from source (TP1-2)
+        if: inputs.tp != '3'
+        run: docker build -t student-app .
+
+      - name: Pull app image (TP3)
+        if: inputs.tp == '3'
+        run: |
+          if [ -z "${{ inputs.image }}" ]; then
+            echo "::error::L'input 'image' est requis pour le TP3"
+            exit 1
+          fi
+          docker pull "${{ inputs.image }}"
+          docker tag "${{ inputs.image }}" student-app
+
+      - name: Wait for MongoDB
+        run: |
+          for i in $(seq 1 30); do
+            if docker run --rm --network host mongo:8 mongosh "mongodb://root:example@localhost:27017" --eval "db.runCommand({ping:1})" > /dev/null 2>&1; then
+              echo "MongoDB is ready"
+              break
+            fi
+            echo "Waiting for MongoDB... ($i)"
+            sleep 1
+          done
 
       - run: docker run -d --name app --network host -e PORT=8080 -e MONGO_CLUSTER_URL=mongodb://root:example@localhost:27017 -e MONGO_DATABASE=floppa-test -e API_VERSION=${{ inputs.tp }} student-app
 
