@@ -1,13 +1,13 @@
 package ca.ulaval.glo2003;
 
-import ca.ulaval.glo2003.Models.Repository.IProductRepository;
-import ca.ulaval.glo2003.Models.Repository.ISellerRepository;
-import ca.ulaval.glo2003.Models.Repository.ProductRepository;
-import ca.ulaval.glo2003.Models.Repository.SellerRepository;
-import ca.ulaval.glo2003.Resources.HealthResource;
-import ca.ulaval.glo2003.Resources.OfferResource;
-import ca.ulaval.glo2003.Resources.ProductResource;
-import ca.ulaval.glo2003.Resources.SellerResource;
+import ca.ulaval.glo2003.repositories.IProductRepository;
+import ca.ulaval.glo2003.repositories.ISellerRepository;
+import ca.ulaval.glo2003.repositories.ProductRepository;
+import ca.ulaval.glo2003.repositories.SellerRepository;
+import ca.ulaval.glo2003.resources.HealthResource;
+import ca.ulaval.glo2003.resources.OfferResource;
+import ca.ulaval.glo2003.resources.ProductResource;
+import ca.ulaval.glo2003.resources.SellerResource;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -22,8 +22,8 @@ public class Main {
         final ResourceConfig rc = new ResourceConfig()
                 .packages("ca.ulaval.glo2003")
                 .register(ValidationFeature.class)
-                .register(ca.ulaval.glo2003.ExceptionHandlers.ValidationExceptionMapper.class)
-                .register(ca.ulaval.glo2003.ExceptionHandlers.ProcessingExceptionMapper.class)
+                .register(ca.ulaval.glo2003.exceptionHandlers.ValidationExceptionMapper.class)
+                .register(ca.ulaval.glo2003.exceptionHandlers.ProcessingExceptionMapper.class)
                 .register(new HealthResource())
                 .register(SellerResource.class)
                 .register(ProductResource.class)

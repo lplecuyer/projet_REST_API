@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.ExceptionHandlers;
+package ca.ulaval.glo2003.exceptionHandlers;
 
 import jakarta.json.bind.annotation.JsonbPropertyOrder;
 import jakarta.ws.rs.core.Response;
@@ -15,8 +15,8 @@ public class ErrorResponse {
         this.description = description;
     }
 
-    public static Response createNotFoundResponse(String objectType, String Id) {
-        String message = objectType + " with ID " + Id + " does not exist";
+    public static Response createNotFoundResponse(String objectType, String id) {
+        String message = objectType + " with ID " + id + " does not exist";
         return Response.status(Response.Status.NOT_FOUND)
                 .entity(new ErrorResponse("NOT_FOUND", message)).build();
     }

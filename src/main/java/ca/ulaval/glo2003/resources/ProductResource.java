@@ -1,10 +1,10 @@
-package ca.ulaval.glo2003.Resources;
+package ca.ulaval.glo2003.resources;
 
-import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
-import ca.ulaval.glo2003.Models.*;
-import ca.ulaval.glo2003.Models.Repository.IProductRepository;
-import ca.ulaval.glo2003.Models.Repository.ISellerRepository;
-import ca.ulaval.glo2003.Models.ResponseFactory.ProductResponseFactory;
+import ca.ulaval.glo2003.exceptionHandlers.ErrorResponse;
+import ca.ulaval.glo2003.models.*;
+import ca.ulaval.glo2003.repositories.IProductRepository;
+import ca.ulaval.glo2003.repositories.ISellerRepository;
+import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -37,7 +37,7 @@ public class ProductResource {
     if (seller != null) {
       seller.registerProduct(product);
       return Response.created(location).entity(
-          ProductResponseFactory.makeProductResponse(product)).build();
+          ProductAssembler.makeProductResponse(product)).build();
     }
     else return ErrorResponse.createNotFoundResponse("Seller", sellerId);
   }
@@ -54,16 +54,16 @@ public class ProductResource {
   )
   {
 
-    Collection<ProductResponseFactory.ProductResponse> products = productRepository.getAll().stream()
+    Collection<ProductAssembler.ProductResponse> products = productRepository.getAll().stream()
         .filter(product -> sellerId == null || Objects.equals(product.getSeller().getId(), sellerId))
         .filter(product -> title == null || product.getTitle().toLowerCase().contains(title.toLowerCase()))
         .filter(product -> category == null || product.getCategory() == category)
         .filter(product -> product.getSuggestedPrice() >= minPrice && product.getSuggestedPrice() <= maxPrice)
-        .map(ProductResponseFactory::makeProductResponse)
+        .map(ProductAssembler::makeProductResponse)
         .toList();
 
 
-    return Response.ok(new ProductResponseFactory.ProductsResponse(products)).build();
+    return Response.ok(new ProductAssembler.ProductsResponse(products)).build();
   }
 
   @Path("/{productId}")
@@ -73,7 +73,7 @@ public class ProductResource {
 
     if (product != null) {
       return Response.status(Response.Status.OK).entity(
-          ProductResponseFactory.makeProductResponse(product)).build();
+          ProductAssembler.makeProductResponse(product)).build();
     }
     else return ErrorResponse.createNotFoundResponse("Product", productId);
 

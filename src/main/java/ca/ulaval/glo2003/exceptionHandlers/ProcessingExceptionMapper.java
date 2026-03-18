@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.ExceptionHandlers;
+package ca.ulaval.glo2003.exceptionHandlers;
 
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.core.Response;

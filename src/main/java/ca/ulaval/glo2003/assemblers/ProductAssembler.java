@@ -1,15 +1,15 @@
-package ca.ulaval.glo2003.Models.ResponseFactory;
+package ca.ulaval.glo2003.assemblers;
 
-import ca.ulaval.glo2003.Models.Product;
-import ca.ulaval.glo2003.Models.ProductCategory;
+import ca.ulaval.glo2003.models.Product;
+import ca.ulaval.glo2003.models.ProductCategory;
 import jakarta.json.bind.annotation.JsonbNillable;
 import jakarta.validation.Valid;
 
 import java.time.LocalDateTime;
 
-public final class ProductResponseFactory {
+public final class ProductAssembler {
 
-    private ProductResponseFactory(){}
+    private ProductAssembler(){}
 
     public static ProductResponse makeProductResponse(@Valid Product product) {
         String id = product.getId();
@@ -26,7 +26,7 @@ public final class ProductResponseFactory {
     public record ProductResponse(String id, String title, String description, ProductCategory category, float suggestedPrice,
                                   LocalDateTime createdAt, PartialSellerResponse seller, PartialOfferResponse offers){}
 
-    public record ProductsResponse(java.util.Collection<ProductResponseFactory.ProductResponse> products) {}
+    public record ProductsResponse(java.util.Collection<ProductAssembler.ProductResponse> products) {}
 
     public record PartialSellerResponse(String id, String name) { }
 

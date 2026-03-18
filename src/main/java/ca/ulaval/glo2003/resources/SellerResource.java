@@ -1,10 +1,9 @@
-package ca.ulaval.glo2003.Resources;
+package ca.ulaval.glo2003.resources;
 
-import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
-import ca.ulaval.glo2003.Models.Repository.ISellerRepository;
-import ca.ulaval.glo2003.Models.Seller;
-import ca.ulaval.glo2003.Models.Repository.SellerRepository;
-import ca.ulaval.glo2003.Models.ResponseFactory.SellerResponseFactory;
+import ca.ulaval.glo2003.exceptionHandlers.ErrorResponse;
+import ca.ulaval.glo2003.repositories.ISellerRepository;
+import ca.ulaval.glo2003.models.Seller;
+import ca.ulaval.glo2003.assemblers.SellerAssembler;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -44,7 +43,7 @@ public class SellerResource {
     }
 
     return Response.status(Response.Status.OK)
-        .entity(SellerResponseFactory.makeSellerResponse(seller))
+        .entity(SellerAssembler.makeSellerResponse(seller))
         .build();
   }
 }

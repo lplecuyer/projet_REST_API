@@ -1,13 +1,13 @@
-package ca.ulaval.glo2003.Models.ResponseFactory;
+package ca.ulaval.glo2003.assemblers;
 
-import ca.ulaval.glo2003.Models.Offer;
+import ca.ulaval.glo2003.models.Offer;
 import jakarta.validation.Valid;
 
 import java.time.LocalDateTime;
 
-public final class OfferResponseFactory {
+public final class OfferAssembler {
 
-    private OfferResponseFactory() { }
+    private OfferAssembler() { }
 
     public static OfferResponse makeOfferResponse(@Valid Offer offer) {
         String offerId = offer.getOfferId();

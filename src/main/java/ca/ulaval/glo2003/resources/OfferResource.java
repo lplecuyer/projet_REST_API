@@ -1,10 +1,10 @@
-package ca.ulaval.glo2003.Resources;
+package ca.ulaval.glo2003.resources;
 
-import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
-import ca.ulaval.glo2003.Models.*;
-import ca.ulaval.glo2003.Models.Offer;
-import ca.ulaval.glo2003.Models.Repository.ProductRepository;
-import ca.ulaval.glo2003.Models.ResponseFactory.OfferResponseFactory;
+import ca.ulaval.glo2003.exceptionHandlers.ErrorResponse;
+import ca.ulaval.glo2003.models.*;
+import ca.ulaval.glo2003.models.Offer;
+import ca.ulaval.glo2003.repositories.ProductRepository;
+import ca.ulaval.glo2003.assemblers.OfferAssembler;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
@@ -44,6 +44,6 @@ public class OfferResource {
 
     offer.registerOffer(product, buyerUsername);
 
-    return Response.created(location).entity(OfferResponseFactory.makeOfferResponse(offer)).build();
+    return Response.created(location).entity(OfferAssembler.makeOfferResponse(offer)).build();
   }
 }
