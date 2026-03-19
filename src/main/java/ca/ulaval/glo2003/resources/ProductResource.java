@@ -14,7 +14,7 @@ import java.net.URI;
 @Produces(MediaType.APPLICATION_JSON)
 public class ProductResource {
 
-  ServerApplication serverApplication;
+  private final ServerApplication serverApplication;
 
   public ProductResource(ServerApplication serverApplication){
     this.serverApplication = serverApplication;

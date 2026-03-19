@@ -19,6 +19,8 @@ public final class OfferAssembler {
         return new OfferResponse(offerId, productId, amount, message, buyerUsername, offerCreatedDate);
     }
 
+    public record OfferRequest(float amount, String message){}
+
     public record OfferResponse(String offerId, String productId, double amount, String message, String buyerUsername,
                                 LocalDateTime offerCreatedDate) {
     }

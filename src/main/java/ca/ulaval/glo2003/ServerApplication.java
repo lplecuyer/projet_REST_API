@@ -1,7 +1,9 @@
 package ca.ulaval.glo2003;
 
+import ca.ulaval.glo2003.assemblers.OfferAssembler;
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import ca.ulaval.glo2003.assemblers.SellerAssembler;
+import ca.ulaval.glo2003.models.Offer;
 import ca.ulaval.glo2003.models.Product;
 import ca.ulaval.glo2003.models.ProductCategory;
 import ca.ulaval.glo2003.models.Seller;
@@ -79,5 +81,18 @@ public class ServerApplication {
 
   public void setProductRepository(ProductRepository productRepository){
     this.productRepository = productRepository;
+  }
+
+  public boolean offerForSameProductAndUserAlreadyExists(String buyerUsername, String productId) {
+    Product product = productRepository.get(productId);
+    return product.offerForSameProductAndUserAlreadyExists(buyerUsername);
+  }
+
+  public OfferAssembler.OfferResponse addOffer(OfferAssembler.OfferRequest offerRequest,
+                                               String productId, String buyerUsername) {
+    Offer offer = new Offer(offerRequest.amount(), offerRequest.message(), buyerUsername);
+    Product product = productRepository.get(productId);
+    product.addOffer(offer);
+    return OfferAssembler.makeOfferResponse(offer);
   }
 }
