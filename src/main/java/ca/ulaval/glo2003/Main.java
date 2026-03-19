@@ -1,7 +1,6 @@
 package ca.ulaval.glo2003;
 
 import ca.ulaval.glo2003.repositories.IProductRepository;
-import ca.ulaval.glo2003.repositories.ISellerRepository;
 import ca.ulaval.glo2003.repositories.ProductRepository;
 import ca.ulaval.glo2003.repositories.SellerRepository;
 import ca.ulaval.glo2003.resources.HealthResource;
@@ -18,6 +17,8 @@ import java.net.URI;
 public class Main {
     public static final String BASE_URI = "http://0.0.0.0:8080/";
 
+    static ServerApplication application = new ServerApplication();
+
     public static void startServer() {
         final ResourceConfig rc = new ResourceConfig()
                 .packages("ca.ulaval.glo2003")
@@ -25,14 +26,13 @@ public class Main {
                 .register(ca.ulaval.glo2003.exceptionhandlers.ValidationExceptionMapper.class)
                 .register(ca.ulaval.glo2003.exceptionhandlers.ProcessingExceptionMapper.class)
                 .register(new HealthResource())
-                .register(SellerResource.class)
+                .register(new SellerResource(application))
                 .register(ProductResource.class)
                 .register(new OfferResource())
                 .register(new AbstractBinder() {
                     @Override
                     protected void configure() {
                         bind(ProductRepository.INSTANCE).to(IProductRepository.class);
-                        bind(SellerRepository.INSTANCE).to(ISellerRepository.class);
                     }
                 });
 

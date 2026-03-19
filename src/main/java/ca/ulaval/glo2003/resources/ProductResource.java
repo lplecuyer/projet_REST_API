@@ -3,8 +3,8 @@ package ca.ulaval.glo2003.resources;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.models.*;
 import ca.ulaval.glo2003.repositories.IProductRepository;
-import ca.ulaval.glo2003.repositories.ISellerRepository;
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
+import ca.ulaval.glo2003.repositories.SellerRepository;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -20,10 +20,10 @@ import java.util.Objects;
 public class ProductResource {
 
   private final IProductRepository productRepository;
-  private final ISellerRepository sellerRepository;
+  private final SellerRepository sellerRepository;
 
   @Inject
-  public ProductResource(IProductRepository products, ISellerRepository sellers) {
+  public ProductResource(IProductRepository products, SellerRepository sellers) {
     this.productRepository = products;
     this.sellerRepository = sellers;
   }
