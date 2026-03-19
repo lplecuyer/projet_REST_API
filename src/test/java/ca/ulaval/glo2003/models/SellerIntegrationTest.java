@@ -9,7 +9,6 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.jupiter.api.AfterEach;
@@ -51,6 +50,7 @@ public class SellerIntegrationTest extends JerseyTest {
   protected Application configure() {
     sellerRepo = mock(SellerRepository.class);
     ServerApplication serverApplication = new ServerApplication();
+    serverApplication.setSellerRepository(sellerRepo);
 
     return new ResourceConfig()
         .register(new SellerResource(serverApplication))

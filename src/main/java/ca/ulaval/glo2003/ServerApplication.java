@@ -3,16 +3,10 @@ package ca.ulaval.glo2003;
 import ca.ulaval.glo2003.assemblers.SellerAssembler;
 import ca.ulaval.glo2003.models.Seller;
 import ca.ulaval.glo2003.repositories.SellerRepository;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Valid;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 public class ServerApplication {
 
-  private final SellerRepository sellerRepository = new SellerRepository();
+  private SellerRepository sellerRepository = new SellerRepository();
 
   public ServerApplication(){
 
@@ -33,5 +27,9 @@ public class ServerApplication {
     if(seller != null)
       return SellerAssembler.makeSellerResponse(seller);
     else return null;
+  }
+
+  public void setSellerRepository(SellerRepository sellerRepository){
+    this.sellerRepository =  sellerRepository;
   }
 }

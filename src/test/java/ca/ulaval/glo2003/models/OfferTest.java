@@ -1,13 +1,11 @@
 package ca.ulaval.glo2003.models;
 
 import jakarta.validation.*;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 class OfferTest {
 
@@ -36,7 +34,7 @@ class OfferTest {
 
         Set<ConstraintViolation<Offer>> violations = validator.validate(offer);
 
-        assertTrue(violations.isEmpty());
+        Assertions.assertTrue(violations.isEmpty());
     }
 
     @Test
@@ -46,7 +44,7 @@ class OfferTest {
 
         Set<ConstraintViolation<Offer>> violations = validator.validate(offer);
 
-        assertTrue(violations.iterator().next().getMessage().contains(MISSING_PARAMETER));
+        Assertions.assertTrue(violations.iterator().next().getMessage().contains(MISSING_PARAMETER));
     }
 
     @Test
@@ -55,7 +53,7 @@ class OfferTest {
 
         Set<ConstraintViolation<Offer>> violations = validator.validate(offer);
 
-        assertTrue(violations.iterator().next().getMessage().contains(INVALID_PARAMETER));
+        Assertions.assertTrue(violations.iterator().next().getMessage().contains(INVALID_PARAMETER));
     }
 
     @Test
@@ -64,7 +62,7 @@ class OfferTest {
 
         Set<ConstraintViolation<Offer>> violations = validator.validate(offer);
 
-        assertTrue(violations.iterator().next().getMessage().contains(MISSING_PARAMETER));
+        Assertions.assertTrue(violations.iterator().next().getMessage().contains(MISSING_PARAMETER));
     }
 
     @Test
@@ -73,7 +71,7 @@ class OfferTest {
 
         Set<ConstraintViolation<Offer>> violations = validator.validate(offer);
 
-        assertTrue(violations.iterator().next().getMessage().contains(INVALID_PARAMETER));
+        Assertions.assertTrue(violations.iterator().next().getMessage().contains(INVALID_PARAMETER));
     }
 
     @Test
@@ -82,7 +80,7 @@ class OfferTest {
 
         Set<ConstraintViolation<Offer>> violations = validator.validate(offer);
 
-        assertTrue(violations.iterator().next().getMessage().contains(INVALID_PARAMETER));
+        Assertions.assertTrue(violations.iterator().next().getMessage().contains(INVALID_PARAMETER));
     }
 
     @Test
@@ -91,6 +89,6 @@ class OfferTest {
 
         Set<ConstraintViolation<Offer>> violations = validator.validate(offer);
 
-        assertTrue(violations.iterator().next().getMessage().contains(MISSING_PARAMETER));
+        Assertions.assertTrue(violations.iterator().next().getMessage().contains(MISSING_PARAMETER));
     }
 }

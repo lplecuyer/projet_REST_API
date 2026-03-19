@@ -221,7 +221,7 @@ public class ProductIntegrationTest extends JerseyTest {
 
         var list = readProducts(response);
         assertEquals(1, list.size());
-        assertEquals("iPhone Case", list.get(0).get("title"));
+        assertEquals("iPhone Case", list.getFirst().get("title"));
     }
 
     @Test
@@ -235,7 +235,7 @@ public class ProductIntegrationTest extends JerseyTest {
 
         var list = readProducts(response);
         assertEquals(1, list.size());
-        assertEquals("Lipstick", list.get(0).get("title"));
+        assertEquals("Lipstick", list.getFirst().get("title"));
     }
 
     @Test
@@ -266,10 +266,9 @@ public class ProductIntegrationTest extends JerseyTest {
 
         var list = readProducts(response);
         assertEquals(1, list.size());
-        assertEquals("Lipstick", list.get(0).get("title"));
+        assertEquals("Lipstick", list.getFirst().get("title"));
     }
 
-    // pour ne pas repeter le POST
     private Response postProduct(String sellerId, Map<String, Object> data) {
         return target("products")
                 .request(MediaType.APPLICATION_JSON)
@@ -277,7 +276,6 @@ public class ProductIntegrationTest extends JerseyTest {
                 .post(Entity.json(data));
     }
 
-    // pour ne pas repeter le GET
     private Response getProducts(Map<String, Object> params) {
         var t = target("products");
         for (var e : params.entrySet()) {
@@ -286,7 +284,6 @@ public class ProductIntegrationTest extends JerseyTest {
         return t.request(MediaType.APPLICATION_JSON).get();
     }
 
-    // pour ne pas repeter la creation du produit
     private Map<String, Object> validProductPayload() {
         Map<String, Object> data = new HashMap<>();
         data.put("title", "Valid title");

@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 import java.time.format.FormatStyle;
 import java.util.Collection;
 import java.util.Map;
@@ -58,15 +59,28 @@ public class Seller {
 
     private final Map<String, Product> associatedProducts = new ConcurrentHashMap<>();
 
+    private LocalDate convertDate(String stringDate){
+      LocalDate localDate;
+      try{
+        localDate = LocalDate.parse(stringDate);
+      } catch (DateTimeParseException e){
+        localDate = LocalDate.now();
+      }
+      return localDate;
+    }
+
+    public void validate(){
+      Set<ConstraintViolation<Seller>> checkResult = validator.validate(this);
+      if(!checkResult.isEmpty()) throw new ConstraintViolationException(checkResult);
+    }
+
     public Seller(String name, String birthdate, String email, String phoneNumber, String bio) {
       this.name = name;
-      this.birthdate = LocalDate.parse(birthdate);
+      this.birthdate = convertDate(birthdate);
       this.email = email;
       this.phoneNumber = phoneNumber;
       this.bio = bio;
-      Set<ConstraintViolation<Seller>> checkResult = validator.validate(this);
-      if(!checkResult.isEmpty()) throw new ConstraintViolationException(checkResult);
-
+      validate();
     }
 
     public Seller(){}
