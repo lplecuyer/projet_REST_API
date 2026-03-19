@@ -9,7 +9,6 @@ import jakarta.validation.*;
 
 import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
 
 class ProductTest {
   private static final String MISSING_PARAMETER = "MISSING_PARAMETER";
@@ -59,7 +58,7 @@ class ProductTest {
   @Test
   void givenValidParameters_whenValide_thenNoViolation(){
     Set<ConstraintViolation<Product>> violations = validator.validate(validProduct);
-    assertTrue(violations.isEmpty());
+    Assertions.assertTrue(violations.isEmpty());
   }
 
   @Test
