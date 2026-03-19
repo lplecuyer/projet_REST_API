@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.Models;
+package ca.ulaval.glo2003.models;
 
 import jakarta.validation.*;
 import org.junit.jupiter.api.BeforeAll;

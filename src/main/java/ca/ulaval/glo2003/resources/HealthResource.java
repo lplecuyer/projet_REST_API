@@ -1,6 +1,6 @@
-package ca.ulaval.glo2003.Resources;
+package ca.ulaval.glo2003.resources;
 
-import ca.ulaval.glo2003.Models.ResponseFactory.HealthResponse;
+import ca.ulaval.glo2003.assemblers.HealthResponse;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;

@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.ExceptionHandlers;
+package ca.ulaval.glo2003.exceptionhandlers;
 
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Response;

@@ -1,10 +1,10 @@
-package ca.ulaval.glo2003.Models;
+package ca.ulaval.glo2003.models;
 
-import ca.ulaval.glo2003.ExceptionHandlers.ErrorResponse;
-import ca.ulaval.glo2003.ExceptionHandlers.ProcessingExceptionMapper;
-import ca.ulaval.glo2003.ExceptionHandlers.ValidationExceptionMapper;
-import ca.ulaval.glo2003.Models.Repository.ISellerRepository;
-import ca.ulaval.glo2003.Resources.SellerResource;
+import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
+import ca.ulaval.glo2003.exceptionhandlers.ProcessingExceptionMapper;
+import ca.ulaval.glo2003.exceptionhandlers.ValidationExceptionMapper;
+import ca.ulaval.glo2003.repositories.ISellerRepository;
+import ca.ulaval.glo2003.resources.SellerResource;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.MediaType;

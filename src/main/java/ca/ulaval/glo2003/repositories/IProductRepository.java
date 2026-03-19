@@ -1,6 +1,6 @@
-package ca.ulaval.glo2003.Models.Repository;
+package ca.ulaval.glo2003.repositories;
 
-import ca.ulaval.glo2003.Models.Product;
+import ca.ulaval.glo2003.models.Product;
 
 import java.util.Collection;
 
