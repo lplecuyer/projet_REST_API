@@ -1,17 +1,11 @@
 package ca.ulaval.glo2003.models;
 
 import ca.ulaval.glo2003.repositories.ProductRepository;
-import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.validation.*;
 import jakarta.validation.constraints.*;
-
-import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
-import java.time.format.FormatStyle;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -112,11 +106,5 @@ public class Seller {
 
     public LocalDateTime getCreatedAt() {
       return createdAt;
-    }
-
-    public void registerProduct(@Valid Product product) { //todo déplacer dans Application
-        product.setSeller(this);
-        this.addProduct(product);
-        ProductRepository.INSTANCE.save(product);
     }
 }

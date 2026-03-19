@@ -12,7 +12,7 @@ public class SellerRepository {
 
     private final Map<String, Seller> sellers = new ConcurrentHashMap<>();
 
-    public void save(@Valid Seller seller) {
+    public void save(Seller seller) {
         sellers.put(seller.getId(), seller);
     }
 
