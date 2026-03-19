@@ -21,7 +21,7 @@ public class SellerResource {
   }
 
   @POST
-  public Response create(@Valid SellerAssembler.SellerRequest sellerRequest, @Context UriInfo uriInfo) {
+  public Response create(SellerAssembler.SellerRequest sellerRequest, @Context UriInfo uriInfo) {
     SellerAssembler.SellerResponse sellerResponse = serverApplication.addSeller(sellerRequest);
     URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(sellerResponse.id())).build();
     return Response.created(location).entity(sellerResponse).build();

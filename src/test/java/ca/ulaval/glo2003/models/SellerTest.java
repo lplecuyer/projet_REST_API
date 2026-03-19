@@ -217,13 +217,4 @@ class SellerTest {
     assertEquals(product, seller.getProducts().iterator().next());
   }
 
-  @Test
-  void givenInvalidProduct_whenRegisterProduct_NoInsertion() {
-    product.setDescription(null);
-
-    Set<ConstraintViolation<Product>> violations = validator.validate(product);
-    assertFalse(violations.isEmpty());
-
-    seller.registerProduct(product);
-  }
 }

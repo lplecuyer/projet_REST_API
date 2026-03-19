@@ -6,8 +6,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public enum ProductRepository implements IProductRepository {
-    INSTANCE;
+public class ProductRepository {
+
+    public ProductRepository(){}
 
     private final Map<String, Product> products = new ConcurrentHashMap<>();
 

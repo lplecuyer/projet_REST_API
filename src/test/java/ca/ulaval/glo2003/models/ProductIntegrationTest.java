@@ -1,9 +1,10 @@
 package ca.ulaval.glo2003.models;
 
+import ca.ulaval.glo2003.ServerApplication;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.exceptionhandlers.ProcessingExceptionMapper;
 import ca.ulaval.glo2003.exceptionhandlers.ValidationExceptionMapper;
-import ca.ulaval.glo2003.repositories.IProductRepository;
+import ca.ulaval.glo2003.repositories.ProductRepository;
 import ca.ulaval.glo2003.repositories.SellerRepository;
 import ca.ulaval.glo2003.resources.ProductResource;
 import jakarta.ws.rs.client.Entity;
@@ -27,7 +28,8 @@ public class ProductIntegrationTest extends JerseyTest {
     private static String seller1Id;
     private static String seller2Id;
 
-    private IProductRepository productRepo;
+    ServerApplication serverApplication;
+    private ProductRepository productRepo;
     private SellerRepository sellerRepo;
 
     @Override
@@ -37,21 +39,18 @@ public class ProductIntegrationTest extends JerseyTest {
 
     @Override
     protected Application configure() {
-        productRepo = mock(IProductRepository.class);
+        serverApplication = new ServerApplication();
+        productRepo = mock(ProductRepository.class);
         sellerRepo = mock(SellerRepository.class);
+        serverApplication.setSellerRepository(sellerRepo);
+        serverApplication.setProductRepository(productRepo);
+
 
         return new ResourceConfig()
-                .register(ProductResource.class)
+                .register(new ProductResource(serverApplication))
                 .register(org.glassfish.jersey.jsonb.JsonBindingFeature.class)
                 .register(ValidationExceptionMapper.class)
-                .register(ProcessingExceptionMapper.class)
-                .register(new AbstractBinder() {
-                    @Override
-                    protected void configure() {
-                        bind(productRepo).to(IProductRepository.class);
-                        bind(sellerRepo).to(SellerRepository.class);
-                    }
-                });
+                .register(ProcessingExceptionMapper.class);
     }
 
     @BeforeEach
@@ -288,7 +287,7 @@ public class ProductIntegrationTest extends JerseyTest {
         Map<String, Object> data = new HashMap<>();
         data.put("title", "Valid title");
         data.put("description", "Valid description");
-        data.put("category", "beauty");      // adapte si ton API exige "BEAUTY"
+        data.put("category", "beauty");
         data.put("suggestedPrice", 200);
         return data;
     }

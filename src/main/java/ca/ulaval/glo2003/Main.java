@@ -1,8 +1,6 @@
 package ca.ulaval.glo2003;
 
-import ca.ulaval.glo2003.repositories.IProductRepository;
 import ca.ulaval.glo2003.repositories.ProductRepository;
-import ca.ulaval.glo2003.repositories.SellerRepository;
 import ca.ulaval.glo2003.resources.HealthResource;
 import ca.ulaval.glo2003.resources.OfferResource;
 import ca.ulaval.glo2003.resources.ProductResource;
@@ -27,14 +25,8 @@ public class Main {
                 .register(ca.ulaval.glo2003.exceptionhandlers.ProcessingExceptionMapper.class)
                 .register(new HealthResource())
                 .register(new SellerResource(application))
-                .register(ProductResource.class)
-                .register(new OfferResource())
-                .register(new AbstractBinder() {
-                    @Override
-                    protected void configure() {
-                        bind(ProductRepository.INSTANCE).to(IProductRepository.class);
-                    }
-                });
+                .register(new ProductResource(application))
+                .register(new OfferResource());
 
         GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }

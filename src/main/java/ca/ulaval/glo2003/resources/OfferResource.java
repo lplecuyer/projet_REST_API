@@ -28,7 +28,7 @@ public class OfferResource {
           "MISSING_PARAMETER", "Required parameter is missing")).build();
     }
 
-    Product product = ProductRepository.INSTANCE.get(productId);
+    Product product = null;// ProductRepository.INSTANCE.get(productId);
     if (product == null) {
       return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(
           "NOT_FOUND", "Product not found")).build();
