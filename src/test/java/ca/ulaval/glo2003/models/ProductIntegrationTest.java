@@ -4,7 +4,7 @@ import ca.ulaval.glo2003.exceptionHandlers.ErrorResponse;
 import ca.ulaval.glo2003.exceptionHandlers.ProcessingExceptionMapper;
 import ca.ulaval.glo2003.exceptionHandlers.ValidationExceptionMapper;
 import ca.ulaval.glo2003.repositories.IProductRepository;
-import ca.ulaval.glo2003.repositories.ISellerRepository;
+import ca.ulaval.glo2003.repositories.SellerRepository;
 import ca.ulaval.glo2003.resources.ProductResource;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
@@ -28,7 +28,7 @@ public class ProductIntegrationTest extends JerseyTest {
     private static String seller2Id;
 
     private IProductRepository productRepo;
-    private ISellerRepository sellerRepo;
+    private SellerRepository sellerRepo;
 
     @Override
     protected URI getBaseUri() {
@@ -38,7 +38,7 @@ public class ProductIntegrationTest extends JerseyTest {
     @Override
     protected Application configure() {
         productRepo = mock(IProductRepository.class);
-        sellerRepo = mock(ISellerRepository.class);
+        sellerRepo = mock(SellerRepository.class);
 
         return new ResourceConfig()
                 .register(ProductResource.class)
@@ -49,7 +49,7 @@ public class ProductIntegrationTest extends JerseyTest {
                     @Override
                     protected void configure() {
                         bind(productRepo).to(IProductRepository.class);
-                        bind(sellerRepo).to(ISellerRepository.class);
+                        bind(sellerRepo).to(SellerRepository.class);
                     }
                 });
     }

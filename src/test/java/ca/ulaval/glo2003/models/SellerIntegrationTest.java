@@ -1,9 +1,10 @@
 package ca.ulaval.glo2003.models;
 
+import ca.ulaval.glo2003.ServerApplication;
 import ca.ulaval.glo2003.exceptionHandlers.ErrorResponse;
 import ca.ulaval.glo2003.exceptionHandlers.ProcessingExceptionMapper;
 import ca.ulaval.glo2003.exceptionHandlers.ValidationExceptionMapper;
-import ca.ulaval.glo2003.repositories.ISellerRepository;
+import ca.ulaval.glo2003.repositories.SellerRepository;
 import ca.ulaval.glo2003.resources.SellerResource;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
@@ -40,7 +41,7 @@ public class SellerIntegrationTest extends JerseyTest {
   private static final String INVALID_PARAMETER = "INVALID_PARAMETER";
   private static final String NOT_FOUND = "NOT_FOUND";
 
-  private ISellerRepository sellerRepo;
+  private SellerRepository sellerRepo;
 
   @Override
   protected URI getBaseUri() {
@@ -49,19 +50,14 @@ public class SellerIntegrationTest extends JerseyTest {
 
   @Override
   protected Application configure() {
-    sellerRepo = mock(ISellerRepository.class);
+    sellerRepo = mock(SellerRepository.class);
+    ServerApplication serverApplication = new ServerApplication();
 
     return new ResourceConfig()
-        .register(SellerResource.class)
+        .register(new SellerResource(serverApplication))
         .register(org.glassfish.jersey.jsonb.JsonBindingFeature.class)
         .register(ValidationExceptionMapper.class)
-        .register(ProcessingExceptionMapper.class)
-        .register(new AbstractBinder() {
-          @Override
-          protected void configure() {
-            bind(sellerRepo).to(ISellerRepository.class);
-          }
-        });
+        .register(ProcessingExceptionMapper.class);
   }
 
   @BeforeEach
@@ -69,12 +65,7 @@ public class SellerIntegrationTest extends JerseyTest {
     super.setUp();
     reset(sellerRepo);
 
-    Seller sellerValide = new Seller();
-    sellerValide.setName(VALID_NAME);
-    sellerValide.setBirthdate(VALID_BIRTHDATE);
-    sellerValide.setEmail(VALID_EMAIL);
-    sellerValide.setPhoneNumber(VALID_PHONENUMBER);
-    sellerValide.setBio(VALID_BIO);
+    Seller sellerValide = new Seller(VALID_NAME, VALID_BIRTHDATE.toString(), VALID_EMAIL,VALID_PHONENUMBER, VALID_BIO);
     sellerValide.addProduct(new Product("iPhone Case", "desc", ProductCategory.electronics, 15F));
 
     seller1Id = sellerValide.getId();

@@ -1,16 +1,18 @@
 package ca.ulaval.glo2003.repositories;
 
 import ca.ulaval.glo2003.models.Seller;
+import jakarta.validation.Valid;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
-public enum SellerRepository implements ISellerRepository {
-    INSTANCE;
+public class SellerRepository {
+
+    public SellerRepository(){}
 
     private final Map<String, Seller> sellers = new ConcurrentHashMap<>();
 
-    public void save(Seller seller) {
+    public void save(@Valid Seller seller) {
         sellers.put(seller.getId(), seller);
     }
 

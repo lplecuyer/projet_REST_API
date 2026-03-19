@@ -50,6 +50,12 @@ public final class SellerAssembler {
         return products;
     }
 
+  public record SellerRequest(String name,
+                               String birthdate,
+                               String email,
+                               String phoneNumber,
+                               String bio){}
+
     public record SellerResponse(String id,
                                  String createdAt,
                                  String name,

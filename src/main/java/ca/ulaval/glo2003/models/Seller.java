@@ -1,18 +1,27 @@
 package ca.ulaval.glo2003.models;
 
 import ca.ulaval.glo2003.repositories.ProductRepository;
-import jakarta.validation.Valid;
+import jakarta.json.bind.annotation.JsonbDateFormat;
+import jakarta.validation.*;
 import jakarta.validation.constraints.*;
+
+import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.FormatStyle;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.time.Period;
 import jakarta.json.bind.annotation.JsonbTransient;
 
 public class Seller {
+
+    private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
     private final String id = String.valueOf(NEXT_ID.getAndIncrement());
@@ -49,7 +58,18 @@ public class Seller {
 
     private final Map<String, Product> associatedProducts = new ConcurrentHashMap<>();
 
-    public Seller() {}
+    public Seller(String name, String birthdate, String email, String phoneNumber, String bio) {
+      this.name = name;
+      this.birthdate = LocalDate.parse(birthdate);
+      this.email = email;
+      this.phoneNumber = phoneNumber;
+      this.bio = bio;
+      Set<ConstraintViolation<Seller>> checkResult = validator.validate(this);
+      if(!checkResult.isEmpty()) throw new ConstraintViolationException(checkResult);
+
+    }
+
+    public Seller(){}
 
     public void addProduct(Product product){
         associatedProducts.put(product.getId(), product);
@@ -80,7 +100,7 @@ public class Seller {
       return createdAt;
     }
 
-    public void registerProduct(@Valid Product product) {
+    public void registerProduct(@Valid Product product) { //todo déplacer dans Application
         product.setSeller(this);
         this.addProduct(product);
         ProductRepository.INSTANCE.save(product);
