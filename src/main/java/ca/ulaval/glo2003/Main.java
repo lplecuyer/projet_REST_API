@@ -26,7 +26,7 @@ public class Main {
                 .register(new HealthResource())
                 .register(new SellerResource(application))
                 .register(new ProductResource(application))
-                .register(new OfferResource());
+                .register(new OfferResource(application));
 
         GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }

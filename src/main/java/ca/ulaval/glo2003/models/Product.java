@@ -55,7 +55,8 @@ public class Product{
     }
 
     public void addOffer(Offer offer){
-        offers.add(offer);
+      offer.setProductId(this.id);
+      offers.add(offer);
     }
 
     public int getOfferCount(){
