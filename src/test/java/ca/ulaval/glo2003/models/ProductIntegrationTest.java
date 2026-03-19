@@ -1,8 +1,8 @@
 package ca.ulaval.glo2003.models;
 
-import ca.ulaval.glo2003.exceptionHandlers.ErrorResponse;
-import ca.ulaval.glo2003.exceptionHandlers.ProcessingExceptionMapper;
-import ca.ulaval.glo2003.exceptionHandlers.ValidationExceptionMapper;
+import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
+import ca.ulaval.glo2003.exceptionhandlers.ProcessingExceptionMapper;
+import ca.ulaval.glo2003.exceptionhandlers.ValidationExceptionMapper;
 import ca.ulaval.glo2003.repositories.IProductRepository;
 import ca.ulaval.glo2003.repositories.ISellerRepository;
 import ca.ulaval.glo2003.resources.ProductResource;
@@ -94,7 +94,7 @@ public class ProductIntegrationTest extends JerseyTest {
     }
 
     @Test
-    void GivenCorrectProduct_WhenCreateProduct_ThenProductIsCreated() {
+    void givenCorrectProduct_WhenCreateProduct_ThenProductIsCreated() {
         Map<String, Object> data = validProductPayload();
 
         Response response = postProduct(seller1Id, data);
@@ -103,7 +103,7 @@ public class ProductIntegrationTest extends JerseyTest {
     }
 
     @Test
-    void GivenMissingTitle_WhenCreateProduct_Then400() {
+    void givenMissingTitle_WhenCreateProduct_Then400() {
         Map<String, Object> data = validProductPayload();
         data.remove("title");
 
@@ -117,7 +117,7 @@ public class ProductIntegrationTest extends JerseyTest {
     }
 
     @Test
-    void GivenInvalidSeller_WhenCreateProduct_Then400() {
+    void givenInvalidSeller_WhenCreateProduct_Then400() {
         Map<String, Object> data = validProductPayload();
 
         Response response = postProduct("invalidId", data);
@@ -130,7 +130,7 @@ public class ProductIntegrationTest extends JerseyTest {
     }
 
     @Test
-    void GivenEmptyDescription_WhenCreateProduct_Then400() {
+    void givenEmptyDescription_WhenCreateProduct_Then400() {
         Map<String, Object> data = validProductPayload();
         data.put("description", "");
 
@@ -144,7 +144,7 @@ public class ProductIntegrationTest extends JerseyTest {
     }
 
     @Test
-    void GivenInvalidCategory_WhenCreateProduct_Then400() {
+    void givenInvalidCategory_WhenCreateProduct_Then400() {
         Map<String, Object> data = validProductPayload();
         data.put("category", "not_a_real_category");
 
@@ -158,7 +158,7 @@ public class ProductIntegrationTest extends JerseyTest {
     }
 
     @Test
-    void GivenNegativeSuggestedPrice_WhenCreateProduct_Then400() {
+    void givenNegativeSuggestedPrice_WhenCreateProduct_Then400() {
         Map<String, Object> data = validProductPayload();
         data.put("suggestedPrice", -10);
 
@@ -172,7 +172,7 @@ public class ProductIntegrationTest extends JerseyTest {
     }
 
     @Test
-    void GivenNonNumericSuggestedPrice_WhenCreateProduct_Then400() {
+    void givenNonNumericSuggestedPrice_WhenCreateProduct_Then400() {
         Map<String, Object> data = validProductPayload();
         data.put("suggestedPrice", "banana");
 
@@ -186,7 +186,7 @@ public class ProductIntegrationTest extends JerseyTest {
     }
 
     @Test
-    void GivenNoFilters_WhenGetAll_ThenReturnsAll() {
+    void givenNoFilters_WhenGetAll_ThenReturnsAll() {
         Response response = target("products")
                 .request(MediaType.APPLICATION_JSON)
                 .get();
@@ -198,7 +198,7 @@ public class ProductIntegrationTest extends JerseyTest {
     }
 
     @Test
-    void GivenSellerId_WhenGetAll_ThenOnlySellerProducts() {
+    void givenSellerId_WhenGetAll_ThenOnlySellerProducts() {
         Response response = target("products")
                 .queryParam("sellerId", seller1Id)
                 .request(MediaType.APPLICATION_JSON)
@@ -211,7 +211,7 @@ public class ProductIntegrationTest extends JerseyTest {
     }
 
     @Test
-    void GivenTitle_WhenGetAll_ThenMatchesTitleContains() {
+    void givenTitle_WhenGetAll_ThenMatchesTitleContains() {
         Response response = target("products")
                 .queryParam("title", "iphone")
                 .request(MediaType.APPLICATION_JSON)
@@ -225,7 +225,7 @@ public class ProductIntegrationTest extends JerseyTest {
     }
 
     @Test
-    void GivenCategory_WhenGetAll_ThenOnlyThatCategory() {
+    void givenCategory_WhenGetAll_ThenOnlyThatCategory() {
         Response response = target("products")
                 .queryParam("category", "beauty") // ou "BEAUTY" selon ton enum
                 .request(MediaType.APPLICATION_JSON)
@@ -239,7 +239,7 @@ public class ProductIntegrationTest extends JerseyTest {
     }
 
     @Test
-    void GivenMinMaxPrice_WhenGetAll_ThenOnlyInRange() {
+    void givenMinMaxPrice_WhenGetAll_ThenOnlyInRange() {
         Response response = target("products")
                 .queryParam("minPrice", 20)
                 .queryParam("maxPrice", 40)
@@ -253,7 +253,7 @@ public class ProductIntegrationTest extends JerseyTest {
     }
 
     @Test
-    void GivenCombinedFilters_WhenGetAll_ThenIntersection() {
+    void givenCombinedFilters_WhenGetAll_ThenIntersection() {
         Response response = target("products")
                 .queryParam("sellerId", seller1Id)
                 .queryParam("category", "beauty") // ou "BEAUTY"

@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003.resources;
 
-import ca.ulaval.glo2003.exceptionHandlers.ErrorResponse;
+import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.models.*;
 import ca.ulaval.glo2003.repositories.IProductRepository;
 import ca.ulaval.glo2003.repositories.ISellerRepository;

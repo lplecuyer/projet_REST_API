@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.exceptionHandlers;
+package ca.ulaval.glo2003.exceptionhandlers;
 
 import jakarta.json.bind.annotation.JsonbPropertyOrder;
 import jakarta.ws.rs.core.Response;
