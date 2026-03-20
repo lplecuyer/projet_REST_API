@@ -1,11 +1,10 @@
 package ca.ulaval.glo2003;
 
-import ca.ulaval.glo2003.repositories.ProductRepository;
+import ca.ulaval.glo2003.application.ServerApplication;
 import ca.ulaval.glo2003.resources.HealthResource;
 import ca.ulaval.glo2003.resources.OfferResource;
 import ca.ulaval.glo2003.resources.ProductResource;
 import ca.ulaval.glo2003.resources.SellerResource;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.validation.ValidationFeature;

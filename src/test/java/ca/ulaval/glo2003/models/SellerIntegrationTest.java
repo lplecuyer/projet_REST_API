@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003.models;
 
-import ca.ulaval.glo2003.ServerApplication;
+import ca.ulaval.glo2003.application.ServerApplication;
 import ca.ulaval.glo2003.exceptionHandlers.ErrorResponse;
 import ca.ulaval.glo2003.exceptionHandlers.ProcessingExceptionMapper;
 import ca.ulaval.glo2003.exceptionHandlers.ValidationExceptionMapper;
