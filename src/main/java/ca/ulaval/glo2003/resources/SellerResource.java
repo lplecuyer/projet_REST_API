@@ -1,9 +1,8 @@
 package ca.ulaval.glo2003.resources;
 
-import ca.ulaval.glo2003.ServerApplication;
+import ca.ulaval.glo2003.application.ServerApplication;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.assemblers.SellerAssembler;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import java.net.URI;

@@ -5,9 +5,7 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.constraints.*;
-
 import java.time.LocalDateTime;
-
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;

@@ -22,7 +22,6 @@ class ProductTest {
   private static final String VALID_DESC = "Iphone 13";
   private static final ProductCategory VALID_CATEGORY = ProductCategory.electronics;
   private static final String EMPTY_STRING = "";
-  private static final String NO_PRODUCT_ID = EMPTY_STRING;
   private static final Float INVALID_PRICE = 0F;
 
   private static Validator validator;

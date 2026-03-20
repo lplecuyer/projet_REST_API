@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003;
+package ca.ulaval.glo2003.application;
 
 import ca.ulaval.glo2003.assemblers.OfferAssembler;
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
@@ -9,7 +9,6 @@ import ca.ulaval.glo2003.models.ProductCategory;
 import ca.ulaval.glo2003.models.Seller;
 import ca.ulaval.glo2003.repositories.ProductRepository;
 import ca.ulaval.glo2003.repositories.SellerRepository;
-
 import java.util.List;
 import java.util.Objects;
 
