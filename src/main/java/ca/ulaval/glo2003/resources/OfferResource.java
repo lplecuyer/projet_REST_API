@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003.resources;
 
-import ca.ulaval.glo2003.application.ServerApplication;
+import ca.ulaval.glo2003.services.OfferService;
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.assemblers.OfferAssembler;
@@ -14,11 +14,9 @@ import java.net.URI;
 @Produces(MediaType.APPLICATION_JSON)
 public class OfferResource {
 
-  private final ServerApplication serverApplication;
+  private final OfferService offerService = new OfferService();
 
-  public OfferResource(ServerApplication serverApplication){
-    this.serverApplication = serverApplication;
-  }
+  public OfferResource(){}
 
   @POST
   public Response create(OfferAssembler.OfferRequest offerRequest,
@@ -31,7 +29,7 @@ public class OfferResource {
           "MISSING_PARAMETER", "productId is mandatory")).build();
     }
 
-    ProductAssembler.ProductResponse productResponse = serverApplication.getProduct(productId);
+    ProductAssembler.ProductResponse productResponse = offerService.getProduct(productId);
     if (productResponse == null) {
       return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(
           "NOT_FOUND", "Product not found")).build();
@@ -42,12 +40,12 @@ public class OfferResource {
 
     }
 
-    else if (serverApplication.offerForSameProductAndUserAlreadyExists(buyerUsername, productId)) {
+    else if (offerService.offerForSameProductAndUserAlreadyExists(buyerUsername, productId)) {
       return Response.status(Response.Status.CONFLICT).entity(new ErrorResponse(
           "ALREADY_EXISTS", "Offer already exists for this buyer and product")).build();
     }
 
-    OfferAssembler.OfferResponse offerResponse = serverApplication.addOffer(offerRequest, productId, buyerUsername);
+    OfferAssembler.OfferResponse offerResponse = offerService.addOffer(offerRequest, productId, buyerUsername);
     URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(offerResponse.offerId())).build();
     return Response.created(location).entity(offerResponse).build();
   }

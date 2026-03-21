@@ -10,7 +10,7 @@ public class ProductRepository {
 
     public ProductRepository(){}
 
-    private final Map<String, Product> products = new ConcurrentHashMap<>();
+    private static final Map<String, Product> products = new ConcurrentHashMap<>();
 
     public void save(Product product) {
         products.put(product.getId(), product);

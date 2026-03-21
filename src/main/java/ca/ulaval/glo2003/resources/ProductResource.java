@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003.resources;
 
-import ca.ulaval.glo2003.application.ServerApplication;
+import ca.ulaval.glo2003.services.ProductService;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.models.*;
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
@@ -14,15 +14,18 @@ import java.net.URI;
 @Produces(MediaType.APPLICATION_JSON)
 public class ProductResource {
 
-  private final ServerApplication serverApplication;
+  private ProductService productService = new ProductService();
 
-  public ProductResource(ServerApplication serverApplication){
-    this.serverApplication = serverApplication;
-  }
+  public ProductResource(){}
 
   @POST
   public Response create(ProductAssembler.ProductRequest productRequest, @Context UriInfo uriInfo, @HeaderParam("X-Seller-Id") String sellerId){
-    ProductAssembler.ProductResponse productResponse = serverApplication.addProduct(productRequest, sellerId);
+    if(!ProductCategory.categoryExists(productRequest.category())){
+      return Response.status(Response.Status.NOT_FOUND)
+          .entity(new ErrorResponse("INVALID_PARAMETER", "Category does  not exists"))
+          .build();
+    }
+    ProductAssembler.ProductResponse productResponse = productService.addProduct(productRequest, sellerId);
 
     if (productResponse != null) {
       URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(productResponse.id())).build();
@@ -42,19 +45,23 @@ public class ProductResource {
       @QueryParam("maxPrice") @DefaultValue("3.4028235E38") float maxPrice
   )
   {
-    ProductAssembler.ProductsResponse productsResponse= serverApplication.getAllProducts(sellerId, title, category, minPrice, maxPrice);
+    ProductAssembler.ProductsResponse productsResponse= productService.getAllProducts(sellerId, title, category, minPrice, maxPrice);
     return Response.ok(productsResponse).build();
   }
 
   @Path("/{productId}")
   @GET
   public Response getProduct(@PathParam("productId") String productId){
-    ProductAssembler.ProductResponse productResponse = serverApplication.getProduct(productId);
+    ProductAssembler.ProductResponse productResponse = productService.getProduct(productId);
 
     if (productResponse != null) {
       return Response.status(Response.Status.OK).entity(productResponse).build();
     }
     else return ErrorResponse.createNotFoundResponse("Product", productId);
 
+  }
+
+  public void setProductService(ProductService productService){
+    this.productService = productService;
   }
 }

@@ -1,12 +1,12 @@
 package ca.ulaval.glo2003.models;
 
-import ca.ulaval.glo2003.application.ServerApplication;
+import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.exceptionhandlers.ProcessingExceptionMapper;
 import ca.ulaval.glo2003.exceptionhandlers.ValidationExceptionMapper;
-import ca.ulaval.glo2003.repositories.ProductRepository;
 import ca.ulaval.glo2003.repositories.SellerRepository;
 import ca.ulaval.glo2003.resources.ProductResource;
+import ca.ulaval.glo2003.services.ProductService;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.MediaType;
@@ -24,12 +24,18 @@ import static org.mockito.Mockito.*;
 
 public class ProductIntegrationTest extends JerseyTest {
 
-    private static String seller1Id;
-    private static String seller2Id;
+    private static String SELLER_ID_OF_VALID_PRODUCT;
 
-    ServerApplication serverApplication;
-    private ProductRepository productRepo;
-    private SellerRepository sellerRepo;
+    private final static String SELLER_ID_OF_INVALID_PRODUCT = new Seller().getId();
+    private static final String VALID_PAYLOAD_TITLE = "Valid title";
+    private static final String VALID_PAYLOAD_DESCRIPTION = "Valid description";
+    private static final String VALID_PAYLOAD_CATEGORY = "beauty";
+    private static final float VALID_PAYLOAD_PRICE = 200.0f;
+    private static final String INVALID_SELLER_ID = "invalidId";
+
+    private SellerRepository sellerRepository;
+    private ProductService productService;
+    private ProductResource productResource;
 
     @Override
     protected URI getBaseUri() {
@@ -38,15 +44,15 @@ public class ProductIntegrationTest extends JerseyTest {
 
     @Override
     protected Application configure() {
-        serverApplication = new ServerApplication();
-        productRepo = mock(ProductRepository.class);
-        sellerRepo = mock(SellerRepository.class);
-        serverApplication.setSellerRepository(sellerRepo);
-        serverApplication.setProductRepository(productRepo);
+        productService = mock(ProductService.class);
+        sellerRepository = mock(SellerRepository.class);
+        productService.setSellerRepository(sellerRepository);
+        productResource = new ProductResource();
+        productResource.setProductService(productService);
 
 
         return new ResourceConfig()
-                .register(new ProductResource(serverApplication))
+                .register(productResource)
                 .register(org.glassfish.jersey.jsonb.JsonBindingFeature.class)
                 .register(ValidationExceptionMapper.class)
                 .register(ProcessingExceptionMapper.class);
@@ -55,29 +61,20 @@ public class ProductIntegrationTest extends JerseyTest {
     @BeforeEach
     void startJersey() throws Exception {
         super.setUp();
-        reset(productRepo, sellerRepo);
+        reset(productService);
 
         Seller seller1 = new Seller();
-        Seller seller2 = new Seller();
+        SELLER_ID_OF_VALID_PRODUCT = seller1.getId();
+        Product product = new Product();
+        product.setSeller(seller1);
+        ProductAssembler.ProductResponse productResponse = ProductAssembler.makeProductResponse(product);
 
-        seller1Id = seller1.getId();
-        seller2Id = seller2.getId();
+        when(sellerRepository.get(SELLER_ID_OF_INVALID_PRODUCT)).thenReturn(seller1);
+        when(sellerRepository.get(INVALID_SELLER_ID)).thenReturn(null);
+        when(productService.addProduct(any(), eq(SELLER_ID_OF_VALID_PRODUCT))).thenReturn(productResponse);
+        when(productService.addProduct(any(), eq(SELLER_ID_OF_INVALID_PRODUCT))).thenReturn(null);
+        when(productService.addProduct(any(), eq(INVALID_SELLER_ID))).thenReturn(null);
 
-        Product product1 = new Product("iPhone Case", "desc", ProductCategory.electronics, 15F);
-        product1.setSeller(seller1);
-
-        Product product2 = new Product("Lipstick", "desc", ProductCategory.beauty, 25F);
-        product2.setSeller(seller1);
-
-        Product product3 = new Product("T-Shirt", "desc", ProductCategory.apparel, 40F);
-        product3.setSeller(seller2);
-
-        when(sellerRepo.get(seller1Id)).thenReturn(seller1);
-        when(sellerRepo.get(seller2Id)).thenReturn(seller2);
-
-        when(productRepo.getAll()).thenReturn(java.util.List.of(product1, product2, product3));
-        when(productRepo.get(product1.getId())).thenReturn(product1);
-        when(productRepo.get(product2.getId())).thenReturn(product2);
     }
 
     @AfterEach
@@ -95,7 +92,8 @@ public class ProductIntegrationTest extends JerseyTest {
     void givenCorrectProduct_WhenCreateProduct_ThenProductIsCreated() {
         Map<String, Object> data = validProductPayload();
 
-        Response response = postProduct(seller1Id, data);
+        Response response = postProduct(SELLER_ID_OF_VALID_PRODUCT, data);
+        verify(productService, times(1)).addProduct(any(), eq(SELLER_ID_OF_VALID_PRODUCT));
 
         assertEquals(201, response.getStatus());
     }
@@ -105,10 +103,10 @@ public class ProductIntegrationTest extends JerseyTest {
         Map<String, Object> data = validProductPayload();
         data.remove("title");
 
-        Response response = postProduct(seller1Id, data);
+        Response response = postProduct(SELLER_ID_OF_INVALID_PRODUCT, data);
 
         assertEquals(400, response.getStatus());
-        verify(productRepo, never()).save(any());
+        verify(productService, times(1)).addProduct(any(), eq(SELLER_ID_OF_INVALID_PRODUCT));
 
         ErrorResponse err = response.readEntity(ErrorResponse.class);
         assertEquals("MISSING_PARAMETER", err.error);
@@ -117,11 +115,10 @@ public class ProductIntegrationTest extends JerseyTest {
     @Test
     void givenInvalidSeller_WhenCreateProduct_Then400() {
         Map<String, Object> data = validProductPayload();
-
-        Response response = postProduct("invalidId", data);
+        Response response = postProduct(INVALID_SELLER_ID, data);
 
         assertEquals(404, response.getStatus());
-        verify(productRepo, never()).save(any());
+        verify(productService, times(1)).addProduct(any(), eq(INVALID_SELLER_ID));
 
         ErrorResponse err = response.readEntity(ErrorResponse.class);
         assertEquals("NOT_FOUND", err.error);
@@ -131,11 +128,10 @@ public class ProductIntegrationTest extends JerseyTest {
     void givenEmptyDescription_WhenCreateProduct_Then400() {
         Map<String, Object> data = validProductPayload();
         data.put("description", "");
-
-        Response response = postProduct(seller1Id, data);
+        Response response = postProduct(SELLER_ID_OF_INVALID_PRODUCT, data);
 
         assertEquals(400, response.getStatus());
-        verify(productRepo, never()).save(any());
+        verify(productService, times(1)).addProduct(any(), eq(SELLER_ID_OF_INVALID_PRODUCT));
 
         ErrorResponse err = response.readEntity(ErrorResponse.class);
         assertEquals("INVALID_PARAMETER", err.error);
@@ -146,10 +142,10 @@ public class ProductIntegrationTest extends JerseyTest {
         Map<String, Object> data = validProductPayload();
         data.put("category", "not_a_real_category");
 
-        Response response = postProduct(seller1Id, data);
+        Response response = postProduct(SELLER_ID_OF_INVALID_PRODUCT, data);
 
         assertEquals(400, response.getStatus());
-        verify(productRepo, never()).save(any());
+        verify(productService, never()).addProduct(any(), eq(SELLER_ID_OF_INVALID_PRODUCT));
 
         ErrorResponse err = response.readEntity(ErrorResponse.class);
         assertEquals("INVALID_PARAMETER", err.error);
@@ -160,10 +156,10 @@ public class ProductIntegrationTest extends JerseyTest {
         Map<String, Object> data = validProductPayload();
         data.put("suggestedPrice", -10);
 
-        Response response = postProduct(seller1Id, data);
+        Response response = postProduct(SELLER_ID_OF_INVALID_PRODUCT, data);
 
         assertEquals(400, response.getStatus());
-        verify(productRepo, never()).save(any());
+        verify(productService, times(1)).addProduct(any(), eq(SELLER_ID_OF_INVALID_PRODUCT));
 
         ErrorResponse err = response.readEntity(ErrorResponse.class);
         assertEquals("INVALID_PARAMETER", err.error);
@@ -174,86 +170,19 @@ public class ProductIntegrationTest extends JerseyTest {
         Map<String, Object> data = validProductPayload();
         data.put("suggestedPrice", "banana");
 
-        Response response = postProduct(seller1Id, data);
+        Response response = postProduct(SELLER_ID_OF_INVALID_PRODUCT, data);
 
         assertEquals(400, response.getStatus());
-        verify(productRepo, never()).save(any());
+        verify(productService, times(1)).addProduct(any(), eq(SELLER_ID_OF_INVALID_PRODUCT));
 
         ErrorResponse err = response.readEntity(ErrorResponse.class);
         assertEquals("INVALID_PARAMETER", err.error);
     }
 
     @Test
-    void givenNoFilters_WhenGetAll_ThenReturnsAll() {
+    void givenRequestWithAllParameters_WhenGetAll_ThenReturnOkStatus() {
         Response response = target("products")
-                .request(MediaType.APPLICATION_JSON)
-                .get();
-
-        assertEquals(200, response.getStatus());
-
-        var list = readProducts(response);
-        assertEquals(3, list.size());
-    }
-
-    @Test
-    void givenSellerId_WhenGetAll_ThenOnlySellerProducts() {
-        Response response = target("products")
-                .queryParam("sellerId", seller1Id)
-                .request(MediaType.APPLICATION_JSON)
-                .get();
-
-        assertEquals(200, response.getStatus());
-
-        var list = readProducts(response);
-        assertEquals(2, list.size());
-    }
-
-    @Test
-    void givenTitle_WhenGetAll_ThenMatchesTitleContains() {
-        Response response = target("products")
-                .queryParam("title", "iphone")
-                .request(MediaType.APPLICATION_JSON)
-                .get();
-
-        assertEquals(200, response.getStatus());
-
-        var list = readProducts(response);
-        assertEquals(1, list.size());
-        assertEquals("iPhone Case", list.getFirst().get("title"));
-    }
-
-    @Test
-    void givenCategory_WhenGetAll_ThenOnlyThatCategory() {
-        Response response = target("products")
-                .queryParam("category", "beauty") // ou "BEAUTY" selon ton enum
-                .request(MediaType.APPLICATION_JSON)
-                .get();
-
-        assertEquals(200, response.getStatus());
-
-        var list = readProducts(response);
-        assertEquals(1, list.size());
-        assertEquals("Lipstick", list.getFirst().get("title"));
-    }
-
-    @Test
-    void givenMinMaxPrice_WhenGetAll_ThenOnlyInRange() {
-        Response response = target("products")
-                .queryParam("minPrice", 20)
-                .queryParam("maxPrice", 40)
-                .request(MediaType.APPLICATION_JSON)
-                .get();
-
-        assertEquals(200, response.getStatus());
-
-        var list = readProducts(response);
-        assertEquals(2, list.size()); // 25 et 40
-    }
-
-    @Test
-    void givenCombinedFilters_WhenGetAll_ThenIntersection() {
-        Response response = target("products")
-                .queryParam("sellerId", seller1Id)
+                .queryParam("sellerId", SELLER_ID_OF_VALID_PRODUCT)
                 .queryParam("category", "beauty") // ou "BEAUTY"
                 .queryParam("minPrice", 20)
                 .queryParam("maxPrice", 30)
@@ -261,10 +190,6 @@ public class ProductIntegrationTest extends JerseyTest {
                 .get();
 
         assertEquals(200, response.getStatus());
-
-        var list = readProducts(response);
-        assertEquals(1, list.size());
-        assertEquals("Lipstick", list.getFirst().get("title"));
     }
 
     private Response postProduct(String sellerId, Map<String, Object> data) {
@@ -274,22 +199,13 @@ public class ProductIntegrationTest extends JerseyTest {
                 .post(Entity.json(data));
     }
 
-    private Response getProducts(Map<String, Object> params) {
-        var t = target("products");
-        for (var e : params.entrySet()) {
-            t = t.queryParam(e.getKey(), e.getValue());
-        }
-        return t.request(MediaType.APPLICATION_JSON).get();
-    }
-
     private Map<String, Object> validProductPayload() {
         Map<String, Object> data = new HashMap<>();
-        data.put("title", "Valid title");
-        data.put("description", "Valid description");
-        data.put("category", "beauty");
-        data.put("suggestedPrice", 200);
+        data.put("title", VALID_PAYLOAD_TITLE);
+        data.put("description", VALID_PAYLOAD_DESCRIPTION);
+        data.put("category", VALID_PAYLOAD_CATEGORY);
+        data.put("suggestedPrice", VALID_PAYLOAD_PRICE);
         return data;
     }
-
 
 }

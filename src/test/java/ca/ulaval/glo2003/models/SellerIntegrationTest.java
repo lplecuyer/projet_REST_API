@@ -1,6 +1,5 @@
 package ca.ulaval.glo2003.models;
 
-import ca.ulaval.glo2003.application.ServerApplication;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.exceptionhandlers.ProcessingExceptionMapper;
 import ca.ulaval.glo2003.exceptionhandlers.ValidationExceptionMapper;
@@ -50,11 +49,9 @@ public class SellerIntegrationTest extends JerseyTest {
   @Override
   protected Application configure() {
     sellerRepo = mock(SellerRepository.class);
-    ServerApplication serverApplication = new ServerApplication();
-    serverApplication.setSellerRepository(sellerRepo);
 
     return new ResourceConfig()
-        .register(new SellerResource(serverApplication))
+        .register(new SellerResource())
         .register(org.glassfish.jersey.jsonb.JsonBindingFeature.class)
         .register(ValidationExceptionMapper.class)
         .register(ProcessingExceptionMapper.class);

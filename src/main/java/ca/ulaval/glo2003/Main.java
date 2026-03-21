@@ -1,6 +1,5 @@
 package ca.ulaval.glo2003;
 
-import ca.ulaval.glo2003.application.ServerApplication;
 import ca.ulaval.glo2003.resources.HealthResource;
 import ca.ulaval.glo2003.resources.OfferResource;
 import ca.ulaval.glo2003.resources.ProductResource;
@@ -14,8 +13,6 @@ import java.net.URI;
 public class Main {
     public static final String BASE_URI = "http://0.0.0.0:8080/";
 
-    static ServerApplication application = new ServerApplication();
-
     public static void startServer() {
         final ResourceConfig rc = new ResourceConfig()
                 .packages("ca.ulaval.glo2003")
@@ -23,9 +20,9 @@ public class Main {
                 .register(ca.ulaval.glo2003.exceptionhandlers.ValidationExceptionMapper.class)
                 .register(ca.ulaval.glo2003.exceptionhandlers.ProcessingExceptionMapper.class)
                 .register(new HealthResource())
-                .register(new SellerResource(application))
-                .register(new ProductResource(application))
-                .register(new OfferResource(application));
+                .register(new SellerResource())
+                .register(new ProductResource())
+                .register(new OfferResource());
 
         GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }

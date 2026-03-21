@@ -5,5 +5,15 @@ public enum ProductCategory {
     sports,
     electronics,
     apparel,
-    housing
+    housing;
+
+  public static boolean categoryExists(String stringCategory){
+      boolean exists = true;
+      try{
+        ProductCategory.valueOf(stringCategory);
+      }catch(IllegalArgumentException e){
+        exists = false;
+      }
+      return exists;
+  }
 }

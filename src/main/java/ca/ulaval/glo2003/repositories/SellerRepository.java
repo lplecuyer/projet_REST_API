@@ -8,7 +8,7 @@ public class SellerRepository {
 
     public SellerRepository(){}
 
-    private final Map<String, Seller> sellers = new ConcurrentHashMap<>();
+    private final static Map<String, Seller> sellers = new ConcurrentHashMap<>();
 
     public void save(Seller seller) {
         sellers.put(seller.getId(), seller);
