@@ -20,11 +20,13 @@ public class ProductResource {
 
   @POST
   public Response create(ProductAssembler.ProductRequest productRequest, @Context UriInfo uriInfo, @HeaderParam("X-Seller-Id") String sellerId){
+
     if(!ProductCategory.categoryExists(productRequest.category())){
-      return Response.status(Response.Status.NOT_FOUND)
+      return Response.status(Response.Status.BAD_REQUEST)
           .entity(new ErrorResponse("INVALID_PARAMETER", "Category does  not exists"))
           .build();
     }
+
     ProductAssembler.ProductResponse productResponse = productService.addProduct(productRequest, sellerId);
 
     if (productResponse != null) {

@@ -1,12 +1,18 @@
-package ca.ulaval.glo2003.models;
+package ca.ulaval.glo2003.resource;
 
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.exceptionhandlers.ProcessingExceptionMapper;
 import ca.ulaval.glo2003.exceptionhandlers.ValidationExceptionMapper;
-import ca.ulaval.glo2003.repositories.SellerRepository;
+import ca.ulaval.glo2003.models.Product;
+import ca.ulaval.glo2003.models.ProductCategory;
+import ca.ulaval.glo2003.models.Seller;
 import ca.ulaval.glo2003.resources.ProductResource;
 import ca.ulaval.glo2003.services.ProductService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.MediaType;
@@ -19,25 +25,32 @@ import org.junit.jupiter.api.Test;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class ProductIntegrationTest extends JerseyTest {
+public class ProducResourcetIntegrationTest extends JerseyTest {
+
+    private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
+    private static Set<ConstraintViolation<Product>> missingParameterError;
+    private static Set<ConstraintViolation<Product>> invalidParameterError;
 
     private static String SELLER_ID_OF_VALID_PRODUCT;
+    private static ProductAssembler.ProductResponse productResponse;
+    private static String productId1;
 
-    private final static String SELLER_ID_OF_INVALID_PRODUCT = new Seller().getId();
+    private final static String SELLER_ID_OF_INVALID_PRODUCT = "99999";
     private static final String VALID_PAYLOAD_TITLE = "Valid title";
     private static final String VALID_PAYLOAD_DESCRIPTION = "Valid description";
     private static final String VALID_PAYLOAD_CATEGORY = "beauty";
     private static final float VALID_PAYLOAD_PRICE = 200.0f;
     private static final String INVALID_SELLER_ID = "invalidId";
 
-    private SellerRepository sellerRepository;
     private ProductService productService;
-    private ProductResource productResource;
 
-    @Override
+  @Override
     protected URI getBaseUri() {
         return URI.create("http://localhost:0/");
     }
@@ -45,11 +58,10 @@ public class ProductIntegrationTest extends JerseyTest {
     @Override
     protected Application configure() {
         productService = mock(ProductService.class);
-        sellerRepository = mock(SellerRepository.class);
-        productService.setSellerRepository(sellerRepository);
-        productResource = new ProductResource();
+        ProductResource productResource = new ProductResource();
         productResource.setProductService(productService);
-
+        createMissingParameterError();
+        createInvalidParameterError();
 
         return new ResourceConfig()
                 .register(productResource)
@@ -58,7 +70,25 @@ public class ProductIntegrationTest extends JerseyTest {
                 .register(ProcessingExceptionMapper.class);
     }
 
-    @BeforeEach
+  private void createInvalidParameterError() {
+    Product product = new Product();
+    product.setDescription("");
+    product.setTitle("");
+    product.setCategory(ProductCategory.beauty);
+    product.setSuggestedPrice(-1F);
+    invalidParameterError = validator.validate(product);
+  }
+
+  private void createMissingParameterError() {
+    Product product = new Product();
+    product.setDescription(null);
+    product.setTitle(null);
+    product.setCategory(null);
+    product.setSuggestedPrice(null);
+    missingParameterError = validator.validate(product);
+  }
+
+  @BeforeEach
     void startJersey() throws Exception {
         super.setUp();
         reset(productService);
@@ -66,18 +96,14 @@ public class ProductIntegrationTest extends JerseyTest {
         Seller seller1 = new Seller();
         SELLER_ID_OF_VALID_PRODUCT = seller1.getId();
         Product product = new Product();
+        productId1 = product.getId();
         product.setSeller(seller1);
-        ProductAssembler.ProductResponse productResponse = ProductAssembler.makeProductResponse(product);
-
-        when(sellerRepository.get(SELLER_ID_OF_INVALID_PRODUCT)).thenReturn(seller1);
-        when(sellerRepository.get(INVALID_SELLER_ID)).thenReturn(null);
-        when(productService.addProduct(any(), eq(SELLER_ID_OF_VALID_PRODUCT))).thenReturn(productResponse);
-        when(productService.addProduct(any(), eq(SELLER_ID_OF_INVALID_PRODUCT))).thenReturn(null);
-        when(productService.addProduct(any(), eq(INVALID_SELLER_ID))).thenReturn(null);
+        productResponse = ProductAssembler.makeProductResponse(product);
+    System.out.println(productResponse);
 
     }
 
-    @AfterEach
+  @AfterEach
     void stopJersey() throws Exception {
         super.tearDown();
     }
@@ -91,6 +117,7 @@ public class ProductIntegrationTest extends JerseyTest {
     @Test
     void givenCorrectProduct_WhenCreateProduct_ThenProductIsCreated() {
         Map<String, Object> data = validProductPayload();
+        when(productService.addProduct(any(), eq(SELLER_ID_OF_VALID_PRODUCT))).thenReturn(productResponse);
 
         Response response = postProduct(SELLER_ID_OF_VALID_PRODUCT, data);
         verify(productService, times(1)).addProduct(any(), eq(SELLER_ID_OF_VALID_PRODUCT));
@@ -102,6 +129,8 @@ public class ProductIntegrationTest extends JerseyTest {
     void givenMissingTitle_WhenCreateProduct_Then400() {
         Map<String, Object> data = validProductPayload();
         data.remove("title");
+        when(productService.addProduct(any(), eq(SELLER_ID_OF_INVALID_PRODUCT)))
+          .thenThrow( new ConstraintViolationException(missingParameterError));
 
         Response response = postProduct(SELLER_ID_OF_INVALID_PRODUCT, data);
 
@@ -115,11 +144,12 @@ public class ProductIntegrationTest extends JerseyTest {
     @Test
     void givenInvalidSeller_WhenCreateProduct_Then400() {
         Map<String, Object> data = validProductPayload();
+      when(productService.addProduct(any(), eq(INVALID_SELLER_ID))).thenReturn(null);
+
         Response response = postProduct(INVALID_SELLER_ID, data);
 
         assertEquals(404, response.getStatus());
         verify(productService, times(1)).addProduct(any(), eq(INVALID_SELLER_ID));
-
         ErrorResponse err = response.readEntity(ErrorResponse.class);
         assertEquals("NOT_FOUND", err.error);
     }
@@ -128,6 +158,8 @@ public class ProductIntegrationTest extends JerseyTest {
     void givenEmptyDescription_WhenCreateProduct_Then400() {
         Map<String, Object> data = validProductPayload();
         data.put("description", "");
+      when(productService.addProduct(any(), eq(SELLER_ID_OF_INVALID_PRODUCT)))
+          .thenThrow( new ConstraintViolationException(invalidParameterError));
         Response response = postProduct(SELLER_ID_OF_INVALID_PRODUCT, data);
 
         assertEquals(400, response.getStatus());
@@ -155,6 +187,8 @@ public class ProductIntegrationTest extends JerseyTest {
     void givenNegativeSuggestedPrice_WhenCreateProduct_Then400() {
         Map<String, Object> data = validProductPayload();
         data.put("suggestedPrice", -10);
+      when(productService.addProduct(any(), eq(SELLER_ID_OF_INVALID_PRODUCT)))
+          .thenThrow( new ConstraintViolationException(invalidParameterError));
 
         Response response = postProduct(SELLER_ID_OF_INVALID_PRODUCT, data);
 
@@ -173,7 +207,6 @@ public class ProductIntegrationTest extends JerseyTest {
         Response response = postProduct(SELLER_ID_OF_INVALID_PRODUCT, data);
 
         assertEquals(400, response.getStatus());
-        verify(productService, times(1)).addProduct(any(), eq(SELLER_ID_OF_INVALID_PRODUCT));
 
         ErrorResponse err = response.readEntity(ErrorResponse.class);
         assertEquals("INVALID_PARAMETER", err.error);
@@ -191,6 +224,32 @@ public class ProductIntegrationTest extends JerseyTest {
 
         assertEquals(200, response.getStatus());
     }
+
+  @Test
+  public void givenValidSellerId_whenGetSeller_thenOk() {
+    when(productService.getProduct(productId1)).thenReturn(productResponse);
+
+    Response response = getProduct(productId1);
+
+    assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+  }
+
+  @Test
+  public void givenInvalidSellerId_whenGetSeller_thenNotFound() {
+    when(productService.getProduct(any())).thenReturn(null);
+
+    Response response = getProduct("INVALID_ID");
+
+    assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+    assertEquals(404, response.getStatus());
+  }
+
+  private Response getProduct(String sellerId) {
+    return target("products")
+        .path(sellerId)
+        .request(MediaType.APPLICATION_JSON)
+        .get();
+  }
 
     private Response postProduct(String sellerId, Map<String, Object> data) {
         return target("products")

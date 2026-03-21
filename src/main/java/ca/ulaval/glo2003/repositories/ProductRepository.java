@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ProductRepository {
+public class ProductRepository implements IProductRepository{
 
     public ProductRepository(){}
 

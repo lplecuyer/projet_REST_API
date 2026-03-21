@@ -4,6 +4,8 @@ import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import ca.ulaval.glo2003.models.Product;
 import ca.ulaval.glo2003.models.ProductCategory;
 import ca.ulaval.glo2003.models.Seller;
+import ca.ulaval.glo2003.repositories.IProductRepository;
+import ca.ulaval.glo2003.repositories.ISellerRepository;
 import ca.ulaval.glo2003.repositories.ProductRepository;
 import ca.ulaval.glo2003.repositories.SellerRepository;
 
@@ -12,8 +14,8 @@ import java.util.Objects;
 
 public class ProductService {
 
-  private ProductRepository productRepository = new ProductRepository();
-  private SellerRepository sellerRepository = new SellerRepository();
+  private IProductRepository productRepository = new ProductRepository();
+  private ISellerRepository sellerRepository = new SellerRepository();
 
   public ProductService(){}
 
@@ -53,11 +55,11 @@ public class ProductService {
     return new ProductAssembler.ProductsResponse(products);
   }
 
-  public void setProductRepository(ProductRepository productRepository){
+  public void setProductRepository(IProductRepository productRepository){
     this.productRepository = productRepository;
   }
 
-  public void setSellerRepository(SellerRepository sellerRepository){
+  public void setSellerRepository(ISellerRepository sellerRepository){
     this.sellerRepository = sellerRepository;
   }
 }

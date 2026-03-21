@@ -4,11 +4,12 @@ import ca.ulaval.glo2003.assemblers.OfferAssembler;
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import ca.ulaval.glo2003.models.Offer;
 import ca.ulaval.glo2003.models.Product;
+import ca.ulaval.glo2003.repositories.IProductRepository;
 import ca.ulaval.glo2003.repositories.ProductRepository;
 
 public class OfferService {
 
-  private ProductRepository productRepository = new ProductRepository();
+  private IProductRepository productRepository = new ProductRepository();
 
   public OfferService(){}
 
@@ -30,5 +31,9 @@ public class OfferService {
     if(product != null)
       return ProductAssembler.makeProductResponse(product);
     else return null;
+  }
+
+  public void setProductRepository(IProductRepository productRepository) {
+    this.productRepository = productRepository;
   }
 }

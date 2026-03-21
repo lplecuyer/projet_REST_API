@@ -13,7 +13,7 @@ import java.net.URI;
 @Produces(MediaType.APPLICATION_JSON)
 public class SellerResource {
 
-  private final SellerService sellerService = new SellerService();
+  private SellerService sellerService = new SellerService();
 
   public SellerResource() {}
 
@@ -36,5 +36,9 @@ public class SellerResource {
     }
 
     return Response.status(Response.Status.OK).entity(sellerResponse).build();
+  }
+
+  public void setSellerService(SellerService sellerService){
+    this.sellerService = sellerService;
   }
 }

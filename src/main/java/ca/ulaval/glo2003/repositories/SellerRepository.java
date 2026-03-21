@@ -4,7 +4,7 @@ import ca.ulaval.glo2003.models.Seller;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
-public class SellerRepository {
+public class SellerRepository implements ISellerRepository{
 
     public SellerRepository(){}
 

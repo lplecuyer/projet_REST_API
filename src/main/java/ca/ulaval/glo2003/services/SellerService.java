@@ -2,12 +2,13 @@ package ca.ulaval.glo2003.services;
 
 import ca.ulaval.glo2003.assemblers.SellerAssembler;
 import ca.ulaval.glo2003.models.Seller;
+import ca.ulaval.glo2003.repositories.ISellerRepository;
 import ca.ulaval.glo2003.repositories.ProductRepository;
 import ca.ulaval.glo2003.repositories.SellerRepository;
 
 public class SellerService {
 
-  private SellerRepository sellerRepository = new SellerRepository();
+  private ISellerRepository sellerRepository = new SellerRepository();
 
   public SellerService(){}
 
@@ -28,7 +29,7 @@ public class SellerService {
     else return null;
   }
 
-  public void setSellerRepository(SellerRepository sellerRepository){
+  public void setSellerRepository(ISellerRepository sellerRepository){
     this.sellerRepository = sellerRepository;
   }
 }
