@@ -1,43 +1,37 @@
 package ca.ulaval.glo2003.resources;
 
+import ca.ulaval.glo2003.services.ProductService;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.models.*;
-import ca.ulaval.glo2003.repositories.IProductRepository;
-import ca.ulaval.glo2003.repositories.ISellerRepository;
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
-import jakarta.inject.Inject;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
 import java.net.URI;
-import java.util.Collection;
-import java.util.Objects;
 
 @Path("/products")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class ProductResource {
 
-  private final IProductRepository productRepository;
-  private final ISellerRepository sellerRepository;
+  private ProductService productService = new ProductService();
 
-  @Inject
-  public ProductResource(IProductRepository products, ISellerRepository sellers) {
-    this.productRepository = products;
-    this.sellerRepository = sellers;
-  }
-
+  public ProductResource(){}
 
   @POST
-  public Response create(@Valid Product product, @Context UriInfo uriInfo, @HeaderParam("X-Seller-Id") String sellerId){
-    URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(product.getId())).build();
-    Seller seller = sellerRepository.get(sellerId);
+  public Response create(ProductAssembler.ProductRequest productRequest, @Context UriInfo uriInfo, @HeaderParam("X-Seller-Id") String sellerId){
 
-    if (seller != null) {
-      seller.registerProduct(product);
-      return Response.created(location).entity(
-          ProductAssembler.makeProductResponse(product)).build();
+    if(!ProductCategory.categoryExists(productRequest.category())){
+      return Response.status(Response.Status.BAD_REQUEST)
+          .entity(new ErrorResponse("INVALID_PARAMETER", "Category does  not exists"))
+          .build();
+    }
+
+    ProductAssembler.ProductResponse productResponse = productService.addProduct(productRequest, sellerId);
+
+    if (productResponse != null) {
+      URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(productResponse.id())).build();
+      return Response.created(location).entity(productResponse).build();
     }
     else return ErrorResponse.createNotFoundResponse("Seller", sellerId);
   }
@@ -53,30 +47,23 @@ public class ProductResource {
       @QueryParam("maxPrice") @DefaultValue("3.4028235E38") float maxPrice
   )
   {
-
-    Collection<ProductAssembler.ProductResponse> products = productRepository.getAll().stream()
-        .filter(product -> sellerId == null || Objects.equals(product.getSeller().getId(), sellerId))
-        .filter(product -> title == null || product.getTitle().toLowerCase().contains(title.toLowerCase()))
-        .filter(product -> category == null || product.getCategory() == category)
-        .filter(product -> product.getSuggestedPrice() >= minPrice && product.getSuggestedPrice() <= maxPrice)
-        .map(ProductAssembler::makeProductResponse)
-        .toList();
-
-
-    return Response.ok(new ProductAssembler.ProductsResponse(products)).build();
+    ProductAssembler.ProductsResponse productsResponse= productService.getAllProducts(sellerId, title, category, minPrice, maxPrice);
+    return Response.ok(productsResponse).build();
   }
 
   @Path("/{productId}")
   @GET
   public Response getProduct(@PathParam("productId") String productId){
-    Product product = productRepository.get(productId);
+    ProductAssembler.ProductResponse productResponse = productService.getProduct(productId);
 
-    if (product != null) {
-      return Response.status(Response.Status.OK).entity(
-          ProductAssembler.makeProductResponse(product)).build();
+    if (productResponse != null) {
+      return Response.status(Response.Status.OK).entity(productResponse).build();
     }
     else return ErrorResponse.createNotFoundResponse("Product", productId);
 
   }
 
+  public void setProductService(ProductService productService){
+    this.productService = productService;
+  }
 }

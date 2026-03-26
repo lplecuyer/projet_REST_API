@@ -1,14 +1,10 @@
 package ca.ulaval.glo2003.resources;
 
+import ca.ulaval.glo2003.services.SellerService;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
-import ca.ulaval.glo2003.repositories.ISellerRepository;
-import ca.ulaval.glo2003.models.Seller;
 import ca.ulaval.glo2003.assemblers.SellerAssembler;
-import jakarta.inject.Inject;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
-
 import java.net.URI;
 
 
@@ -17,33 +13,32 @@ import java.net.URI;
 @Produces(MediaType.APPLICATION_JSON)
 public class SellerResource {
 
-  private final ISellerRepository sellerRepository;
+  private SellerService sellerService = new SellerService();
 
-  @Inject
-  public SellerResource(ISellerRepository sellers) {
-    this.sellerRepository = sellers;
-  }
+  public SellerResource() {}
 
   @POST
-  public Response create(@Valid Seller seller, @Context UriInfo uriInfo) {
-    sellerRepository.save(seller);
-    URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(seller.getId())).build();
-    return Response.created(location).entity(seller).build();
+  public Response create(SellerAssembler.SellerRequest sellerRequest, @Context UriInfo uriInfo) {
+    SellerAssembler.SellerResponse sellerResponse = sellerService.addSeller(sellerRequest);
+    URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(sellerResponse.id())).build();
+    return Response.created(location).entity(sellerResponse).build();
   }
 
   @Path("/{id}")
   @GET
   public Response getSeller(@PathParam("id") String id) {
-    Seller seller = sellerRepository.get(id);
+    SellerAssembler.SellerResponse sellerResponse = sellerService.getSeller(id);
 
-    if (seller == null) {
+    if (sellerResponse == null) {
       return Response.status(Response.Status.NOT_FOUND)
           .entity(new ErrorResponse("NOT_FOUND", "Seller with id " + id + " not found"))
           .build();
     }
 
-    return Response.status(Response.Status.OK)
-        .entity(SellerAssembler.makeSellerResponse(seller))
-        .build();
+    return Response.status(Response.Status.OK).entity(sellerResponse).build();
+  }
+
+  public void setSellerService(SellerService sellerService){
+    this.sellerService = sellerService;
   }
 }

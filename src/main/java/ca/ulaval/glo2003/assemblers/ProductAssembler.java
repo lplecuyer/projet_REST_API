@@ -23,6 +23,8 @@ public final class ProductAssembler {
         return new ProductResponse(id, title, description, category, suggestedPrice, createdAt, seller, offers);
     }
 
+    public record ProductRequest(String title, String description, String category, float suggestedPrice){}
+
     public record ProductResponse(String id, String title, String description, ProductCategory category, float suggestedPrice,
                                   LocalDateTime createdAt, PartialSellerResponse seller, PartialOfferResponse offers){}
 

@@ -1,14 +1,9 @@
 package ca.ulaval.glo2003;
 
-import ca.ulaval.glo2003.repositories.IProductRepository;
-import ca.ulaval.glo2003.repositories.ISellerRepository;
-import ca.ulaval.glo2003.repositories.ProductRepository;
-import ca.ulaval.glo2003.repositories.SellerRepository;
 import ca.ulaval.glo2003.resources.HealthResource;
 import ca.ulaval.glo2003.resources.OfferResource;
 import ca.ulaval.glo2003.resources.ProductResource;
 import ca.ulaval.glo2003.resources.SellerResource;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.validation.ValidationFeature;
@@ -25,16 +20,9 @@ public class Main {
                 .register(ca.ulaval.glo2003.exceptionhandlers.ValidationExceptionMapper.class)
                 .register(ca.ulaval.glo2003.exceptionhandlers.ProcessingExceptionMapper.class)
                 .register(new HealthResource())
-                .register(SellerResource.class)
-                .register(ProductResource.class)
-                .register(new OfferResource())
-                .register(new AbstractBinder() {
-                    @Override
-                    protected void configure() {
-                        bind(ProductRepository.INSTANCE).to(IProductRepository.class);
-                        bind(SellerRepository.INSTANCE).to(ISellerRepository.class);
-                    }
-                });
+                .register(new SellerResource())
+                .register(new ProductResource())
+                .register(new OfferResource());
 
         GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }

@@ -5,11 +5,11 @@ import ca.ulaval.glo2003.models.Product;
 import java.util.Collection;
 
 public interface IProductRepository {
-    void save(Product product);
+  void save(Product product);
 
-    Product get(String id);
+  Product get(String id);
 
-    Collection<Product> getAll();
+  Collection<Product> getAll();
 
-    void clear();
+  void clear();
 }

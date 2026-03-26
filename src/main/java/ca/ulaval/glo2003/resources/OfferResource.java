@@ -1,11 +1,9 @@
 package ca.ulaval.glo2003.resources;
 
+import ca.ulaval.glo2003.services.OfferService;
+import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
-import ca.ulaval.glo2003.models.*;
-import ca.ulaval.glo2003.models.Offer;
-import ca.ulaval.glo2003.repositories.ProductRepository;
 import ca.ulaval.glo2003.assemblers.OfferAssembler;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
@@ -16,34 +14,39 @@ import java.net.URI;
 @Produces(MediaType.APPLICATION_JSON)
 public class OfferResource {
 
+  private final OfferService offerService = new OfferService();
+
+  public OfferResource(){}
+
   @POST
-  public Response create(@Valid Offer offer,
+  public Response create(OfferAssembler.OfferRequest offerRequest,
                          @PathParam("productId") String productId,
                          @Context UriInfo uriInfo,
                          @HeaderParam("X-Buyer-Username") String buyerUsername) {
-    URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(offer.getOfferId())).build();
 
-    if (productId == null || buyerUsername == null) {
+    if (productId == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse(
-          "MISSING_PARAMETER", "Required parameter is missing")).build();
+          "MISSING_PARAMETER", "productId is mandatory")).build();
     }
 
-    Product product = ProductRepository.INSTANCE.get(productId);
-    if (product == null) {
+    ProductAssembler.ProductResponse productResponse = offerService.getProduct(productId);
+    if (productResponse == null) {
       return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(
           "NOT_FOUND", "Product not found")).build();
 
-    } else if (offer.getAmount() < product.getSuggestedPrice()) {
+    } else if (offerRequest.amount() < productResponse.suggestedPrice()) {
       return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse(
           "INVALID_PARAMETER", "Amount must be larger than suggested amount")).build();
 
-    } else if (product.offerForSameProductAndUserAlreadyExists(buyerUsername)) {
+    }
+
+    else if (offerService.offerForSameProductAndUserAlreadyExists(buyerUsername, productId)) {
       return Response.status(Response.Status.CONFLICT).entity(new ErrorResponse(
           "ALREADY_EXISTS", "Offer already exists for this buyer and product")).build();
     }
 
-    offer.registerOffer(product, buyerUsername);
-
-    return Response.created(location).entity(OfferAssembler.makeOfferResponse(offer)).build();
+    OfferAssembler.OfferResponse offerResponse = offerService.addOffer(offerRequest, productId, buyerUsername);
+    URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(offerResponse.offerId())).build();
+    return Response.created(location).entity(offerResponse).build();
   }
 }

@@ -6,10 +6,11 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public enum ProductRepository implements IProductRepository {
-    INSTANCE;
+public class ProductRepository implements IProductRepository{
 
-    private final Map<String, Product> products = new ConcurrentHashMap<>();
+    public ProductRepository(){}
+
+    private static final Map<String, Product> products = new ConcurrentHashMap<>();
 
     public void save(Product product) {
         products.put(product.getId(), product);

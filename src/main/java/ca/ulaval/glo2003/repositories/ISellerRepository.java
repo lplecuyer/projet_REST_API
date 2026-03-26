@@ -4,9 +4,9 @@ import ca.ulaval.glo2003.models.Seller;
 
 public interface ISellerRepository {
 
-    void save(Seller seller);
+  void save(Seller seller);
 
-    Seller get(String id);
+  Seller get(String id);
 
-    void clear();
+  void clear();
 }
