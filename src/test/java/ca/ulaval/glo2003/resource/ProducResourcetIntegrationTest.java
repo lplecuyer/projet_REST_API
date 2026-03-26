@@ -59,7 +59,6 @@ public class ProducResourcetIntegrationTest extends JerseyTest {
     protected Application configure() {
         productService = mock(ProductService.class);
         ProductResource productResource = new ProductResource(productService);
-        productResource.setProductService(productService);
         createMissingParameterError();
         createInvalidParameterError();
 

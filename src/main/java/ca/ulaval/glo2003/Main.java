@@ -12,6 +12,7 @@ import ca.ulaval.glo2003.resources.ProductResource;
 import ca.ulaval.glo2003.resources.SellerResource;
 import ca.ulaval.glo2003.persistence.mongodb.MorphiaDatastoreProvider;
 import ca.ulaval.glo2003.services.ProductService;
+import ca.ulaval.glo2003.services.SellerService;
 import dev.morphia.Datastore;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -52,6 +53,8 @@ public class Main {
                     protected void configure() {
                         bind(productRepository).to(IProductRepository.class);
                         bind(sellerRepository).to(ISellerRepository.class);
+                        bind(ProductService.class).to(ProductService.class);
+                        bind(SellerService.class).to(SellerService.class);
                     }
                 });
 

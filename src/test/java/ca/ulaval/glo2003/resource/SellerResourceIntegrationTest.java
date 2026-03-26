@@ -65,7 +65,6 @@ public class SellerResourceIntegrationTest extends JerseyTest {
   protected Application configure() {
     sellerService = mock(SellerService.class);
     SellerResource sellerResource = new SellerResource(sellerService);
-    sellerResource.setSellerService(sellerService);
     createInvalidParameterError();
     createMissingParameterError();
 
