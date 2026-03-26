@@ -55,7 +55,7 @@ public class ProductResource {
   {
 
     Collection<ProductAssembler.ProductResponse> products = productRepository.getAll().stream()
-        .filter(product -> sellerId == null || Objects.equals(product.getSeller().getId(), sellerId))
+        .filter(product -> sellerId == null || Objects.equals(product.getSellerId(), sellerId))
         .filter(product -> title == null || product.getTitle().toLowerCase().contains(title.toLowerCase()))
         .filter(product -> category == null || product.getCategory() == category)
         .filter(product -> product.getSuggestedPrice() >= minPrice && product.getSuggestedPrice() <= maxPrice)

@@ -1,11 +1,17 @@
 package ca.ulaval.glo2003.models;
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Reference;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Entity
 public class Offer {
     private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
+
+    @Id
     private final String offerId = String.valueOf(NEXT_ID.getAndIncrement());
 
     private String productId;

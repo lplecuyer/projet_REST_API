@@ -1,6 +1,7 @@
-package ca.ulaval.glo2003.repositories;
+package ca.ulaval.glo2003.repositories.inmemory;
 
 import ca.ulaval.glo2003.models.Product;
+import ca.ulaval.glo2003.repositories.IProductRepository;
 
 import java.util.Collection;
 import java.util.Map;

@@ -1,20 +1,28 @@
 package ca.ulaval.glo2003.models;
 
-import ca.ulaval.glo2003.repositories.ProductRepository;
+import ca.ulaval.glo2003.repositories.inmemory.ProductRepository;
+import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Reference;
+import dev.morphia.annotations.Transient;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.time.Period;
 import jakarta.json.bind.annotation.JsonbTransient;
+import dev.morphia.annotations.Entity;
 
+
+@Entity
 public class Seller {
-
     private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
+
+    @Id
     private final String id = String.valueOf(NEXT_ID.getAndIncrement());
 
     @Size(min = 1, message = "INVALID_PARAMETER: name cannot be empty")
@@ -47,7 +55,8 @@ public class Seller {
     @NotNull(message = "MISSING_PARAMETER: Bio is mandatory")
     private String bio;
 
-    private final Map<String, Product> associatedProducts = new ConcurrentHashMap<>();
+    @Transient
+    private Map<String, Product> associatedProducts = new HashMap<>();
 
     public Seller() {}
 

@@ -18,7 +18,7 @@ public final class ProductAssembler {
         ProductCategory category = product.getCategory();
         float suggestedPrice = product.getSuggestedPrice();
         LocalDateTime createdAt = product.getCreatedAt();
-        PartialSellerResponse seller =  new PartialSellerResponse(product.getSeller().getId(), product.getSeller().getName());
+        PartialSellerResponse seller =  new PartialSellerResponse(product.getSellerId(), product.getSeller().getName());
         PartialOfferResponse offers = new PartialOfferResponse(product.getOfferCount(), product.getAvgOfferAmount());
         return new ProductResponse(id, title, description, category, suggestedPrice, createdAt, seller, offers);
     }

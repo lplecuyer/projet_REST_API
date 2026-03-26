@@ -2,12 +2,16 @@ package ca.ulaval.glo2003;
 
 import ca.ulaval.glo2003.repositories.IProductRepository;
 import ca.ulaval.glo2003.repositories.ISellerRepository;
-import ca.ulaval.glo2003.repositories.ProductRepository;
-import ca.ulaval.glo2003.repositories.SellerRepository;
+import ca.ulaval.glo2003.repositories.inmemory.ProductRepository;
+import ca.ulaval.glo2003.repositories.inmemory.SellerRepository;
+import ca.ulaval.glo2003.repositories.mongo.ProductRepositoryMongo;
+import ca.ulaval.glo2003.repositories.mongo.SellerRepositoryMongo;
 import ca.ulaval.glo2003.resources.HealthResource;
 import ca.ulaval.glo2003.resources.OfferResource;
 import ca.ulaval.glo2003.resources.ProductResource;
 import ca.ulaval.glo2003.resources.SellerResource;
+import ca.ulaval.glo2003.persistence.mongodb.MorphiaDatastoreProvider;
+import dev.morphia.Datastore;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -19,6 +23,21 @@ public class Main {
     public static final String BASE_URI = "http://0.0.0.0:8080/";
 
     public static void startServer() {
+        String persistence = System.getProperty("persistence", "inmemory");
+
+        IProductRepository productRepository;
+        ISellerRepository sellerRepository;
+
+      if ("mongo".equalsIgnoreCase(persistence)) {
+        Datastore datastore = MorphiaDatastoreProvider.getDatastore();
+
+        productRepository = new ProductRepositoryMongo(datastore);
+        sellerRepository = new SellerRepositoryMongo(datastore);
+      } else {
+        productRepository = ProductRepository.INSTANCE;
+        sellerRepository = SellerRepository.INSTANCE;
+      }
+
         final ResourceConfig rc = new ResourceConfig()
                 .packages("ca.ulaval.glo2003")
                 .register(ValidationFeature.class)
@@ -31,8 +50,8 @@ public class Main {
                 .register(new AbstractBinder() {
                     @Override
                     protected void configure() {
-                        bind(ProductRepository.INSTANCE).to(IProductRepository.class);
-                        bind(SellerRepository.INSTANCE).to(ISellerRepository.class);
+                        bind(productRepository).to(IProductRepository.class);
+                        bind(sellerRepository).to(ISellerRepository.class);
                     }
                 });
 

@@ -1,5 +1,7 @@
 package ca.ulaval.glo2003.models;
 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
@@ -7,9 +9,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Entity
 public class Product{
     private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
 
+    @Id
     private final String id = String.valueOf(NEXT_ID.getAndIncrement());
 
     @NotNull(message = "MISSING_PARAMETER: title is mandatory")
@@ -29,7 +33,7 @@ public class Product{
 
     private final LocalDateTime createdAt = LocalDateTime.now();
 
-    private Seller seller = null;
+    private Seller seller;
 
     private final ArrayList<Offer> offers = new ArrayList<>();
 
