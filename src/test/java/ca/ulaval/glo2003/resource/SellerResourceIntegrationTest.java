@@ -1,15 +1,22 @@
-package ca.ulaval.glo2003.models;
+package ca.ulaval.glo2003.resource;
 
+import ca.ulaval.glo2003.assemblers.SellerAssembler;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.exceptionhandlers.ProcessingExceptionMapper;
 import ca.ulaval.glo2003.exceptionhandlers.ValidationExceptionMapper;
-import ca.ulaval.glo2003.repositories.ISellerRepository;
+import ca.ulaval.glo2003.models.Product;
+import ca.ulaval.glo2003.models.ProductCategory;
+import ca.ulaval.glo2003.models.Seller;
 import ca.ulaval.glo2003.resources.SellerResource;
+import ca.ulaval.glo2003.services.SellerService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.jupiter.api.AfterEach;
@@ -20,13 +27,20 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class SellerIntegrationTest extends JerseyTest {
+public class SellerResourceIntegrationTest extends JerseyTest {
+
+  private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
+  private static Set<ConstraintViolation<Seller>> missingParameterError;
+  private static Set<ConstraintViolation<Seller>> invalidParameterError;
 
   private String seller1Id;
-  private static String seller2Id;
+  private static SellerAssembler.SellerResponse sellerResponse;
 
   private static final String VALID_NAME = "John Doe";
   private static  final LocalDate VALID_BIRTHDATE = LocalDate.of(1968, 9, 12);
@@ -40,7 +54,7 @@ public class SellerIntegrationTest extends JerseyTest {
   private static final String INVALID_PARAMETER = "INVALID_PARAMETER";
   private static final String NOT_FOUND = "NOT_FOUND";
 
-  private ISellerRepository sellerRepo;
+  private SellerService sellerService;
 
   @Override
   protected URI getBaseUri() {
@@ -49,37 +63,51 @@ public class SellerIntegrationTest extends JerseyTest {
 
   @Override
   protected Application configure() {
-    sellerRepo = mock(ISellerRepository.class);
+    sellerService = mock(SellerService.class);
+    SellerResource sellerResource = new SellerResource(sellerService);
+    sellerResource.setSellerService(sellerService);
+    createInvalidParameterError();
+    createMissingParameterError();
 
     return new ResourceConfig()
-        .register(SellerResource.class)
+        .register(sellerResource)
         .register(org.glassfish.jersey.jsonb.JsonBindingFeature.class)
         .register(ValidationExceptionMapper.class)
-        .register(ProcessingExceptionMapper.class)
-        .register(new AbstractBinder() {
-          @Override
-          protected void configure() {
-            bind(sellerRepo).to(ISellerRepository.class);
-          }
-        });
+        .register(ProcessingExceptionMapper.class);
+  }
+
+  private void createInvalidParameterError() {
+    Seller seller = new Seller();
+    seller.setBirthdate(LocalDate.now());
+    seller.setEmail("");
+    seller.setBio("");
+    seller.setName("");
+    seller.setPhoneNumber("");
+    invalidParameterError = validator.validate(seller);
+  }
+
+  private void createMissingParameterError() {
+    Seller seller = new Seller();
+    seller.setBirthdate(LocalDate.parse("1980-12-03"));
+    seller.setEmail(null);
+    seller.setBio(null);
+    seller.setName(null);
+    seller.setPhoneNumber(null);
+    missingParameterError = validator.validate(seller);
   }
 
   @BeforeEach
   public void startJersey() throws Exception {
     super.setUp();
-    reset(sellerRepo);
+    reset(sellerService);
 
-    Seller sellerValide = new Seller();
-    sellerValide.setName(VALID_NAME);
-    sellerValide.setBirthdate(VALID_BIRTHDATE);
-    sellerValide.setEmail(VALID_EMAIL);
-    sellerValide.setPhoneNumber(VALID_PHONENUMBER);
-    sellerValide.setBio(VALID_BIO);
+    Seller sellerValide = new Seller(VALID_NAME, VALID_BIRTHDATE.toString(), VALID_EMAIL, VALID_PHONENUMBER, VALID_BIO);
     sellerValide.addProduct(new Product("iPhone Case", "desc", ProductCategory.electronics, 15F));
+    sellerResponse = SellerAssembler.makeSellerResponse(sellerValide);
 
     seller1Id = sellerValide.getId();
 
-    when(sellerRepo.get(seller1Id)).thenReturn(sellerValide);
+    when(sellerService.getSeller(seller1Id)).thenReturn(sellerResponse);
   }
 
   @AfterEach
@@ -90,6 +118,7 @@ public class SellerIntegrationTest extends JerseyTest {
   @Test
   public void givenValidSeller_whenPostSeller_thenCreated() {
     Map<String, Object> data = validSellerPayload();
+    when(sellerService.addSeller(any())).thenReturn(sellerResponse);
 
     Response response = postSeller(data);
 
@@ -100,10 +129,12 @@ public class SellerIntegrationTest extends JerseyTest {
   public void givenMissingName_whenPostSeller_thenNotFound() {
     Map<String, Object> data = validSellerPayload();
     data.remove("name");
+    when(sellerService.addSeller(any()))
+        .thenThrow( new ConstraintViolationException(missingParameterError));
 
     Response response = postSeller(data);
 
-    verify(sellerRepo, never()).save(any());
+    verify(sellerService, times(1)).addSeller(any());
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     assertEquals(MISSING_PARAMETER, response.readEntity(ErrorResponse.class).error);
   }
@@ -113,10 +144,12 @@ public class SellerIntegrationTest extends JerseyTest {
     Map<String, Object> data = validSellerPayload();
     data.remove("name");
     data.put("name", "");
+    when(sellerService.addSeller(any()))
+        .thenThrow( new ConstraintViolationException(invalidParameterError));
 
     Response response = postSeller(data);
 
-    verify(sellerRepo, never()).save(any());
+    verify(sellerService, times(1)).addSeller(any());
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     assertEquals(INVALID_PARAMETER, response.readEntity(ErrorResponse.class).error);
   }
@@ -126,9 +159,11 @@ public class SellerIntegrationTest extends JerseyTest {
     Map<String, Object> data = validSellerPayload();
     data.remove("birthdate");
     data.put("birthdate", "");
+    when(sellerService.addSeller(any()))
+        .thenThrow( new ConstraintViolationException(invalidParameterError));
 
     Response response = postSeller(data);
-    verify(sellerRepo, never()).save(any());
+    verify(sellerService, times(1)).addSeller(any());
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
   }
 
@@ -137,10 +172,12 @@ public class SellerIntegrationTest extends JerseyTest {
     Map<String, Object> data = validSellerPayload();
     data.remove("birthdate");
     data.put("birthdate", LocalDate.now().toString());
+    when(sellerService.addSeller(any()))
+        .thenThrow( new ConstraintViolationException(invalidParameterError));
 
     Response response = postSeller(data);
 
-    verify(sellerRepo, never()).save(any());
+    verify(sellerService, times(1)).addSeller(any());
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     assertEquals(INVALID_PARAMETER, response.readEntity(ErrorResponse.class).error);
   }
@@ -149,10 +186,12 @@ public class SellerIntegrationTest extends JerseyTest {
   public void givenMissingEmail_whenPostSeller_thenNotFound() {
     Map<String, Object> data = validSellerPayload();
     data.remove("email");
+    when(sellerService.addSeller(any()))
+        .thenThrow( new ConstraintViolationException(missingParameterError));
 
     Response response = postSeller(data);
 
-    verify(sellerRepo, never()).save(any());
+    verify(sellerService, times(1)).addSeller(any());
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     assertEquals(MISSING_PARAMETER, response.readEntity(ErrorResponse.class).error);
   }
@@ -162,10 +201,12 @@ public class SellerIntegrationTest extends JerseyTest {
     Map<String, Object> data = validSellerPayload();
     data.remove("email");
     data.put("email", "");
+    when(sellerService.addSeller(any()))
+        .thenThrow( new ConstraintViolationException(invalidParameterError));
 
     Response response = postSeller(data);
 
-    verify(sellerRepo, never()).save(any());
+    verify(sellerService, times(1)).addSeller(any());
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     assertEquals(INVALID_PARAMETER, response.readEntity(ErrorResponse.class).error);
   }
@@ -174,10 +215,12 @@ public class SellerIntegrationTest extends JerseyTest {
   public void givenMissingPhoneNumber_whenPostSeller_thenNotFound() {
     Map<String, Object> data = validSellerPayload();
     data.remove("phoneNumber");
+    when(sellerService.addSeller(any()))
+        .thenThrow( new ConstraintViolationException(missingParameterError));
 
     Response response = postSeller(data);
 
-    verify(sellerRepo, never()).save(any());
+    verify(sellerService, times(1)).addSeller(any());
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     assertEquals(MISSING_PARAMETER, response.readEntity(ErrorResponse.class).error);
   }
@@ -187,10 +230,12 @@ public class SellerIntegrationTest extends JerseyTest {
     Map<String, Object> data = validSellerPayload();
     data.remove("phoneNumber");
     data.put("phoneNumber", "");
+    when(sellerService.addSeller(any()))
+        .thenThrow( new ConstraintViolationException(invalidParameterError));
 
     Response response = postSeller(data);
 
-    verify(sellerRepo, never()).save(any());
+    verify(sellerService, times(1)).addSeller(any());
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     assertEquals(INVALID_PARAMETER, response.readEntity(ErrorResponse.class).error);
   }
@@ -199,10 +244,12 @@ public class SellerIntegrationTest extends JerseyTest {
   public void givenMissingBio_whenPostSeller_thenNotFound() {
     Map<String, Object> data = validSellerPayload();
     data.remove("bio");
+    when(sellerService.addSeller(any()))
+        .thenThrow( new ConstraintViolationException(missingParameterError));
 
     Response response = postSeller(data);
 
-    verify(sellerRepo, never()).save(any());
+    verify(sellerService, times(1)).addSeller(any());
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     assertEquals(MISSING_PARAMETER, response.readEntity(ErrorResponse.class).error);
   }
@@ -212,10 +259,12 @@ public class SellerIntegrationTest extends JerseyTest {
     Map<String, Object> data = validSellerPayload();
     data.remove("bio");
     data.put("bio", "");
+    when(sellerService.addSeller(any()))
+        .thenThrow( new ConstraintViolationException(invalidParameterError));
 
     Response response = postSeller(data);
 
-    verify(sellerRepo, never()).save(any());
+    verify(sellerService, times(1)).addSeller(any());
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     assertEquals(INVALID_PARAMETER, response.readEntity(ErrorResponse.class).error);
   }

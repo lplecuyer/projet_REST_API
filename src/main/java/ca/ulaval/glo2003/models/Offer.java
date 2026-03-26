@@ -2,13 +2,20 @@ package ca.ulaval.glo2003.models;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Reference;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Entity
 public class Offer {
+
+    private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
 
     @Id
@@ -16,6 +23,7 @@ public class Offer {
 
     private String productId;
 
+    @NotNull(message = "MISSING_PARAMETER: buyer's name is mandatory")
     private String buyerUsername;
 
     @NotNull(message = "MISSING_PARAMETER: amount is mandatory")
@@ -28,11 +36,18 @@ public class Offer {
 
     private final LocalDateTime createdAt = LocalDateTime.now();
 
+    public void validate(){
+      Set<ConstraintViolation<Offer>> checkResult = validator.validate(this);
+      if(!checkResult.isEmpty()) throw new ConstraintViolationException(checkResult);
+    }
+
     public Offer() {}
 
-    public Offer(Float amount, String message) {
-        if (amount != null) this.amount = amount;
+    public Offer(Float amount, String message, String buyerUsername) {
+        this.amount = amount;
         this.message = message;
+        this.buyerUsername = buyerUsername;
+        validate();
     }
 
     public String getOfferId() {
@@ -53,10 +68,8 @@ public class Offer {
         this.buyerUsername = buyerUsername;
     }
 
-    public float getAmount() {
-        return amount;
-    }
-    public void setAmount(float amount) {
+    public float getAmount() {return amount;}
+    public void setAmount(Float amount) {
         this.amount = amount;
     }
 
@@ -69,11 +82,5 @@ public class Offer {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
-    }
-
-    public void registerOffer(Product product, String buyerUsername) {
-        this.setProductId(product.getId());
-        this.setBuyerUsername(buyerUsername);
-        product.addOffer(this);
     }
 }

@@ -11,6 +11,7 @@ import ca.ulaval.glo2003.resources.OfferResource;
 import ca.ulaval.glo2003.resources.ProductResource;
 import ca.ulaval.glo2003.resources.SellerResource;
 import ca.ulaval.glo2003.persistence.mongodb.MorphiaDatastoreProvider;
+import ca.ulaval.glo2003.services.ProductService;
 import dev.morphia.Datastore;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -34,7 +35,7 @@ public class Main {
         productRepository = new ProductRepositoryMongo(datastore);
         sellerRepository = new SellerRepositoryMongo(datastore);
       } else {
-        productRepository = ProductRepository.INSTANCE;
+        productRepository = new ProductRepository();
         sellerRepository = SellerRepository.INSTANCE;
       }
 
@@ -46,7 +47,6 @@ public class Main {
                 .register(new HealthResource())
                 .register(SellerResource.class)
                 .register(ProductResource.class)
-                .register(new OfferResource())
                 .register(new AbstractBinder() {
                     @Override
                     protected void configure() {

@@ -2,15 +2,19 @@ package ca.ulaval.glo2003.models;
 
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import jakarta.validation.constraints.*;
-
 import java.time.LocalDateTime;
-
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Entity
 public class Product{
+    private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
 
     @Id
@@ -33,9 +37,14 @@ public class Product{
 
     private final LocalDateTime createdAt = LocalDateTime.now();
 
-    private Seller seller;
+    private Seller seller = null;
 
     private final ArrayList<Offer> offers = new ArrayList<>();
+
+    public void validate(){
+        Set<ConstraintViolation<Product>> checkResult = validator.validate(this);
+        if(!checkResult.isEmpty()) throw new ConstraintViolationException(checkResult);
+    }
 
     public Product(){}
 
@@ -44,10 +53,12 @@ public class Product{
         this.description = description;
         this.category = category;
         this.suggestedPrice = suggestedPrice;
+        validate();
     }
 
     public void addOffer(Offer offer){
-        offers.add(offer);
+      offer.setProductId(this.id);
+      offers.add(offer);
     }
 
     public int getOfferCount(){

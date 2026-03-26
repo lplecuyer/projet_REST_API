@@ -9,7 +9,6 @@ import jakarta.validation.*;
 
 import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
 
 class ProductTest {
   private static final String MISSING_PARAMETER = "MISSING_PARAMETER";
@@ -17,7 +16,8 @@ class ProductTest {
   private static final float VALID_PRICE_1 = 40.1f;
   private static final float VALID_PRICE_2 = 98.9f;
   private static final float VALID_PRICE_3 = 20.4f;
-  private static final String OFFER_MESSAGE = "J'aimerais acheter ce téléphone";
+  private static final String VALID_OFFER_MESSAGE = "This is a very long message that contains more than fifty characters.";
+  private static final String BUYERS_NAME = "Bob";
   private static final String VALID_TITLE = "Apple";
   private static final String VALID_DESC = "Iphone 13";
   private static final ProductCategory VALID_CATEGORY = ProductCategory.electronics;
@@ -25,9 +25,9 @@ class ProductTest {
   private static final Float INVALID_PRICE = 0F;
 
   private static Validator validator;
-  private static final Offer offer1 = new Offer(VALID_PRICE_1, OFFER_MESSAGE);
-  private static final Offer offer2 = new Offer(VALID_PRICE_2, OFFER_MESSAGE);
-  private static final Offer offer3 = new Offer(VALID_PRICE_3, OFFER_MESSAGE);
+  private static final Offer offer1 = new Offer(VALID_PRICE_1, VALID_OFFER_MESSAGE, BUYERS_NAME);
+  private static final Offer offer2 = new Offer(VALID_PRICE_2, VALID_OFFER_MESSAGE, BUYERS_NAME);
+  private static final Offer offer3 = new Offer(VALID_PRICE_3, VALID_OFFER_MESSAGE, BUYERS_NAME);
   private static Product validProduct;
   private static Product product;
   private static Product productWithNoOffers;
@@ -59,7 +59,7 @@ class ProductTest {
   @Test
   void givenValidParameters_whenValide_thenNoViolation(){
     Set<ConstraintViolation<Product>> violations = validator.validate(validProduct);
-    assertTrue(violations.isEmpty());
+    Assertions.assertTrue(violations.isEmpty());
   }
 
   @Test
