@@ -1,6 +1,8 @@
 package ca.ulaval.glo2003.services;
 
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
+import ca.ulaval.glo2003.assemblers.SellerAssembler;
+import ca.ulaval.glo2003.models.Offer;
 import ca.ulaval.glo2003.models.Product;
 import ca.ulaval.glo2003.models.ProductCategory;
 import ca.ulaval.glo2003.models.Seller;
@@ -9,6 +11,7 @@ import ca.ulaval.glo2003.repositories.ISellerRepository;
 import ca.ulaval.glo2003.repositories.ProductRepository;
 import ca.ulaval.glo2003.repositories.SellerRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,17 +20,17 @@ public class ProductService {
   private IProductRepository productRepository = new ProductRepository();
   private ISellerRepository sellerRepository = new SellerRepository();
 
-  public ProductService(){}
+  public ProductService() {
+  }
 
-  public ProductAssembler.ProductResponse addProduct(ProductAssembler.ProductRequest productRequest, String sellerId){
+  public ProductAssembler.ProductResponse addProduct(ProductAssembler.ProductRequest productRequest, String sellerId) {
     Seller seller = sellerRepository.get(sellerId);
     Product product = new Product(productRequest.title(), productRequest.description(),
-       ProductCategory.valueOf(productRequest.category()), productRequest.suggestedPrice());
+        ProductCategory.valueOf(productRequest.category()), productRequest.suggestedPrice());
     if (seller != null) {
       registerProduct(product, seller);
       return ProductAssembler.makeProductResponse(product);
-    }
-    else return null;
+    } else return null;
   }
 
   public void registerProduct(Product product, Seller seller) {
@@ -36,15 +39,26 @@ public class ProductService {
     productRepository.save(product);
   }
 
-  public ProductAssembler.ProductResponse getProduct(String id){
+  public ProductAssembler.ProductResponse getProduct(String id) {
     Product product = productRepository.get(id);
-    if(product != null)
+    if (product != null)
       return ProductAssembler.makeProductResponse(product);
     else return null;
   }
 
+  public SellerAssembler.SellerResponse getSeller(String id) {
+    Seller seller = sellerRepository.get(id);
+    if (seller != null)
+      return SellerAssembler.makeSellerResponse(seller);
+    else return null;
+  }
+
+  public void sellProduct(String id) {
+    productRepository.get(id).setVendu(true);
+  }
+
   public ProductAssembler.ProductsResponse getAllProducts(String sellerId, String title,
-                                                          ProductCategory category, float minPrice, float maxPrice){
+                                                          ProductCategory category, float minPrice, float maxPrice) {
     List<ProductAssembler.ProductResponse> products = productRepository.getAll().stream()
         .filter(product -> sellerId == null || Objects.equals(product.getSeller().getId(), sellerId))
         .filter(product -> title == null || product.getTitle().toLowerCase().contains(title.toLowerCase()))
@@ -55,11 +69,26 @@ public class ProductService {
     return new ProductAssembler.ProductsResponse(products);
   }
 
-  public void setProductRepository(IProductRepository productRepository){
+  public boolean getProductsWithGivenUsernameOfferExists(String username) {
+    for (Product product : productRepository.getAll()) {
+      for (Offer offer : product.getOffers()) {
+        if(Objects.equals(offer.getBuyerUsername(), username)) return true;
+      }
+    }
+    return false;
+//    List<ProductAssembler.ProductResponse> products = productRepository.getAll().stream()
+//        .filter(product -> product.getOffers().stream()
+//            .anyMatch(offer -> Objects.equals(offer.getBuyerUsername(), username)))
+//        .map(ProductAssembler::makeProductResponse).toList();
+//
+//    return new ProductAssembler.ProductsResponse(products);
+  }
+
+  public void setProductRepository(IProductRepository productRepository) {
     this.productRepository = productRepository;
   }
 
-  public void setSellerRepository(ISellerRepository sellerRepository){
+  public void setSellerRepository(ISellerRepository sellerRepository) {
     this.sellerRepository = sellerRepository;
   }
 }

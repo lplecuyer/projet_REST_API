@@ -16,7 +16,8 @@ public class OfferResource {
 
   private final OfferService offerService = new OfferService();
 
-  public OfferResource(){}
+  public OfferResource() {
+  }
 
   @POST
   public Response create(OfferAssembler.OfferRequest offerRequest,
@@ -38,11 +39,14 @@ public class OfferResource {
       return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse(
           "INVALID_PARAMETER", "Amount must be larger than suggested amount")).build();
 
-    }
-
-    else if (offerService.offerForSameProductAndUserAlreadyExists(buyerUsername, productId)) {
+    } else if (offerService.offerForSameProductAndUserAlreadyExists(buyerUsername, productId)) {
       return Response.status(Response.Status.CONFLICT).entity(new ErrorResponse(
           "ALREADY_EXISTS", "Offer already exists for this buyer and product")).build();
+    }
+
+    if(offerService.getProduct(productId).vendu()) {
+      return Response.status(Response.Status.CONFLICT).entity(new ErrorResponse(
+          "NOT_PERMITTED", "Given product is already sold")).build();
     }
 
     OfferAssembler.OfferResponse offerResponse = offerService.addOffer(offerRequest, productId, buyerUsername);
