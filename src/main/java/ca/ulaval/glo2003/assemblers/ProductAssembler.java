@@ -22,7 +22,7 @@ public final class ProductAssembler {
     PartialSellerResponse seller = new PartialSellerResponse(product.getSeller().getId(), product.getSeller().getName());
     PartialOfferResponse offers = new PartialOfferResponse(product.getOfferCount(), product.getAvgOfferAmount());
     boolean vendu = product.getVendu();
-    return new ProductResponse(id, title, description, category, suggestedPrice, createdAt, seller, offers, vendu);
+    return new ProductResponse(id, title, description, category, suggestedPrice, createdAt, seller, offers, vendu ? "sold" : "ongoing");
   }
 
   public record ProductRequest(String title, String description, String category,
@@ -32,7 +32,7 @@ public final class ProductAssembler {
   public record ProductResponse(String id, String title, String description,
                                 ProductCategory category, float suggestedPrice,
                                 LocalDateTime createdAt, PartialSellerResponse seller,
-                                PartialOfferResponse offers, boolean vendu) {
+                                PartialOfferResponse offers, String saleStatus) {
   }
 
   public record ProductsResponse(java.util.Collection<ProductAssembler.ProductResponse> products) {
