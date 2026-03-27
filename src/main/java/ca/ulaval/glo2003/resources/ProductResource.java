@@ -47,11 +47,12 @@ public class ProductResource {
       @QueryParam("category") ProductCategory category,
       @QueryParam("sellerId") String sellerId,
       @QueryParam("title") String title,
+      @QueryParam("description") String description,
       @QueryParam("minPrice") @DefaultValue("0") float minPrice,
       @QueryParam("maxPrice") @DefaultValue("3.4028235E38") float maxPrice
   )
   {
-    ProductAssembler.ProductsResponse productsResponse= productService.getAllProducts(sellerId, title, category, minPrice, maxPrice);
+    ProductAssembler.ProductsResponse productsResponse= productService.getAllProducts(sellerId, title, category, minPrice, maxPrice, description);
     return Response.ok(productsResponse).build();
   }
 

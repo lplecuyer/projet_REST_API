@@ -20,21 +20,7 @@ public class ProductRepositoryMongo implements IProductRepository {
 
   @Override
   public void save(Product product) {
-    String sellerId = product.getSellerId();
-    if (sellerId == null) {
-      throw new IllegalArgumentException("Product must have a sellerId");
-    }
-
-    Seller seller = datastore.find(Seller.class)
-        .filter(Filters.eq("id", sellerId))
-        .first();
-
-    if (seller == null) {
-      throw new IllegalArgumentException("Seller not found for id: " + sellerId);
-    }
-
-    seller.addProduct(product);
-    datastore.save(seller);
+    datastore.save(product);
   }
 
   @Override

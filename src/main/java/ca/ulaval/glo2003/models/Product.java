@@ -2,6 +2,7 @@ package ca.ulaval.glo2003.models;
 
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Reference;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validation;
@@ -37,7 +38,7 @@ public class Product{
 
     private final LocalDateTime createdAt = LocalDateTime.now();
 
-    private Seller seller = null;
+    private String sellerId;
 
     private final ArrayList<Offer> offers = new ArrayList<>();
 
@@ -94,11 +95,10 @@ public class Product{
 
     public LocalDateTime getCreatedAt() {return createdAt;}
 
-    public Seller getSeller() {return seller;}
 
-    public String getSellerId(){return seller.getId();}
+    public String getSellerId(){return sellerId; }
 
-    public void setSeller(Seller seller){this.seller = seller;}
+    public void setSellerId(String sellerId){this.sellerId = sellerId;}
 
     public Float getMinOfferAmount() {
         float min = Float.MAX_VALUE;

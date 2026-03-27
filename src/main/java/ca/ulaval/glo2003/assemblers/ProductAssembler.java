@@ -18,19 +18,17 @@ public final class ProductAssembler {
         ProductCategory category = product.getCategory();
         float suggestedPrice = product.getSuggestedPrice();
         LocalDateTime createdAt = product.getCreatedAt();
-        PartialSellerResponse seller =  new PartialSellerResponse(product.getSellerId(), product.getSeller().getName());
+        String sellerId =  product.getSellerId();
         PartialOfferResponse offers = new PartialOfferResponse(product.getOfferCount(), product.getAvgOfferAmount());
-        return new ProductResponse(id, title, description, category, suggestedPrice, createdAt, seller, offers);
+        return new ProductResponse(id, title, description, category, suggestedPrice, createdAt, sellerId, offers);
     }
 
     public record ProductRequest(String title, String description, String category, float suggestedPrice){}
 
     public record ProductResponse(String id, String title, String description, ProductCategory category, float suggestedPrice,
-                                  LocalDateTime createdAt, PartialSellerResponse seller, PartialOfferResponse offers){}
+                                  LocalDateTime createdAt, String sellerId, PartialOfferResponse offers){}
 
     public record ProductsResponse(java.util.Collection<ProductAssembler.ProductResponse> products) {}
-
-    public record PartialSellerResponse(String id, String name) { }
 
     public record PartialOfferResponse(int count, @JsonbNillable Float avgAmount) { }
 }

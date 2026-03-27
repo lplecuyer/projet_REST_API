@@ -10,10 +10,7 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.time.Period;
@@ -61,8 +58,7 @@ public class Seller {
     @NotNull(message = "MISSING_PARAMETER: Bio is mandatory")
     private String bio;
 
-    @Transient
-    private Map<String, Product> associatedProducts = new HashMap<>();
+    private List<Product> associatedProducts = new ArrayList<>();
 
     private LocalDate convertDate(String stringDate){
       LocalDate localDate;
@@ -91,11 +87,11 @@ public class Seller {
     public Seller(){}
 
     public void addProduct(Product product){
-        associatedProducts.put(product.getId(), product);
+        associatedProducts.add(product);
     }
 
     public Collection<Product> getProducts(){
-        return associatedProducts.values();
+        return associatedProducts;
     }
 
     public String getId() { return id; }

@@ -34,8 +34,9 @@ public class ProductService {
   }
 
   public void registerProduct(Product product, Seller seller) {
-    product.setSeller(seller);
+    product.setSellerId(seller.getId());
     seller.addProduct(product);
+    sellerRepository.save(seller);
     productRepository.save(product);
   }
 
@@ -47,9 +48,9 @@ public class ProductService {
   }
 
   public ProductAssembler.ProductsResponse getAllProducts(String sellerId, String title,
-                                                          ProductCategory category, float minPrice, float maxPrice){
+                                                          ProductCategory category, float minPrice, float maxPrice, String description) {
     List<ProductAssembler.ProductResponse> products = productRepository.getAll().stream()
-        .filter(product -> sellerId == null || Objects.equals(product.getSeller().getId(), sellerId))
+        .filter(product -> sellerId == null || Objects.equals(product.getSellerId(), sellerId))
         .filter(product -> title == null || product.getTitle().toLowerCase().contains(title.toLowerCase()))
         .filter(product -> category == null || product.getCategory() == category)
         .filter(product -> product.getSuggestedPrice() >= minPrice && product.getSuggestedPrice() <= maxPrice)
