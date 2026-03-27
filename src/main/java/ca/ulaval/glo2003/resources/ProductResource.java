@@ -64,12 +64,21 @@ public class ProductResource {
 
   @Path("/{productId}/sell")
   @POST
-  public Response sellProduct(ProductAssembler.BuyerUsernameResponse username, @PathParam("productId") String productId, @HeaderParam("X-Seller-Id") String sellerId) {
-    if(Objects.equals(username.username(), "")) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse("BAD_REQUEST", "Username is invalid")).build();
+  public Response sellProduct(ProductAssembler.BuyerUsernameResponse buyerUsername, @PathParam("productId") String productId, @HeaderParam("X-Seller-Id") String sellerId) {
+    if(Objects.equals(buyerUsername.username(), "")) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse("INVALID_PARAMETER", "Username is invalid")).build();
+    }
+    if(Objects.equals(buyerUsername.username(), null)) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse("MISSING_PARAMETER", "Username is missing")).build();
     }
     if (Objects.equals(sellerId, "")) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse("BAD_REQUEST", "SellerId is invalid")).build();
+      return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse("MISSING_PARAMETER", "SellerId is missing")).build();
+    }
+    if (Objects.equals(productId, "")) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse("INVALID_PARAMETER", "ProductId is invalid")).build();
+    }
+    if (Objects.equals(productId, null)) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse("MISSING_PARAMETER", "ProductId is missing")).build();
     }
     if (productService.getProduct(productId) == null) {
       return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse("NOT_FOUND", "Given product does not exists")).build();
@@ -77,7 +86,7 @@ public class ProductResource {
     if (productService.getSeller(sellerId) == null) {
       return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse("NOT_FOUND", "Given seller does not exists")).build();
     }
-    if (!productService.getProductsWithGivenUsernameOfferExists(username.username())) {
+    if (!productService.BuyerHasOfferOnProduct(buyerUsername.username(), productId)) {
       return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse("NOT_FOUND", "No offer with given username exists")).build();
     }
     if (productService.getProduct(productId).vendu()) {
