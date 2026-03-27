@@ -21,13 +21,14 @@ public final class ProductAssembler {
         LocalDateTime createdAt = product.getCreatedAt();
         PartialSellerResponse sellerResponse =  new PartialSellerResponse(product.getSellerId(), seller.getName());
         PartialOfferResponse offerResponse = new PartialOfferResponse(product.getOfferCount(), product.getAvgOfferAmount());
-        return new ProductResponse(id, title, description, category, suggestedPrice, createdAt, sellerResponse, offerResponse);
+      boolean vendu = product.getVendu();
+        return new ProductResponse(id, title, description, category, suggestedPrice, createdAt, sellerResponse, offerResponse, vendu);
     }
 
     public record ProductRequest(String title, String description, String category, float suggestedPrice){}
 
     public record ProductResponse(String id, String title, String description, ProductCategory category, float suggestedPrice,
-                                  LocalDateTime createdAt, PartialSellerResponse sellerId, PartialOfferResponse offers){}
+                                  LocalDateTime createdAt, PartialSellerResponse seller, PartialOfferResponse offers, boolean vendu){}
 
     public record ProductsResponse(java.util.Collection<ProductAssembler.ProductResponse> products) {}
 
