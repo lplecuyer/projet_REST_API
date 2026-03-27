@@ -37,6 +37,7 @@ public final class SellerAssembler {
             String description = product.getDescription();
             float suggestedPrice = product.getSuggestedPrice();
             ProductCategory category = product.getCategory();
+            boolean vendu = product.getVendu();
 
             Collection<SellerAssembler.PartialItemResponse> items = new ArrayList<>();
 
@@ -45,7 +46,7 @@ public final class SellerAssembler {
             }
 
             SellerAssembler.PartialOfferResponse offers = new PartialOfferResponse(product.getOfferCount(), product.getAvgOfferAmount(), product.getMinOfferAmount(), product.getMaxOfferAmount(), items);
-            products.add(new PartialProductResponse(productId, productCreatedAt, title, description, suggestedPrice, category, offers));
+            products.add(new PartialProductResponse(productId, productCreatedAt, title, description, suggestedPrice, category, offers, vendu ? "sold" : "ongoing"));
         }
         return products;
     }
@@ -71,7 +72,8 @@ public final class SellerAssembler {
                                          String description,
                                          float suggestedPrice,
                                          ProductCategory category,
-                                         SellerAssembler.PartialOfferResponse offers){}
+                                         SellerAssembler.PartialOfferResponse offers,
+                                         String saleStatus){}
 
     public record PartialOfferResponse(int count,
                                        @JsonbNillable Float avgAmount,

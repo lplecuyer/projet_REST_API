@@ -27,12 +27,18 @@ public final class ProductAssembler {
 
     public record ProductRequest(String title, String description, String category, float suggestedPrice){}
 
-    public record ProductResponse(String id, String title, String description, ProductCategory category, float suggestedPrice,
-                                  LocalDateTime createdAt, PartialSellerResponse seller, PartialOfferResponse offers, boolean vendu){}
+  public record ProductResponse(String id, String title, String description,
+                                ProductCategory category, float suggestedPrice,
+                                LocalDateTime createdAt, PartialSellerResponse seller,
+                                PartialOfferResponse offers, boolean vendu, String saleStatus) {
+  }
 
     public record ProductsResponse(java.util.Collection<ProductAssembler.ProductResponse> products) {}
 
     public record PartialSellerResponse(String id, String name) { }
 
-    public record PartialOfferResponse(int count, @JsonbNillable Float avgAmount) { }
+  public record PartialOfferResponse(int count, @JsonbNillable Float avgAmount) { }
+
+  public record BuyerUsernameResponse(String username) {
+  }
 }

@@ -12,6 +12,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
 import java.net.URI;
+import java.util.Objects;
 
 @Path("/products/{productId}/offers")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -50,7 +51,7 @@ public class OfferResource {
           "ALREADY_EXISTS", "Offer already exists for this buyer and product")).build();
     }
 
-    if(offerService.getProduct(productId).vendu()) {
+    if(Objects.equals(offerService.getProduct(productId).saleStatus(), "sold")) {
       return Response.status(Response.Status.CONFLICT).entity(new ErrorResponse(
           "NOT_PERMITTED", "Given product is already sold")).build();
     }
