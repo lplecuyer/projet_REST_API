@@ -10,7 +10,6 @@ import ca.ulaval.glo2003.repositories.IProductRepository;
 import ca.ulaval.glo2003.repositories.ISellerRepository;
 import jakarta.inject.Inject;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -77,13 +76,8 @@ public class ProductService {
     return new ProductAssembler.ProductsResponse(products);
   }
 
-  public boolean getProductsWithGivenUsernameOfferExists(String username) {
-    for (Product product : productRepository.getAll()) {
-      for (Offer offer : product.getOffers()) {
-        if(Objects.equals(offer.getBuyerUsername(), username)) return true;
-      }
-    }
-    return false;
+  public boolean BuyerHasOfferOnProduct(String username, String productId) {
+    return productRepository.get(productId).offerForSameProductAndUserAlreadyExists(username);
   }
 
   public void setProductRepository(IProductRepository productRepository) {
