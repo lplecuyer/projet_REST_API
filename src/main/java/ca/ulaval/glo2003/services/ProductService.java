@@ -34,7 +34,7 @@ public class ProductService {
     } else return null;
   }
 
-  public void registerProduct(Product product, Seller seller) {
+  private void registerProduct(Product product, Seller seller) {
     product.setSellerId(seller.getId());
     seller.addProduct(product);
     sellerRepository.save(seller);
