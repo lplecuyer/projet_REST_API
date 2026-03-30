@@ -4,6 +4,7 @@ import ca.ulaval.glo2003.services.ProductService;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.models.*;
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
@@ -14,9 +15,12 @@ import java.net.URI;
 @Produces(MediaType.APPLICATION_JSON)
 public class ProductResource {
 
-  private ProductService productService = new ProductService();
+  private ProductService productService;
 
-  public ProductResource(){}
+  @Inject
+  public ProductResource(ProductService productService) {
+    this.productService = productService;
+  }
 
   @POST
   public Response create(ProductAssembler.ProductRequest productRequest, @Context UriInfo uriInfo, @HeaderParam("X-Seller-Id") String sellerId){
@@ -43,11 +47,12 @@ public class ProductResource {
       @QueryParam("category") ProductCategory category,
       @QueryParam("sellerId") String sellerId,
       @QueryParam("title") String title,
+      @QueryParam("description") String description,
       @QueryParam("minPrice") @DefaultValue("0") float minPrice,
       @QueryParam("maxPrice") @DefaultValue("3.4028235E38") float maxPrice
   )
   {
-    ProductAssembler.ProductsResponse productsResponse= productService.getAllProducts(sellerId, title, category, minPrice, maxPrice);
+    ProductAssembler.ProductsResponse productsResponse= productService.getAllProducts(sellerId, title, category, minPrice, maxPrice, description);
     return Response.ok(productsResponse).build();
   }
 
