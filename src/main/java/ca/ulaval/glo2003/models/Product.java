@@ -44,6 +44,8 @@ public class Product {
 
   private boolean vendu;
 
+  private Offer selectedOffer = null;
+
   public void validate() {
     Set<ConstraintViolation<Product>> checkResult = validator.validate(this);
     if (!checkResult.isEmpty()) throw new ConstraintViolationException(checkResult);
@@ -162,5 +164,15 @@ public class Product {
       alreadyExists = offer.getBuyerUsername().equals(buyerUsername);
     }
     return alreadyExists;
+  }
+
+  public Offer getSelectedOffer() {
+    if (this.vendu) {
+      return selectedOffer;
+    } else return null;
+  }
+
+  public void setSelectedOffer(Offer selectedOffer) {
+    this.selectedOffer = selectedOffer;
   }
 }

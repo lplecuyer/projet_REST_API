@@ -94,7 +94,7 @@ public class ProductResource {
     if (Objects.equals(productService.getProduct(productId).saleStatus(), "sold")) {
       return Response.status(Response.Status.CONFLICT).entity(new ErrorResponse("NOT_PERMITTED","product given is already sold")).build();
     }
-    productService.sellProduct(productId);
+    productService.sellProduct(productId, buyerUsername.username());
     return Response.status(Response.Status.OK).entity(new ErrorResponse("OK", "Product successfully sold")).build();
   }
 
