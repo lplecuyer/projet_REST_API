@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/${{ github.repository }}
+  IMAGE_NAME: ${{ github.repository }}
   PORT: 8080
   HOST: 0.0.0.0
 
