@@ -2,7 +2,6 @@ on:
   push:
     branches:
       - main
-      - CD/ajoutPipeline
     tags:
       - '**'
   workflow_dispatch:
@@ -34,19 +33,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Take image metadata
+      - name: Metadata de l'image
         id: meta
         uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=sha
-            type=ref,event=tag
+            type=ref, event=tag
 
-      - name: Set up Docker Compose
+      - name: Composition Docker
         uses: docker/setup-compose-action@v2
 
-      - name: Build and push Docker image
+      - name: Build et Push de l'image
         id: push
         uses: docker/build-push-action@v7
         with:
