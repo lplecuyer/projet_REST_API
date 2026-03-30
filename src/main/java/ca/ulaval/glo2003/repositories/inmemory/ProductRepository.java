@@ -1,14 +1,13 @@
-package ca.ulaval.glo2003.repositories;
+package ca.ulaval.glo2003.repositories.inmemory;
 
 import ca.ulaval.glo2003.models.Product;
+import ca.ulaval.glo2003.repositories.IProductRepository;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ProductRepository implements IProductRepository{
-
-    public ProductRepository(){}
 
     private static final Map<String, Product> products = new ConcurrentHashMap<>();
 

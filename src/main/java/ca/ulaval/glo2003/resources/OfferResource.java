@@ -3,7 +3,11 @@ package ca.ulaval.glo2003.resources;
 import ca.ulaval.glo2003.services.OfferService;
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
+import ca.ulaval.glo2003.models.*;
+import ca.ulaval.glo2003.models.Offer;
+import ca.ulaval.glo2003.repositories.inmemory.ProductRepository;
 import ca.ulaval.glo2003.assemblers.OfferAssembler;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
@@ -14,9 +18,12 @@ import java.net.URI;
 @Produces(MediaType.APPLICATION_JSON)
 public class OfferResource {
 
-  private final OfferService offerService = new OfferService();
+  private final OfferService offerService;
 
-  public OfferResource(){}
+  @Inject
+  public OfferResource(OfferService offerService) {
+    this.offerService = offerService;
+  }
 
   @POST
   public Response create(OfferAssembler.OfferRequest offerRequest,

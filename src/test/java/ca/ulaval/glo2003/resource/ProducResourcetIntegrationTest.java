@@ -58,8 +58,7 @@ public class ProducResourcetIntegrationTest extends JerseyTest {
     @Override
     protected Application configure() {
         productService = mock(ProductService.class);
-        ProductResource productResource = new ProductResource();
-        productResource.setProductService(productService);
+        ProductResource productResource = new ProductResource(productService);
         createMissingParameterError();
         createInvalidParameterError();
 
@@ -97,8 +96,8 @@ public class ProducResourcetIntegrationTest extends JerseyTest {
         SELLER_ID_OF_VALID_PRODUCT = seller1.getId();
         Product product = new Product();
         productId1 = product.getId();
-        product.setSeller(seller1);
-        productResponse = ProductAssembler.makeProductResponse(product);
+        product.setSellerId(seller1.getId());
+        productResponse = ProductAssembler.makeProductResponse(product, seller1);
     System.out.println(productResponse);
 
     }

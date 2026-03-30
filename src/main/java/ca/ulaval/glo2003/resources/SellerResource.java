@@ -3,6 +3,7 @@ package ca.ulaval.glo2003.resources;
 import ca.ulaval.glo2003.services.SellerService;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.assemblers.SellerAssembler;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import java.net.URI;
@@ -13,9 +14,12 @@ import java.net.URI;
 @Produces(MediaType.APPLICATION_JSON)
 public class SellerResource {
 
-  private SellerService sellerService = new SellerService();
+  private SellerService sellerService;
 
-  public SellerResource() {}
+  @Inject
+  public SellerResource(SellerService sellerService) {
+    this.sellerService = sellerService;
+  }
 
   @POST
   public Response create(SellerAssembler.SellerRequest sellerRequest, @Context UriInfo uriInfo) {

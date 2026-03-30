@@ -3,14 +3,16 @@ package ca.ulaval.glo2003.services;
 import ca.ulaval.glo2003.assemblers.SellerAssembler;
 import ca.ulaval.glo2003.models.Seller;
 import ca.ulaval.glo2003.repositories.ISellerRepository;
-import ca.ulaval.glo2003.repositories.ProductRepository;
-import ca.ulaval.glo2003.repositories.SellerRepository;
+import jakarta.inject.Inject;
 
 public class SellerService {
 
-  private ISellerRepository sellerRepository = new SellerRepository();
+  private ISellerRepository sellerRepository;
 
-  public SellerService(){}
+  @Inject
+  public SellerService(ISellerRepository sellerRepository){
+    this.sellerRepository = sellerRepository;
+  }
 
   public SellerAssembler.SellerResponse addSeller(SellerAssembler.SellerRequest sellerRequest){
     Seller seller = new Seller(sellerRequest.name(),
@@ -27,9 +29,5 @@ public class SellerService {
     if(seller != null)
       return SellerAssembler.makeSellerResponse(seller);
     else return null;
-  }
-
-  public void setSellerRepository(ISellerRepository sellerRepository){
-    this.sellerRepository = sellerRepository;
   }
 }
