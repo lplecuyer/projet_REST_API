@@ -30,8 +30,7 @@ public class ProductService {
     if (seller != null) {
       registerProduct(product, seller);
       return ProductAssembler.makeProductResponse(product, seller);
-    }
-    else return null;
+    } else return null;
   }
 
   public void registerProduct(Product product, Seller seller) {
@@ -43,10 +42,11 @@ public class ProductService {
 
   public ProductAssembler.ProductResponse getProduct(String id) {
     Product product = productRepository.get(id);
-    Seller seller  = sellerRepository.get(product.getSellerId());
-    if(product != null)
+
+    if (product != null) {
+      Seller seller = sellerRepository.get(product.getSellerId());
       return ProductAssembler.makeProductResponse(product, seller);
-    else return null;
+    } else return null;
   }
 
   public SellerAssembler.SellerResponse getSeller(String id) {
