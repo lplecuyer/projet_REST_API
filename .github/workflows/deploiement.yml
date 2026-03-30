@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - main
+      - CD/ajoutPipeline
     tags:
       - '**'
   workflow_dispatch:
@@ -41,6 +42,9 @@ jobs:
           tags: |
             type=sha
             type=ref,event=tag
+
+      - name: Set up Docker Compose
+        uses: docker/setup-compose-action@v2
 
       - name: Build and push Docker image
         id: push
