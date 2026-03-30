@@ -49,10 +49,8 @@ public class ProductResource {
       @QueryParam("sellerId") String sellerId,
       @QueryParam("title") String title,
       @QueryParam("minPrice") @DefaultValue("0") float minPrice,
-      @QueryParam("maxPrice") @DefaultValue("3.4028235E38") float maxPrice
-  )
-  {
-    ProductAssembler.ProductsResponse productsResponse= productService.getAllProducts(sellerId, title, category, minPrice, maxPrice);
+      @QueryParam("maxPrice") @DefaultValue("3.4028235E38") float maxPrice) {
+    ProductAssembler.ProductsResponse productsResponse = productService.getAllProducts(sellerId, title, category, minPrice, maxPrice);
     return Response.ok(productsResponse).build();
   }
 
@@ -64,7 +62,6 @@ public class ProductResource {
     if (productResponse != null) {
       return Response.status(Response.Status.OK).entity(productResponse).build();
     } else return ErrorResponse.createNotFoundResponse("Product", productId);
-
   }
 
   @Path("/{productId}/sell")

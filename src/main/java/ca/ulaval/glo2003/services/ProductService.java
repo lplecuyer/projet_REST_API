@@ -2,7 +2,6 @@ package ca.ulaval.glo2003.services;
 
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import ca.ulaval.glo2003.assemblers.SellerAssembler;
-import ca.ulaval.glo2003.models.Offer;
 import ca.ulaval.glo2003.models.Product;
 import ca.ulaval.glo2003.models.ProductCategory;
 import ca.ulaval.glo2003.models.Seller;
@@ -62,7 +61,7 @@ public class ProductService {
   }
 
   public ProductAssembler.ProductsResponse getAllProducts(String sellerId, String title,
-                                                          ProductCategory category, float minPrice, float maxPrice){
+                                                          ProductCategory category, float minPrice, float maxPrice) {
     List<ProductAssembler.ProductResponse> products = productRepository.getAll().stream()
         .filter(product -> sellerId == null || Objects.equals(product.getSellerId(), sellerId))
         .filter(product -> title == null || product.getTitle().toLowerCase().contains(title.toLowerCase()))

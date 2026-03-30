@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
 
 public final class ProductAssembler {
 
-  private ProductAssembler() {
-  }
+    private ProductAssembler(){}
 
   public static ProductResponse makeProductResponse(@Valid Product product, @Valid Seller seller) {
     String id = product.getId();
@@ -26,9 +25,7 @@ public final class ProductAssembler {
     return new ProductResponse(id, title, description, category, suggestedPrice, createdAt, sellerResponse, offerResponse, vendu, vendu ? "sold" : "ongoing");
   }
 
-  public record ProductRequest(String title, String description, String category,
-                               float suggestedPrice) {
-  }
+    public record ProductRequest(String title, String description, String category, float suggestedPrice){}
 
   public record ProductResponse(String id, String title, String description,
                                 ProductCategory category, float suggestedPrice,
@@ -36,11 +33,9 @@ public final class ProductAssembler {
                                 PartialOfferResponse offers, boolean vendu, String saleStatus) {
   }
 
-  public record ProductsResponse(java.util.Collection<ProductAssembler.ProductResponse> products) {
-  }
+    public record ProductsResponse(java.util.Collection<ProductAssembler.ProductResponse> products) {}
 
-  public record PartialSellerResponse(String id, String name) {
-  }
+    public record PartialSellerResponse(String id, String name) { }
 
   public record PartialOfferResponse(int count, @JsonbNillable Float avgAmount) {
   }

@@ -2,24 +2,24 @@ package ca.ulaval.glo2003.models;
 
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
-import dev.morphia.annotations.Reference;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.constraints.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Entity
-public class Product{
-    private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-    private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
+public class Product {
+  private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+  private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
 
-    @Id
-    private final String id = String.valueOf(NEXT_ID.getAndIncrement());
+  @Id
+  private final String id = String.valueOf(NEXT_ID.getAndIncrement());
 
   @NotNull(message = "MISSING_PARAMETER: title is mandatory")
   @Size(min = 1, message = "INVALID_PARAMETER: title must not be blank")
@@ -38,7 +38,7 @@ public class Product{
 
   private final LocalDateTime createdAt = LocalDateTime.now();
 
-    private String sellerId;
+  private String sellerId;
 
   private final ArrayList<Offer> offers = new ArrayList<>();
 
@@ -124,9 +124,13 @@ public class Product{
   }
 
 
-    public String getSellerId(){return sellerId; }
+  public String getSellerId() {
+    return sellerId;
+  }
 
-    public void setSellerId(String sellerId){this.sellerId = sellerId;}
+  public void setSellerId(String sellerId) {
+    this.sellerId = sellerId;
+  }
 
   public boolean getVendu() {
     return vendu;
