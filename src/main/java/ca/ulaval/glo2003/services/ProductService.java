@@ -79,12 +79,4 @@ public class ProductService {
   public boolean BuyerHasOfferOnProduct(String username, String productId) {
     return productRepository.get(productId).offerForSameProductAndUserAlreadyExists(username);
   }
-
-  public void setProductRepository(IProductRepository productRepository) {
-    this.productRepository = productRepository;
-  }
-
-  public void setSellerRepository(ISellerRepository sellerRepository) {
-    this.sellerRepository = sellerRepository;
-  }
 }
