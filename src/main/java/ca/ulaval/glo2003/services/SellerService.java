@@ -30,8 +30,4 @@ public class SellerService {
       return SellerAssembler.makeSellerResponse(seller);
     else return null;
   }
-
-  public void setSellerRepository(ISellerRepository sellerRepository){
-    this.sellerRepository = sellerRepository;
-  }
 }

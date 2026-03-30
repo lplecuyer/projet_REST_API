@@ -6,8 +6,7 @@ import ca.ulaval.glo2003.repositories.ISellerRepository;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
-public enum SellerRepository implements ISellerRepository {
-    INSTANCE;
+public class SellerRepository implements ISellerRepository {
 
     private final Map<String, Seller> sellers = new ConcurrentHashMap<>();
 

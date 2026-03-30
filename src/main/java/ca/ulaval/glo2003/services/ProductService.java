@@ -28,7 +28,7 @@ public class ProductService {
        ProductCategory.valueOf(productRequest.category()), productRequest.suggestedPrice());
     if (seller != null) {
       registerProduct(product, seller);
-      return ProductAssembler.makeProductResponse(product);
+      return ProductAssembler.makeProductResponse(product, seller);
     }
     else return null;
   }
@@ -42,8 +42,9 @@ public class ProductService {
 
   public ProductAssembler.ProductResponse getProduct(String id){
     Product product = productRepository.get(id);
+    Seller seller  = sellerRepository.get(product.getSellerId());
     if(product != null)
-      return ProductAssembler.makeProductResponse(product);
+      return ProductAssembler.makeProductResponse(product, seller);
     else return null;
   }
 
@@ -54,7 +55,10 @@ public class ProductService {
         .filter(product -> title == null || product.getTitle().toLowerCase().contains(title.toLowerCase()))
         .filter(product -> category == null || product.getCategory() == category)
         .filter(product -> product.getSuggestedPrice() >= minPrice && product.getSuggestedPrice() <= maxPrice)
-        .map(ProductAssembler::makeProductResponse)
+        .map(product -> {
+          Seller seller = sellerRepository.get(product.getSellerId());
+          return ProductAssembler.makeProductResponse(product, seller);
+        })
         .toList();
     return new ProductAssembler.ProductsResponse(products);
   }

@@ -37,7 +37,7 @@ public class Main {
         sellerRepository = new SellerRepositoryMongo(datastore);
       } else {
         productRepository = new ProductRepository();
-        sellerRepository = SellerRepository.INSTANCE;
+        sellerRepository = new SellerRepository();
       }
 
         final ResourceConfig rc = new ResourceConfig()
@@ -53,8 +53,6 @@ public class Main {
                     protected void configure() {
                         bind(productRepository).to(IProductRepository.class);
                         bind(sellerRepository).to(ISellerRepository.class);
-                        bind(ProductService.class).to(ProductService.class);
-                        bind(SellerService.class).to(SellerService.class);
                     }
                 });
 
