@@ -2,6 +2,7 @@ package ca.ulaval.glo2003.services;
 
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import ca.ulaval.glo2003.assemblers.SellerAssembler;
+import ca.ulaval.glo2003.models.Offer;
 import ca.ulaval.glo2003.models.Product;
 import ca.ulaval.glo2003.models.ProductCategory;
 import ca.ulaval.glo2003.models.Seller;
@@ -56,8 +57,17 @@ public class ProductService {
     else return null;
   }
 
-  public void sellProduct(String id) {
-    productRepository.get(id).setVendu(true);
+  public void sellProduct(String id, String buyerUsername) {
+    Product product = productRepository.get(id);
+    product.setVendu(true);
+
+    Offer selectedOffer = product.getOffers()
+        .stream()
+        .filter(o -> o.getBuyerUsername().equals(buyerUsername))
+        .findFirst()
+        .orElseThrow(() -> new RuntimeException("Offer not found for this buyer"));
+
+    product.setSelectedOffer(selectedOffer);
   }
 
   public ProductAssembler.ProductsResponse getAllProducts(String sellerId, String title,
