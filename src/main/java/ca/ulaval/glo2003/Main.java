@@ -53,6 +53,8 @@ public class Main {
                     protected void configure() {
                         bind(productRepository).to(IProductRepository.class);
                         bind(sellerRepository).to(ISellerRepository.class);
+                        bind(ProductService.class).to(ProductService.class);
+                        bind(SellerService.class).to(SellerService.class);
                     }
                 });
 
