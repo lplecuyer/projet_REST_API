@@ -11,6 +11,7 @@ import ca.ulaval.glo2003.resources.OfferResource;
 import ca.ulaval.glo2003.resources.ProductResource;
 import ca.ulaval.glo2003.resources.SellerResource;
 import ca.ulaval.glo2003.persistence.mongodb.MorphiaDatastoreProvider;
+import ca.ulaval.glo2003.services.OfferService;
 import ca.ulaval.glo2003.services.ProductService;
 import ca.ulaval.glo2003.services.SellerService;
 import dev.morphia.Datastore;
@@ -55,6 +56,7 @@ public class Main {
                         bind(sellerRepository).to(ISellerRepository.class);
                         bind(ProductService.class).to(ProductService.class);
                         bind(SellerService.class).to(SellerService.class);
+                        bind(OfferService.class).to(OfferService.class);
                     }
                 });
 
