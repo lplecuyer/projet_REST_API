@@ -25,7 +25,7 @@ jobs:
         run: mvn editorconfig:check
 
       - name: Compilation
-        run: mvn compile
+        run: mvn --batch-mode compile
 
       - name: Tests
-        run: mvn test
+        run: mvn --batch-mode test
