@@ -39,6 +39,11 @@ public final class SellerAssembler {
             ProductCategory category = product.getCategory();
             boolean vendu = product.getVendu();
 
+            SellerAssembler.PartialSelectedOfferResponse selectedOffer = null;
+            if (product.getSelectedOffer() != null) {
+              selectedOffer = new SellerAssembler.PartialSelectedOfferResponse(product.getSelectedOffer().getBuyerUsername(), product.getSelectedOffer().getAmount());
+            }
+
             Collection<SellerAssembler.PartialItemResponse> items = new ArrayList<>();
 
             for (Offer item : product.getOffers()) {
@@ -46,7 +51,7 @@ public final class SellerAssembler {
             }
 
             SellerAssembler.PartialOfferResponse offers = new PartialOfferResponse(product.getOfferCount(), product.getAvgOfferAmount(), product.getMinOfferAmount(), product.getMaxOfferAmount(), items);
-            products.add(new PartialProductResponse(productId, productCreatedAt, title, description, suggestedPrice, category, offers, vendu ? "sold" : "ongoing"));
+            products.add(new PartialProductResponse(productId, productCreatedAt, title, description, suggestedPrice, category, offers, vendu ? "sold" : "ongoing", selectedOffer));
         }
         return products;
     }
@@ -73,7 +78,8 @@ public final class SellerAssembler {
                                          float suggestedPrice,
                                          ProductCategory category,
                                          SellerAssembler.PartialOfferResponse offers,
-                                         String saleStatus){}
+                                         String saleStatus,
+                                         PartialSelectedOfferResponse selectedOffer){}
 
     public record PartialOfferResponse(int count,
                                        @JsonbNillable Float avgAmount,
@@ -85,5 +91,9 @@ public final class SellerAssembler {
                                       String createdAt,
                                       float amount,
                                       String message) {
+    }
+
+    @JsonbNillable
+    public record PartialSelectedOfferResponse(String username, Float amount) {
     }
 }
