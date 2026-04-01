@@ -18,7 +18,7 @@ public final class ProductAssembler {
     String title = product.getTitle();
     String description = product.getDescription();
     ProductCategory category = product.getCategory();
-    float suggestedPrice = product.getSuggestedPrice();
+    Float suggestedPrice = product.getSuggestedPrice();
     LocalDateTime createdAt = product.getCreatedAt();
     PartialSellerResponse sellerResponse = new PartialSellerResponse(product.getSellerId(), seller.getName());
     PartialOfferResponse offerResponse = new PartialOfferResponse(product.getOfferCount(), product.getAvgOfferAmount());
@@ -31,7 +31,7 @@ public final class ProductAssembler {
   }
 
   public record ProductRequest(String title, String description, String category,
-                               float suggestedPrice) {
+                               Float suggestedPrice) {
   }
 
   public record ProductResponse(String id, String title, String description,

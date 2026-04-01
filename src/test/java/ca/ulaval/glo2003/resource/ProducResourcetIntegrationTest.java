@@ -98,7 +98,6 @@ public class ProducResourcetIntegrationTest extends JerseyTest {
         productId1 = product.getId();
         product.setSellerId(seller1.getId());
         productResponse = ProductAssembler.makeProductResponse(product, seller1);
-    System.out.println(productResponse);
 
     }
 

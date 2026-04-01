@@ -8,6 +8,10 @@ public enum ProductCategory {
     housing;
 
   public static boolean categoryExists(String stringCategory){
+      if (stringCategory == null) {
+        return false;
+      }
+
       boolean exists = true;
       try{
         ProductCategory.valueOf(stringCategory);

@@ -2,6 +2,8 @@ package ca.ulaval.glo2003.models;
 
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
+import dev.morphia.annotations.IndexOptions;
+import dev.morphia.annotations.Indexed;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validation;
@@ -19,7 +21,7 @@ public class Product {
   private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
 
   @Id
-  private final String id = "A" + String.valueOf(NEXT_ID.getAndIncrement());
+  private String id = "A" + NEXT_ID.getAndIncrement();
 
   @NotNull(message = "MISSING_PARAMETER: title is mandatory")
   @Size(min = 1, message = "INVALID_PARAMETER: title must not be blank")
