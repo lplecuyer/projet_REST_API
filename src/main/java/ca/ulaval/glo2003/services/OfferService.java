@@ -25,6 +25,15 @@ public class OfferService {
     return product.offerForSameProductAndUserAlreadyExists(buyerUsername);
   }
 
+  public boolean offerAmountLessThanProductPrice(OfferAssembler.OfferRequest offerRequest,
+                                                 ProductAssembler.ProductResponse productResponse) {
+    if(offerRequest.amount() == null) {
+      return false;
+    }
+
+    return offerRequest.amount() < productResponse.suggestedPrice();
+  }
+
   public OfferAssembler.OfferResponse addOffer(OfferAssembler.OfferRequest offerRequest,
                                                String productId, String buyerUsername) {
     Offer offer = new Offer(offerRequest.amount(), offerRequest.message(), buyerUsername);

@@ -42,7 +42,7 @@ public class OfferResource {
       return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(
           "NOT_FOUND", "Product not found")).build();
 
-    } else if (offerRequest.amount() < productResponse.suggestedPrice()) {
+    } else if (offerService.offerAmountLessThanProductPrice(offerRequest, productResponse)) {
       return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse(
           "INVALID_PARAMETER", "Amount must be larger than suggested amount")).build();
 
