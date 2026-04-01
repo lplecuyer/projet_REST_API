@@ -28,7 +28,7 @@ public class Offer {
 
     @NotNull(message = "MISSING_PARAMETER: amount is mandatory")
     @DecimalMin(value = "1", message = "INVALID_PARAMETER: amount must be higher than 1$")
-    private Float amount;
+    private Float amount = 0F;
 
     @NotNull(message = "MISSING_PARAMETER: message is mandatory")
     @Size(min = 50, message = "INVALID_PARAMETER: message must be at least 50 characters")

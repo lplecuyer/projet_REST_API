@@ -8,6 +8,7 @@ import ca.ulaval.glo2003.models.Offer;
 import ca.ulaval.glo2003.repositories.inmemory.ProductRepository;
 import ca.ulaval.glo2003.assemblers.OfferAssembler;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
@@ -27,7 +28,7 @@ public class OfferResource {
   }
 
   @POST
-  public Response create(OfferAssembler.OfferRequest offerRequest,
+  public Response create(@Valid OfferAssembler.OfferRequest offerRequest,
                          @PathParam("productId") String productId,
                          @Context UriInfo uriInfo,
                          @HeaderParam("X-Buyer-Username") String buyerUsername) {
@@ -42,7 +43,11 @@ public class OfferResource {
       return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(
           "NOT_FOUND", "Product not found")).build();
 
-    } else if (offerRequest.amount() < productResponse.suggestedPrice()) {
+    } else if (offerRequest.amount() == null){
+      return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse(
+          "MISSING_PARAMETER", "Amount IS MANDATORY")).build();
+    }
+    else if (offerRequest.amount() < productResponse.suggestedPrice()) {
       return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse(
           "INVALID_PARAMETER", "Amount must be larger than suggested amount")).build();
 
