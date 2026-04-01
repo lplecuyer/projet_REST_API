@@ -35,9 +35,10 @@ public class OfferService {
 
   public ProductAssembler.ProductResponse getProduct(String id){
     Product product = productRepository.get(id);
-    Seller seller = sellerRepository.get(product.getSellerId());
-    if(product != null)
+    if(product != null) {
+      Seller seller = sellerRepository.get(product.getSellerId());
       return ProductAssembler.makeProductResponse(product, seller);
+    }
     else return null;
   }
 }
