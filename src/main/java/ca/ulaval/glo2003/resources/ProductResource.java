@@ -99,6 +99,16 @@ public class ProductResource {
     return Response.status(Response.Status.OK).entity(new ErrorResponse("OK", "Product successfully sold")).build();
   }
 
+  @Path("/{productId}/comment")
+  @POST
+  public Response reviewProduct(
+      @QueryParam("X-Buyer-username") String buyerUsername,
+      @Valid ProductAssembler.ProductRequest productRequest,
+      @PathParam("productId") String productId) {
+
+      return null;
+  }
+
   public void setProductService(ProductService productService) {
     this.productService = productService;
   }

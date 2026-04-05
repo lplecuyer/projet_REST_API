@@ -2,12 +2,7 @@ package ca.ulaval.glo2003.models;
 
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
-import dev.morphia.annotations.IndexOptions;
-import dev.morphia.annotations.Indexed;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
+import jakarta.validation.*;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
@@ -47,6 +42,9 @@ public class Product {
   private boolean vendu;
 
   private Offer selectedOffer = null;
+
+  @Valid
+  private Review review;
 
   public void validate() {
     Set<ConstraintViolation<Product>> checkResult = validator.validate(this);
@@ -126,7 +124,6 @@ public class Product {
   public LocalDateTime getCreatedAt() {
     return createdAt;
   }
-
 
   public String getSellerId() {
     return sellerId;
