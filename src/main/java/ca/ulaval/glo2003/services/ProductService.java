@@ -2,13 +2,11 @@ package ca.ulaval.glo2003.services;
 
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import ca.ulaval.glo2003.assemblers.SellerAssembler;
-import ca.ulaval.glo2003.models.Offer;
-import ca.ulaval.glo2003.models.Product;
-import ca.ulaval.glo2003.models.ProductCategory;
-import ca.ulaval.glo2003.models.Seller;
+import ca.ulaval.glo2003.models.*;
 import ca.ulaval.glo2003.repositories.IProductRepository;
 import ca.ulaval.glo2003.repositories.ISellerRepository;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Objects;
@@ -87,5 +85,27 @@ public class ProductService {
 
   public boolean BuyerHasOfferOnProduct(String username, String productId) {
     return productRepository.get(productId).offerForSameProductAndUserAlreadyExists(username);
+  }
+
+  public ProductAssembler.ProductResponse addReview(
+      String productId,
+      ProductAssembler.@Valid ReviewRequest reviewRequest,
+      String buyerUsername
+  ) {
+    Product product = productRepository.get(productId);
+
+    Review review = new Review(
+        reviewRequest.rating(),
+        reviewRequest.comment(),
+        buyerUsername,
+        productId
+    );
+
+    product.setReview(review);
+    productRepository.save(product);
+
+    Seller seller = sellerRepository.get(product.getSellerId());
+
+    return ProductAssembler.makeProductResponse(product, seller);
   }
 }

@@ -141,6 +141,10 @@ public class Product {
     this.vendu = vendu;
   }
 
+  public Review getReview() {return this.review;}
+
+  public void setReview(@Valid Review review) { this.review = review; }
+
   public Float getMinOfferAmount() {
     float min = Float.MAX_VALUE;
     for (Offer offer : offers) {
