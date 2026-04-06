@@ -107,9 +107,6 @@ public class ProductResource {
       @Valid ProductAssembler.ReviewRequest reviewRequest,
       @PathParam("productId") String productId) {
 
-    System.out.println(buyerUsername + " ");
-    System.out.println(productId + " ");
-    System.out.println(reviewRequest);
     ProductAssembler.ProductResponse response = productService.addReview(productId, reviewRequest, buyerUsername);
 
     if (response != null) {
