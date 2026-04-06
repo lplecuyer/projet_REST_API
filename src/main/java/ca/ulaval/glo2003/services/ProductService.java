@@ -2,11 +2,14 @@ package ca.ulaval.glo2003.services;
 
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import ca.ulaval.glo2003.assemblers.SellerAssembler;
+import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.models.*;
 import ca.ulaval.glo2003.repositories.IProductRepository;
 import ca.ulaval.glo2003.repositories.ISellerRepository;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.WebApplicationException;
 
 import java.util.List;
 import java.util.Objects;
@@ -94,18 +97,25 @@ public class ProductService {
   ) {
     Product product = productRepository.get(productId);
 
-    Review review = new Review(
-        reviewRequest.rating(),
-        reviewRequest.comment(),
-        buyerUsername,
-        productId
-    );
+    if (product != null) {
+      if (!product.getVendu()) { throw new WebApplicationException(ErrorResponse.createForbiddenResponse());}
+      if (product.getOffers().stream().noneMatch(o -> o.getBuyerUsername().equals(buyerUsername))) {
+        throw new WebApplicationException(ErrorResponse.createForbiddenResponse());
+      }
 
-    product.setReview(review);
-    productRepository.save(product);
+      Review review = new Review(
+          reviewRequest.rating(),
+          reviewRequest.comment(),
+          buyerUsername,
+          productId
+      );
 
-    Seller seller = sellerRepository.get(product.getSellerId());
+      product.setReview(review);
+      productRepository.save(product);
 
-    return ProductAssembler.makeProductResponse(product, seller);
+      Seller seller = sellerRepository.get(product.getSellerId());
+      return ProductAssembler.makeProductResponse(product, seller);
+    }
+    else return null;
   }
 }

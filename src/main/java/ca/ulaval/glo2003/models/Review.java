@@ -6,11 +6,11 @@ import jakarta.validation.constraints.*;
 @Entity
 public class Review {
   @NotNull(message = "MISSING_PARAMETER: rating comment is mandatory")
-  @DecimalMin(value = "1.0", message = "INVALID_PARAMETER: rating must be between 1 and 5")
-  @DecimalMax(value = "5.0", message = "INVALID_PARAMETER: rating must be between 1 and 5")
+  @DecimalMin(value = "0.0", message = "INVALID_PARAMETER: rating must be between 0 and 5")
+  @DecimalMax(value = "5.0", message = "INVALID_PARAMETER: rating must be between 0 and 5")
   private float rating;
 
-  @NotNull(message = "MISSING_PARAMETER: review comment is mandatory")
+  @NotNull(message = "MISSING_PARAMETER: comment is mandatory")
   @NotEmpty(message = "INVALID_PARAMETER: comment must not be blank")
   private String comment;
 

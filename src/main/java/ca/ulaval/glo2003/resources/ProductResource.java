@@ -112,6 +112,9 @@ public class ProductResource {
     System.out.println(reviewRequest);
     ProductAssembler.ProductResponse response = productService.addReview(productId, reviewRequest, buyerUsername);
 
-    return Response.status(Response.Status.CREATED).entity(response).build();
+    if (response != null) {
+      return Response.status(Response.Status.CREATED).entity(response).build();
+    }
+    else return ErrorResponse.createNotFoundResponse("Product", productId);
   }
 }
