@@ -8,7 +8,6 @@ import ca.ulaval.glo2003.repositories.IProductRepository;
 import ca.ulaval.glo2003.repositories.ISellerRepository;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.WebApplicationException;
 
 import java.util.List;
@@ -96,7 +95,6 @@ public class ProductService {
       ProductAssembler.@Valid ReviewRequest reviewRequest,
       String buyerUsername
   ) {
-    System.out.println("in service : " + productId);
     Product product = productRepository.get(productId);
 
     if (product != null) {
@@ -108,8 +106,7 @@ public class ProductService {
       Review review = new Review(
           reviewRequest.rating(),
           reviewRequest.comment(),
-          buyerUsername,
-          productId
+          buyerUsername
       );
 
       product.setReview(review);

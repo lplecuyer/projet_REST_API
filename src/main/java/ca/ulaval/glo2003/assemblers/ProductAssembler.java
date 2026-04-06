@@ -78,13 +78,7 @@ public final class ProductAssembler {
   public record BuyerUsernameResponse(String username) { }
 
   public record ReviewRequest(
-      @NotNull(message = "MISSING_PARAMETER: comment is mandatory")
-      @NotEmpty(message = "INVALID_PARAMETER: comment must not be blank")
       String comment,
-
-      @NotNull(message = "MISSING_PARAMETER: rating is mandatory")
-      @DecimalMin(value = "0.0", message = "INVALID_PARAMETER: rating must be between 0 and 5")
-      @DecimalMax(value = "5.0", message = "INVALID_PARAMETER: rating must be between 0 and 5")
       Float rating
   ) {}
 

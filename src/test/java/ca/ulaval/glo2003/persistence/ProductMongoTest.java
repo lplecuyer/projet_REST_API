@@ -120,7 +120,7 @@ class ProductMongoTest {
     Product product = new Product("Laptop", "Bon laptop", ProductCategory.electronics, 1200f);
     product.setSellerId("seller-1");
 
-    Review review = new Review(5, "cool beans", "buyer1", product.getId());
+    Review review = new Review(5, "cool beans", "buyer1");
     product.setReview(review);
 
     productRepo.save(product);
