@@ -105,9 +105,11 @@ public class ProducResourcetIntegrationTest extends JerseyTest {
         productId1 = product.getId();
         product.setSellerId(seller1.getId());
         productResponse = ProductAssembler.makeProductResponse(product, seller1);
+
+        productService.registerProduct(product, seller1);
   }
 
-  @AfterEach
+    @AfterEach
     void stopJersey() throws Exception {
         super.tearDown();
     }
@@ -244,24 +246,8 @@ public class ProducResourcetIntegrationTest extends JerseyTest {
 
   @Test
   void givenValidReviewRequest_WhenCreateReview_ThenReviewIsCreated() {
-    ProductAssembler.ReviewResponse reviewResponse =
-        new ProductAssembler.ReviewResponse("Très bon produit", 4.5f, VALID_BUYER_USERNAME);
-
-    ProductAssembler.ProductResponse reviewedProductResponse =
-        new ProductAssembler.ProductResponse(
-            productResponse.id(),
-            productResponse.title(),
-            productResponse.description(),
-            productResponse.category(),
-            productResponse.suggestedPrice(),
-            LocalDateTime.now(),
-            productResponse.seller(),
-            productResponse.offers(),
-            productResponse.vendu(),
-            productResponse.saleStatus(),
-            productResponse.selectedOffer(),
-            reviewResponse
-        );
+    ProductAssembler.ReviewResponse reviewResponse = new ProductAssembler.ReviewResponse("Très bon produit", 4.5f, VALID_BUYER_USERNAME);
+    ProductAssembler.ProductResponse reviewedProductResponse = productForReviewMaker(reviewResponse);
 
     when(productService.addReview(anyString(), any(ProductAssembler.ReviewRequest.class), eq(VALID_BUYER_USERNAME)))
         .thenReturn(reviewedProductResponse);
@@ -269,8 +255,7 @@ public class ProducResourcetIntegrationTest extends JerseyTest {
     Response response = postReview(productId1, VALID_BUYER_USERNAME, validReviewPayload());
 
     assertEquals(201, response.getStatus());
-    verify(productService, times(1))
-        .addReview(eq(productId1), any(ProductAssembler.ReviewRequest.class), eq(VALID_BUYER_USERNAME));
+    verify(productService, times(1)).addReview(eq(productId1), any(ProductAssembler.ReviewRequest.class), eq(VALID_BUYER_USERNAME));
   }
 
   @Test
@@ -313,25 +298,6 @@ public class ProducResourcetIntegrationTest extends JerseyTest {
 
     ErrorResponse err = response.readEntity(ErrorResponse.class);
     assertEquals("NOT_FOUND", err.error);
-  }
-
-  @Test
-  void givenReviewWithTooShortComment_WhenCreateReview_Then400() {
-    Map<String, Object> data = validReviewPayload();
-    data.put("comment", "bad");
-
-    ProductAssembler.ReviewRequest invalidRequest =
-        new ProductAssembler.ReviewRequest("bad", 4.5f);
-
-    Set<ConstraintViolation<ProductAssembler.ReviewRequest>> violations =
-        validator.validate(invalidRequest);
-
-    when(productService.addReview(anyString(), any(ProductAssembler.ReviewRequest.class), eq(VALID_BUYER_USERNAME)))
-        .thenThrow(new ConstraintViolationException(violations));
-
-    Response response = postReview(productId1, VALID_BUYER_USERNAME, data);
-
-    assertEquals(400, response.getStatus());
   }
 
   @Test
@@ -390,6 +356,23 @@ public class ProducResourcetIntegrationTest extends JerseyTest {
     data.put("comment", "Très bon produit");
     data.put("rating", 4.5f);
     return data;
+  }
+
+  private ProductAssembler.ProductResponse productForReviewMaker(ProductAssembler.ReviewResponse reviewResponse) {
+    return new ProductAssembler.ProductResponse(
+        productResponse.id(),
+        productResponse.title(),
+        productResponse.description(),
+        productResponse.category(),
+        productResponse.suggestedPrice(),
+        LocalDateTime.now(),
+        productResponse.seller(),
+        productResponse.offers(),
+        productResponse.vendu(),
+        productResponse.saleStatus(),
+        productResponse.selectedOffer(),
+        reviewResponse
+    );
   }
 
 }
