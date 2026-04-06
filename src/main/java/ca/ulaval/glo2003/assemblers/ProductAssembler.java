@@ -5,6 +5,7 @@ import ca.ulaval.glo2003.models.ProductCategory;
 import ca.ulaval.glo2003.models.Seller;
 import jakarta.json.bind.annotation.JsonbNillable;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 
@@ -76,7 +77,16 @@ public final class ProductAssembler {
 
   public record BuyerUsernameResponse(String username) { }
 
-  public record ReviewRequest(String comment, Float rating) {}
+  public record ReviewRequest(
+      @NotNull(message = "MISSING_PARAMETER: comment is mandatory")
+      @NotEmpty(message = "INVALID_PARAMETER: comment must not be blank")
+      String comment,
+
+      @NotNull(message = "MISSING_PARAMETER: rating is mandatory")
+      @DecimalMin(value = "0.0", message = "INVALID_PARAMETER: rating must be between 0 and 5")
+      @DecimalMax(value = "5.0", message = "INVALID_PARAMETER: rating must be between 0 and 5")
+      Float rating
+  ) {}
 
   public record ReviewResponse(String comment, Float rating, String buyerUsername) {}
 }

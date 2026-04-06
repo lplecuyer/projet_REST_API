@@ -69,6 +69,7 @@ public class ProductService {
         .orElseThrow(() -> new RuntimeException("Offer not found for this buyer"));
 
     product.setSelectedOffer(selectedOffer);
+    productRepository.save(product);
   }
 
   public ProductAssembler.ProductsResponse getAllProducts(String sellerId, String title,
@@ -95,6 +96,7 @@ public class ProductService {
       ProductAssembler.@Valid ReviewRequest reviewRequest,
       String buyerUsername
   ) {
+    System.out.println("in service : " + productId);
     Product product = productRepository.get(productId);
 
     if (product != null) {

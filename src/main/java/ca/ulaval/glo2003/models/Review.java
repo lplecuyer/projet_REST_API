@@ -32,5 +32,4 @@ public class Review {
   public float getRating() { return rating; }
   public String getComment() { return comment; }
   public String getBuyerUsername() { return buyerUsername; }
-  public String getProductId() { return productId; }
 }

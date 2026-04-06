@@ -107,6 +107,8 @@ public class ProductResource {
       @Valid ProductAssembler.ReviewRequest reviewRequest,
       @PathParam("productId") String productId) {
 
+    if (buyerUsername == null || buyerUsername.isBlank()) { return ErrorResponse.createForbiddenResponse(); }
+
     ProductAssembler.ProductResponse response = productService.addReview(productId, reviewRequest, buyerUsername);
 
     if (response != null) {

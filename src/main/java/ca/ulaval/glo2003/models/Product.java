@@ -7,6 +7,7 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -37,7 +38,7 @@ public class Product {
 
   private String sellerId;
 
-  private final ArrayList<Offer> offers = new ArrayList<>();
+  private final List<Offer> offers = new ArrayList<>();
 
   private boolean vendu;
 
@@ -117,7 +118,7 @@ public class Product {
     this.suggestedPrice = suggestedPrice;
   }
 
-  public ArrayList<Offer> getOffers() {
+  public List<Offer> getOffers() {
     return offers;
   }
 

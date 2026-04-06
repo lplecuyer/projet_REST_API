@@ -39,6 +39,7 @@ public class OfferService {
     Offer offer = new Offer(offerRequest.amount(), offerRequest.message(), buyerUsername);
     Product product = productRepository.get(productId);
     product.addOffer(offer);
+    productRepository.save(product);
     return OfferAssembler.makeOfferResponse(offer);
   }
 
