@@ -155,6 +155,14 @@
                 <argLine>-Dnet.bytebuddy.experimental=true</argLine>
             </configuration>
         </plugin>
+        <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>12.2.0</version>
+            <configuration>
+                <nvdApiKey>be5d672c-6da1-4579-add4-d1a8a539ef3f</nvdApiKey>
+            </configuration>
+        </plugin>
     </plugins>
   </build>
 </project>

@@ -1,0 +1,21 @@
+on:
+  push:
+    branches:
+      - "**"
+jobs:
+  Securite-Continue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Analyse de securite
+        run: mvn dependency-check:check
