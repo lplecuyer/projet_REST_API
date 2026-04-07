@@ -2,16 +2,12 @@ package ca.ulaval.glo2003.models;
 
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
-import dev.morphia.annotations.IndexOptions;
-import dev.morphia.annotations.Indexed;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
+import jakarta.validation.*;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -42,11 +38,14 @@ public class Product {
 
   private String sellerId;
 
-  private final ArrayList<Offer> offers = new ArrayList<>();
+  private final List<Offer> offers = new ArrayList<>();
 
   private boolean vendu;
 
   private Offer selectedOffer = null;
+
+  @Valid
+  private Review review;
 
   public void validate() {
     Set<ConstraintViolation<Product>> checkResult = validator.validate(this);
@@ -119,14 +118,13 @@ public class Product {
     this.suggestedPrice = suggestedPrice;
   }
 
-  public ArrayList<Offer> getOffers() {
+  public List<Offer> getOffers() {
     return offers;
   }
 
   public LocalDateTime getCreatedAt() {
     return createdAt;
   }
-
 
   public String getSellerId() {
     return sellerId;
@@ -143,6 +141,10 @@ public class Product {
   public void setVendu(boolean vendu) {
     this.vendu = vendu;
   }
+
+  public Review getReview() {return this.review;}
+
+  public void setReview(@Valid Review review) { this.review = review; }
 
   public Float getMinOfferAmount() {
     float min = Float.MAX_VALUE;

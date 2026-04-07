@@ -12,7 +12,7 @@ public final class OfferAssembler {
     public static OfferResponse makeOfferResponse(@Valid Offer offer) {
         String offerId = offer.getOfferId();
         String productId = offer.getProductId();
-        double amount = offer.getAmount();
+        Float amount = offer.getAmount();
         String message = offer.getMessage();
         String buyerUsername = offer.getBuyerUsername();
         LocalDateTime offerCreatedDate = offer.getCreatedAt();
@@ -21,7 +21,7 @@ public final class OfferAssembler {
 
     public record OfferRequest(Float amount, String message){}
 
-    public record OfferResponse(String offerId, String productId, double amount, String message, String buyerUsername,
+    public record OfferResponse(String offerId, String productId, Float amount, String message, String buyerUsername,
                                 LocalDateTime offerCreatedDate) {
     }
 }

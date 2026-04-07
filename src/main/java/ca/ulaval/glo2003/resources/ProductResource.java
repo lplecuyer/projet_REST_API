@@ -99,7 +99,21 @@ public class ProductResource {
     return Response.status(Response.Status.OK).entity(new ErrorResponse("OK", "Product successfully sold")).build();
   }
 
-  public void setProductService(ProductService productService) {
-    this.productService = productService;
+
+  @POST
+  @Path("/{productId}/review")
+  public Response createReview(
+      @HeaderParam("X-Buyer-username") String buyerUsername,
+      @Valid ProductAssembler.ReviewRequest reviewRequest,
+      @PathParam("productId") String productId) {
+
+    if (buyerUsername == null || buyerUsername.isBlank()) { return ErrorResponse.createForbiddenResponse(); }
+
+    ProductAssembler.ProductResponse response = productService.addReview(productId, reviewRequest, buyerUsername);
+
+    if (response != null) {
+      return Response.status(Response.Status.CREATED).entity(response).build();
+    }
+    else return ErrorResponse.createNotFoundResponse("Product", productId);
   }
 }

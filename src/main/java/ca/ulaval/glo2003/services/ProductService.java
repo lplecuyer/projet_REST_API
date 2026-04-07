@@ -2,13 +2,13 @@ package ca.ulaval.glo2003.services;
 
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import ca.ulaval.glo2003.assemblers.SellerAssembler;
-import ca.ulaval.glo2003.models.Offer;
-import ca.ulaval.glo2003.models.Product;
-import ca.ulaval.glo2003.models.ProductCategory;
-import ca.ulaval.glo2003.models.Seller;
+import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
+import ca.ulaval.glo2003.models.*;
 import ca.ulaval.glo2003.repositories.IProductRepository;
 import ca.ulaval.glo2003.repositories.ISellerRepository;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.WebApplicationException;
 
 import java.util.List;
 import java.util.Objects;
@@ -68,6 +68,7 @@ public class ProductService {
         .orElseThrow(() -> new RuntimeException("Offer not found for this buyer"));
 
     product.setSelectedOffer(selectedOffer);
+    productRepository.save(product);
   }
 
   public ProductAssembler.ProductsResponse getAllProducts(String sellerId, String title,
@@ -87,5 +88,33 @@ public class ProductService {
 
   public boolean BuyerHasOfferOnProduct(String username, String productId) {
     return productRepository.get(productId).offerForSameProductAndUserAlreadyExists(username);
+  }
+
+  public ProductAssembler.ProductResponse addReview(
+      String productId,
+      ProductAssembler.@Valid ReviewRequest reviewRequest,
+      String buyerUsername
+  ) {
+    Product product = productRepository.get(productId);
+
+    if (product != null) {
+      if (!product.getVendu()) { throw new WebApplicationException(ErrorResponse.createForbiddenResponse());}
+      if (product.getOffers().stream().noneMatch(o -> o.getBuyerUsername().equals(buyerUsername))) {
+        throw new WebApplicationException(ErrorResponse.createForbiddenResponse());
+      }
+
+      Review review = new Review(
+          reviewRequest.rating(),
+          reviewRequest.comment(),
+          buyerUsername
+      );
+
+      product.setReview(review);
+      productRepository.save(product);
+
+      Seller seller = sellerRepository.get(product.getSellerId());
+      return ProductAssembler.makeProductResponse(product, seller);
+    }
+    else return null;
   }
 }

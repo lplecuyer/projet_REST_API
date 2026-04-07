@@ -2,6 +2,7 @@ package ca.ulaval.glo2003.persistence;
 
 import ca.ulaval.glo2003.models.Product;
 import ca.ulaval.glo2003.models.ProductCategory;
+import ca.ulaval.glo2003.models.Review;
 import ca.ulaval.glo2003.repositories.mongo.ProductRepositoryMongo;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -113,4 +114,25 @@ class ProductMongoTest {
     assertEquals(500f, savedProduct.getSuggestedPrice());
     assertEquals("seller-99", savedProduct.getSellerId());
   }
+
+  @Test
+  void givenProductWithOneReview_whenSaving_thenReviewIsPersisted() {
+    Product product = new Product("Laptop", "Bon laptop", ProductCategory.electronics, 1200f);
+    product.setSellerId("seller-1");
+
+    Review review = new Review(5, "cool beans", "buyer1");
+    product.setReview(review);
+
+    productRepo.save(product);
+
+    Product savedProduct = productRepo.get(product.getId());
+
+    assertNotNull(savedProduct);
+    assertNotNull(savedProduct.getReview());
+
+    assertEquals("buyer1", savedProduct.getReview().getBuyerUsername());
+    assertEquals(5, savedProduct.getReview().getRating());
+    assertEquals("cool beans", savedProduct.getReview().getComment());
+  }
+
 }
