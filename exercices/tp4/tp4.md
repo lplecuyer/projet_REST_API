@@ -12,14 +12,16 @@
 2. 1. Comme tout le monde peut y participer, des personnes malintentionnées peuvent tenter d'implémenter des chevals de troie. Les reviewers doivent alors analyser le code avec vigilance et de façon extensive. Implémenter des outils automatisés d'analyse de sécurité et restreindre les permissions aux nouveaux venus est alors nécessaire.
    2. Coordonner la communauté qui participe au développement peut être difficile. Contrairement au personnel d'entreprise, les contributeurs ne sont pas nécessairement au courant des dernières décisions prises et ceux-ci ont potentiellement des façons de travailler ou de structurer leur code très différentes. Il faut alors implémenter des canaux/voies de communications efficaces et des standards précis pour contrôler la qualité.
    3. Si le projet projet s'appuie sur d'autres projets ou librairies, il peut être alors pénible et exigeant de vérifier quelles sont les permissions de distribution de chacun et d'en conclure quelle sera la license appropriée que l'on pourra choisir pour notre projet.
+ 
+3. 
 
-3.
-
-
-### L'architecture de classes
+### Code of conduct
+Le modèle de code de conduite est le [Contributor Covenant](https://www.contributor-covenant.org/). Il est déjà utilisé par une vaste majorité de projets. Celui-ci est simple et efficace, proposant une liste complète de comportements à privilégier, à proscrire, la façon de rapporter une infraction et enfin les conséquences qui suivront au mauvais comportement.
 
 
 ## ScreenShots
+
+### L'architecture de classes
 
 ### GithubProject
 
