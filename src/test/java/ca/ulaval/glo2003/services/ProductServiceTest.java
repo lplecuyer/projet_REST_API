@@ -6,8 +6,6 @@ import ca.ulaval.glo2003.models.ProductCategory;
 import ca.ulaval.glo2003.models.Seller;
 import ca.ulaval.glo2003.repositories.IProductRepository;
 import ca.ulaval.glo2003.repositories.ISellerRepository;
-import ca.ulaval.glo2003.repositories.ProductRepository;
-import ca.ulaval.glo2003.repositories.SellerRepository;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,11 +59,9 @@ class ProductServiceTest {
 
   @BeforeEach
   void setup(){
-    productRepository = mock(ProductRepository.class);
-    sellerRepository = mock(SellerRepository.class);
-    productService = new ProductService();
-    productService.setSellerRepository(sellerRepository);
-    productService.setProductRepository(productRepository);
+    productRepository = mock(IProductRepository.class);
+    sellerRepository = mock(ISellerRepository.class);
+    productService = new ProductService(productRepository, sellerRepository);
 
     allProducts = new ArrayList<>();
     fillArrayList();
@@ -78,9 +74,9 @@ class ProductServiceTest {
     SELLER_ID_1_AND_2 = seller1.getId();;
     Seller seller3 = new Seller();
     String SELLER_ID_3 = seller3.getId();
-    product1.setSeller(seller1);
-    product2.setSeller(seller1);
-    product3.setSeller(seller3);
+    product1.setSellerId(seller1.getId());
+    product2.setSellerId(seller1.getId());
+    product3.setSellerId(seller3.getId());
     allProducts.add(product1);
     allProducts.add(product2);
     allProducts.add(product3);
@@ -128,7 +124,7 @@ class ProductServiceTest {
   @Test
   void givenExistantPrductId_whengetProduct_ThenReturnProduct() {
     Product product = new Product();
-    product.setSeller(new Seller());
+    product.setSellerId(new Seller().getId());
     when(productRepository.get(EXISTiNG_PRODUCT_ID)).thenReturn(product);
     ProductAssembler.ProductResponse productResponse =
         productService.getProduct(EXISTiNG_PRODUCT_ID);

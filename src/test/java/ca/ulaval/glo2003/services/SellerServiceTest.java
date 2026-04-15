@@ -3,7 +3,6 @@ package ca.ulaval.glo2003.services;
 import ca.ulaval.glo2003.assemblers.SellerAssembler;
 import ca.ulaval.glo2003.models.Seller;
 import ca.ulaval.glo2003.repositories.ISellerRepository;
-import ca.ulaval.glo2003.repositories.SellerRepository;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,9 +38,8 @@ class SellerServiceTest {
 
   @BeforeEach
   void setup(){
-    sellerRepository = mock(SellerRepository.class);
-    sellerService = new SellerService();
-    sellerService.setSellerRepository(sellerRepository);
+    sellerRepository = mock(ISellerRepository.class);
+    sellerService = new SellerService(sellerRepository);
   }
 
   @Test

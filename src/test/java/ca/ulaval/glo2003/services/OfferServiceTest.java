@@ -4,7 +4,8 @@ import ca.ulaval.glo2003.assemblers.OfferAssembler;
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import ca.ulaval.glo2003.models.Product;
 import ca.ulaval.glo2003.models.Seller;
-import ca.ulaval.glo2003.repositories.ProductRepository;
+import ca.ulaval.glo2003.repositories.IProductRepository;
+import ca.ulaval.glo2003.repositories.ISellerRepository;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,15 +30,17 @@ class OfferServiceTest {
   private static Product validProduct =  new Product();
 
   private static OfferService offerService;
-  private static ProductRepository productRepository;
+  private static IProductRepository productRepository;
   private static ProductAssembler.ProductResponse productResponse;
+  private static ISellerRepository sellerRepository;
 
   @BeforeEach
   void setup(){
-    productRepository = mock(ProductRepository.class);
+    productRepository = mock(IProductRepository.class);
+    sellerRepository = mock(ISellerRepository.class);
+
     validProduct = mock(Product.class);
-    offerService = new OfferService();
-    offerService.setProductRepository(productRepository);
+    offerService = new OfferService(productRepository, sellerRepository);
   }
 
   @Test
@@ -70,7 +73,7 @@ class OfferServiceTest {
   @Test
   void givenExistantPrductId_whengetProduct_ThenReturnProduct() {
     Product product = new Product();
-    product.setSeller(new Seller());
+    product.setSellerId(new Seller().getId());
     when(productRepository.get(EXISTiNG_PRODUCT_ID)).thenReturn(product);
     ProductAssembler.ProductResponse productResponse =
         offerService.getProduct(EXISTiNG_PRODUCT_ID);
