@@ -1,5 +1,13 @@
 
 # Code de conduite 3.0 _Contributor Covenant_
+- [Notre engagement](#notre-engagement)
+- [Comportements valorisés](#comportements-valorisés)
+- [Comportements interdits](#comportements-interdits)
+- [Autres restrictions](#autres-restrictions)
+- [Rapporter un problème](#rapporter-un-problème)
+- [Résolution et Réparation des Torts](#résolution-et-réparation-des-torts)
+- [Portée](#portée)
+- [Attribution](#attributions)
 
 ## Notre engagement
 
