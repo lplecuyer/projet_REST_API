@@ -18,6 +18,15 @@
 ### Code of conduct
 Le modèle de code de conduite est le [Contributor Covenant](https://www.contributor-covenant.org/). Il est déjà utilisé par une vaste majorité de projets. Celui-ci est simple et efficace, proposant une liste complète de comportements à privilégier, à proscrire, la façon de rapporter une infraction et enfin les conséquences qui suivront au mauvais comportement.
 
+### Licence
+
+La license choisie est l'APACHE 2.0. Tout d'abord, identifions quelques aspects de notre projet. Notre projet consiste en une API pour une boutique en ligne. L'utilisation principale risque davantage d'être par des d'être des entreprises que par d'autres projets open-source.
+
+Pour cela, il ne faut pas une license comme GPL ou toute version qui dérive du projet soit obligatoirement open-source et puisse être redistribuée gratuitement. La nouvelle version peut donc être privée et être vendue.
+Ensuite, cette license offre une protection contre les poursuites judiciaires, tant pour les contributeurs que les entreprises. Les contributeurs ne peuvent pas légalement être tenus pour responsables à ceux l'utilisant.
+De même, elle protège les entreprises, qui possèdent alors les droits des brevets du projet permettant de les utiliser partout et à des fins lucratives.
+Les créateurs du projet original gardent toutefois la marque déposée du projet, (ou Trademark, comme le nom ou le logo), ne permettant pasaux entreprises de les utiliser.
+Ces clauses, qui ne sont pas dans les license du MIT ni du BSD sont intéressantes non seulement pour les compagnies mais aussi pour les contributeurs.
 
 ## ScreenShots
 
