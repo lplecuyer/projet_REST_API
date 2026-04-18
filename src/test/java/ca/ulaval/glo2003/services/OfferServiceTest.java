@@ -31,7 +31,6 @@ class OfferServiceTest {
 
   private static OfferService offerService;
   private static IProductRepository productRepository;
-  private static ProductAssembler.ProductResponse productResponse;
   private static ISellerRepository sellerRepository;
 
   @BeforeEach

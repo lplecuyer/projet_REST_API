@@ -17,7 +17,7 @@ public class Product {
   private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
 
   @Id
-  private String id = "A" + NEXT_ID.getAndIncrement();
+  private final String id = "A" + NEXT_ID.getAndIncrement();
 
   @NotNull(message = "MISSING_PARAMETER: title is mandatory")
   @Size(min = 1, message = "INVALID_PARAMETER: title must not be blank")

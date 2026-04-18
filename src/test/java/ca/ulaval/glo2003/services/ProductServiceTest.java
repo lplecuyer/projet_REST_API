@@ -6,8 +6,6 @@ import ca.ulaval.glo2003.models.ProductCategory;
 import ca.ulaval.glo2003.models.Seller;
 import ca.ulaval.glo2003.repositories.IProductRepository;
 import ca.ulaval.glo2003.repositories.ISellerRepository;
-import ca.ulaval.glo2003.repositories.inmemory.ProductRepository;
-import ca.ulaval.glo2003.repositories.inmemory.SellerRepository;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,7 +53,6 @@ class ProductServiceTest {
   private static ProductService productService;
   private static IProductRepository productRepository;
   private static ISellerRepository sellerRepository;
-  private static ProductAssembler.ProductResponse productResponse;
 
   private static ArrayList<Product> allProducts;
 
@@ -73,9 +70,8 @@ class ProductServiceTest {
 
   private void fillArrayList() {
     Seller seller1 = new Seller();
-    SELLER_ID_1_AND_2 = seller1.getId();;
+    SELLER_ID_1_AND_2 = seller1.getId();
     Seller seller3 = new Seller();
-    String SELLER_ID_3 = seller3.getId();
     product1.setSellerId(seller1.getId());
     product2.setSellerId(seller1.getId());
     product3.setSellerId(seller3.getId());
