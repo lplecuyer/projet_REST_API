@@ -61,8 +61,8 @@ class ProductServiceTest {
 
   @BeforeEach
   void setup(){
-    productRepository = mock(ProductRepository.class);
-    sellerRepository = mock(SellerRepository.class);
+    productRepository = mock(IProductRepository.class);
+    sellerRepository = mock(ISellerRepository.class);
     productService = new ProductService(productRepository, sellerRepository);
 
     allProducts = new ArrayList<>();

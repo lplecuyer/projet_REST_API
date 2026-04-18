@@ -15,9 +15,9 @@ public class OfferService {
   private final ISellerRepository sellerRepository;
 
   @Inject
-  public OfferService(IProductRepository prepository, ISellerRepository srepository) {
-    this.productRepository = prepository;
-    this.sellerRepository = srepository;
+  public OfferService(IProductRepository productRepository, ISellerRepository sellerRepository) {
+    this.productRepository = productRepository;
+    this.sellerRepository = sellerRepository;
   }
 
   public boolean offerForSameProductAndUserAlreadyExists(String buyerUsername, String productId) {

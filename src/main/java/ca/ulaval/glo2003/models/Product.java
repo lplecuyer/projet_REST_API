@@ -40,7 +40,7 @@ public class Product {
 
   private final List<Offer> offers = new ArrayList<>();
 
-  private boolean vendu;
+  private boolean sold;
 
   private Offer selectedOffer = null;
 
@@ -60,7 +60,7 @@ public class Product {
     this.description = description;
     this.category = category;
     this.suggestedPrice = suggestedPrice;
-    this.vendu = false;
+    this.sold = false;
     validate();
   }
 
@@ -134,12 +134,12 @@ public class Product {
     this.sellerId = sellerId;
   }
 
-  public boolean getVendu() {
-    return vendu;
+  public boolean getSold() {
+    return sold;
   }
 
-  public void setVendu(boolean vendu) {
-    this.vendu = vendu;
+  public void setSold(boolean sold) {
+    this.sold = sold;
   }
 
   public Review getReview() {return this.review;}
@@ -171,7 +171,7 @@ public class Product {
   }
 
   public Offer getSelectedOffer() {
-    if (this.vendu) {
+    if (this.sold) {
       return selectedOffer;
     } else return null;
   }

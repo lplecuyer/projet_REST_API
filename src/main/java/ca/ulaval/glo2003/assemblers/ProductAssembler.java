@@ -5,7 +5,6 @@ import ca.ulaval.glo2003.models.ProductCategory;
 import ca.ulaval.glo2003.models.Seller;
 import jakarta.json.bind.annotation.JsonbNillable;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 
@@ -23,7 +22,7 @@ public final class ProductAssembler {
     LocalDateTime createdAt = product.getCreatedAt();
     PartialSellerResponse sellerResponse = new PartialSellerResponse(product.getSellerId(), seller.getName());
     PartialOfferResponse offerResponse = new PartialOfferResponse(product.getOfferCount(), product.getAvgOfferAmount());
-    boolean vendu = product.getVendu();
+    boolean vendu = product.getSold();
 
     SelectedOfferResponse selectedOffer = null;
     if (product.getSelectedOffer() != null) {
