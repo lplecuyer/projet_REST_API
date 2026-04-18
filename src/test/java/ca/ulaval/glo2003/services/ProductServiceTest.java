@@ -6,6 +6,8 @@ import ca.ulaval.glo2003.models.ProductCategory;
 import ca.ulaval.glo2003.models.Seller;
 import ca.ulaval.glo2003.repositories.IProductRepository;
 import ca.ulaval.glo2003.repositories.ISellerRepository;
+import ca.ulaval.glo2003.repositories.inmemory.ProductRepository;
+import ca.ulaval.glo2003.repositories.inmemory.SellerRepository;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,8 +61,8 @@ class ProductServiceTest {
 
   @BeforeEach
   void setup(){
-    productRepository = mock(IProductRepository.class);
-    sellerRepository = mock(ISellerRepository.class);
+    productRepository = mock(ProductRepository.class);
+    sellerRepository = mock(SellerRepository.class);
     productService = new ProductService(productRepository, sellerRepository);
 
     allProducts = new ArrayList<>();
@@ -122,20 +124,24 @@ class ProductServiceTest {
   }
 
   @Test
-  void givenExistantPrductId_whengetProduct_ThenReturnProduct() {
+  void givenExistantProductId_whengetProduct_ThenReturnProduct() {
     Product product = new Product();
-    product.setSellerId(new Seller().getId());
+    Seller seller = new Seller();
+    product.setSellerId(seller.getId());
     when(productRepository.get(EXISTiNG_PRODUCT_ID)).thenReturn(product);
+    when(sellerRepository.get(seller.getId())).thenReturn(seller);
+
     ProductAssembler.ProductResponse productResponse =
         productService.getProduct(EXISTiNG_PRODUCT_ID);
 
     Assertions.assertNotNull(productResponse);
   }
 
-  //productService.getAllProducts(sellerId, title, category, minPrice, maxPrice);
   @Test
   void givenNullParameters_whengetAllProducts_thenReturnsAllProducts() {
     when(productRepository.getAll()).thenReturn(allProducts);
+    when(sellerRepository.get(any())).thenReturn(new Seller());
+
     Collection<ProductAssembler.ProductResponse> filteredProducts
         = productService.getAllProducts(null, null, null, 0.0f, 9999999.0f).products();
     int expectedNumberOfItems = allProducts.size();
@@ -146,6 +152,8 @@ class ProductServiceTest {
   @Test
   void givenTitle_whengetAllProducts_thenReturnsProductWithCorrespondingTitle() {
     when(productRepository.getAll()).thenReturn(allProducts);
+    when(sellerRepository.get(any())).thenReturn(new Seller());
+
     Collection<ProductAssembler.ProductResponse> filteredProducts
         = productService.getAllProducts(null, PRODUCT_TITLE_1, null, 0.0f, 9999999.0f).products();
     int expectedNumberOfItems = 1;
@@ -156,6 +164,8 @@ class ProductServiceTest {
   @Test
   void givenCategory_whengetAllProducts_thenReturnsProductWithCorrespondingCategory() {
     when(productRepository.getAll()).thenReturn(allProducts);
+    when(sellerRepository.get(any())).thenReturn(new Seller());
+
     Collection<ProductAssembler.ProductResponse> filteredProducts
         = productService.getAllProducts(null, null, PRODUCT_CATEGORY_1_AND_3, 0.0f, 9999999.0f).products();
     int expectedNumberOfItems = 2;
@@ -166,6 +176,8 @@ class ProductServiceTest {
   @Test
   void givenSellerId_whengetAllProducts_thenReturnsProductWithCorrespondingSellerId() {
     when(productRepository.getAll()).thenReturn(allProducts);
+    when(sellerRepository.get(any())).thenReturn(new Seller());
+
     Collection<ProductAssembler.ProductResponse> filteredProducts
         = productService.getAllProducts(SELLER_ID_1_AND_2, null, null, 0.0f, 9999999.0f).products();
     int expectedNumberOfItems = 2;
@@ -176,6 +188,8 @@ class ProductServiceTest {
   @Test
   void givenMinPrice_whengetAllProducts_thenReturnsProductWithHigherPrice() {
     when(productRepository.getAll()).thenReturn(allProducts);
+    when(sellerRepository.get(any())).thenReturn(new Seller());
+
     Collection<ProductAssembler.ProductResponse> filteredProducts
         = productService.getAllProducts(null, null, null, LOWER_PRICE +0.1f, 9999999.0f).products();
     int expectedNumberOfItems = 2;
@@ -186,6 +200,8 @@ class ProductServiceTest {
   @Test
   void givenMaxPrice_whengetAllProducts_thenReturnsProductWithLowerPrice() {
     when(productRepository.getAll()).thenReturn(allProducts);
+    when(sellerRepository.get(any())).thenReturn(new Seller());
+
     Collection<ProductAssembler.ProductResponse> filteredProducts
         = productService.getAllProducts(null, null, null, 0.0f, HIGHER_PRICE -0.1f).products();
     int expectedNumberOfItems = 2;
@@ -196,6 +212,8 @@ class ProductServiceTest {
   @Test
   void givenAllParameters_whengetAllProducts_thenReturnsFilteredList() {
     when(productRepository.getAll()).thenReturn(allProducts);
+    when(sellerRepository.get(any())).thenReturn(new Seller());
+
     Collection<ProductAssembler.ProductResponse> filteredProducts
         = productService.getAllProducts(SELLER_ID_1_AND_2, null, PRODUCT_CATEGORY_1_AND_3, LOWER_PRICE +1.0f, 99999999.0f).products();
     int expectedNumberOfItems = 1;

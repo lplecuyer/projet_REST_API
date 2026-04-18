@@ -75,6 +75,8 @@ class OfferServiceTest {
     Product product = new Product();
     product.setSellerId(new Seller().getId());
     when(productRepository.get(EXISTiNG_PRODUCT_ID)).thenReturn(product);
+    when(sellerRepository.get(any())).thenReturn(new Seller());
+
     ProductAssembler.ProductResponse productResponse =
         offerService.getProduct(EXISTiNG_PRODUCT_ID);
 

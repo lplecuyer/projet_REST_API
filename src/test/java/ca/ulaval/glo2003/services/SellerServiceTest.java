@@ -23,7 +23,7 @@ class SellerServiceTest {
   private static final String VALID_SELLER_EMAIL = "Bob@gmail.com";
   private static final String VALID_SELLER_PHONENUMBER = "823 232-4125";
   private static final String VALID_SELLER_BIO = "Im Bob";
-  private static final String INEXISTiNG_SELLER_ID =  "-1";
+  private static final String INEXISTING_SELLER_ID =  "-1";
   private static final String EXISTING_SELLER_ID = "2134";
 
   private static final SellerAssembler.SellerRequest invalidSellerRequest
@@ -61,7 +61,7 @@ class SellerServiceTest {
   void givenInexistantSellerId_whenGetSeller_ThenReturnNull() {
     when(sellerRepository.get(any())).thenReturn(null);
     SellerAssembler.SellerResponse sellerResponse =
-        sellerService.getSeller(INEXISTiNG_SELLER_ID);
+        sellerService.getSeller(INEXISTING_SELLER_ID);
 
     Assertions.assertNull(sellerResponse);
   }
