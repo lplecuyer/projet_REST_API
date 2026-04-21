@@ -160,7 +160,7 @@
             <artifactId>dependency-check-maven</artifactId>
             <version>12.2.0</version>
             <configuration>
-                <nvdApiKey>be5d672c-6da1-4579-add4-d1a8a539ef3f</nvdApiKey>
+                <nvdApiKey>f645e43c-831b-452e-bc3a-f415c1a2ab83</nvdApiKey>
             </configuration>
         </plugin>
     </plugins>
