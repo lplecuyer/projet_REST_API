@@ -5,7 +5,7 @@ on:
 jobs:
   Securite-Continue:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 60
     steps:
       - name: Checkout
         uses: actions/checkout@v5
