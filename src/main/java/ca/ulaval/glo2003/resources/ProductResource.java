@@ -5,6 +5,7 @@ import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.models.*;
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
@@ -24,7 +25,7 @@ public class ProductResource {
   }
 
   @POST
-  public Response create(ProductAssembler.ProductRequest productRequest, @Context UriInfo uriInfo, @HeaderParam("X-Seller-Id") String sellerId) {
+  public Response create(@Valid ProductAssembler.ProductRequest productRequest, @Context UriInfo uriInfo, @HeaderParam("X-Seller-Id") String sellerId) {
 
     if (!ProductCategory.categoryExists(productRequest.category())) {
       return Response.status(Response.Status.BAD_REQUEST)
@@ -98,7 +99,21 @@ public class ProductResource {
     return Response.status(Response.Status.OK).entity(new ErrorResponse("OK", "Product successfully sold")).build();
   }
 
-  public void setProductService(ProductService productService) {
-    this.productService = productService;
+
+  @POST
+  @Path("/{productId}/review")
+  public Response createReview(
+      @HeaderParam("X-Buyer-username") String buyerUsername,
+      @Valid ProductAssembler.ReviewRequest reviewRequest,
+      @PathParam("productId") String productId) {
+
+    if (buyerUsername == null || buyerUsername.isBlank()) { return ErrorResponse.createForbiddenResponse(); }
+
+    ProductAssembler.ProductResponse response = productService.addReview(productId, reviewRequest, buyerUsername);
+
+    if (response != null) {
+      return Response.status(Response.Status.CREATED).entity(response).build();
+    }
+    else return ErrorResponse.createNotFoundResponse("Product", productId);
   }
 }

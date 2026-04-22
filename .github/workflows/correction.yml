@@ -12,8 +12,9 @@ on:
           - '1'
           - '2'
           - '3'
+          - '4'
       image:
-        description: "URL de l'image Docker (requis pour TP3)"
+        description: "URL de l'image Docker (requis pour TP3/TP4)"
         required: false
         type: string
 jobs:
@@ -36,14 +37,14 @@ jobs:
       - run: echo "${{ secrets.CORRECTION_TOKEN }}" | docker login ghcr.io -u student --password-stdin
 
       - name: Build app from source (TP1-2)
-        if: inputs.tp != '3'
+        if: inputs.tp != '3' && inputs.tp != '4'
         run: docker build -t student-app .
 
-      - name: Pull app image (TP3)
-        if: inputs.tp == '3'
+      - name: Pull app image (TP3-4)
+        if: inputs.tp == '3' || inputs.tp == '4'
         run: |
           if [ -z "${{ inputs.image }}" ]; then
-            echo "::error::L'input 'image' est requis pour le TP3"
+            echo "::error::L'input 'image' est requis pour le TP3/TP4"
             exit 1
           fi
           docker pull "${{ inputs.image }}"

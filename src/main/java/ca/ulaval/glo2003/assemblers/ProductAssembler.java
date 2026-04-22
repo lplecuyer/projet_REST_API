@@ -5,6 +5,7 @@ import ca.ulaval.glo2003.models.ProductCategory;
 import ca.ulaval.glo2003.models.Seller;
 import jakarta.json.bind.annotation.JsonbNillable;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 
@@ -18,42 +19,68 @@ public final class ProductAssembler {
     String title = product.getTitle();
     String description = product.getDescription();
     ProductCategory category = product.getCategory();
-    float suggestedPrice = product.getSuggestedPrice();
+    Float suggestedPrice = product.getSuggestedPrice();
     LocalDateTime createdAt = product.getCreatedAt();
     PartialSellerResponse sellerResponse = new PartialSellerResponse(product.getSellerId(), seller.getName());
     PartialOfferResponse offerResponse = new PartialOfferResponse(product.getOfferCount(), product.getAvgOfferAmount());
     boolean vendu = product.getVendu();
+
     SelectedOfferResponse selectedOffer = null;
     if (product.getSelectedOffer() != null) {
       selectedOffer = new SelectedOfferResponse(product.getSelectedOffer().getBuyerUsername(), product.getSelectedOffer().getAmount());
     }
-    return new ProductResponse(id, title, description, category, suggestedPrice, createdAt, sellerResponse, offerResponse, vendu, vendu ? "sold" : "ongoing", selectedOffer);
+
+    ReviewResponse review = null;
+    if (product.getReview() != null) {
+      review = new ReviewResponse(
+          product.getReview().getComment(),
+          product.getReview().getRating(),
+          product.getReview().getBuyerUsername()
+      );
+    }
+
+    return new ProductResponse(
+        id,
+        title,
+        description,
+        category,
+        suggestedPrice,
+        createdAt,
+        sellerResponse,
+        offerResponse,
+        vendu,
+        vendu ? "sold" : "ongoing",
+        selectedOffer,
+        review
+    );
   }
 
   public record ProductRequest(String title, String description, String category,
-                               float suggestedPrice) {
+                               Float suggestedPrice) {
   }
 
   public record ProductResponse(String id, String title, String description,
                                 ProductCategory category, float suggestedPrice,
                                 LocalDateTime createdAt, PartialSellerResponse seller,
                                 PartialOfferResponse offers, boolean vendu, String saleStatus,
-                                SelectedOfferResponse selectedOffer) {
+                                SelectedOfferResponse selectedOffer, ReviewResponse review) {
   }
 
-  public record ProductsResponse(java.util.Collection<ProductAssembler.ProductResponse> products) {
-  }
+  public record ProductsResponse(java.util.Collection<ProductAssembler.ProductResponse> products) { }
 
-  public record PartialSellerResponse(String id, String name) {
-  }
+  public record PartialSellerResponse(String id, String name) { }
 
-  public record PartialOfferResponse(int count, @JsonbNillable Float avgAmount) {
-  }
+  public record PartialOfferResponse(int count, @JsonbNillable Float avgAmount) { }
 
   @JsonbNillable
-  public record SelectedOfferResponse(String username, Float amount) {
-  }
+  public record SelectedOfferResponse(String username, Float amount) { }
 
-  public record BuyerUsernameResponse(String username) {
-  }
+  public record BuyerUsernameResponse(String username) { }
+
+  public record ReviewRequest(
+      String comment,
+      Float rating
+  ) {}
+
+  public record ReviewResponse(String comment, Float rating, String buyerUsername) {}
 }

@@ -20,4 +20,10 @@ public class ErrorResponse {
         return Response.status(Response.Status.NOT_FOUND)
                 .entity(new ErrorResponse("NOT_FOUND", message)).build();
     }
+
+    public static Response createForbiddenResponse() {
+      String message = "You have not bought this product";
+      return Response.status(Response.Status.FORBIDDEN)
+          .entity(new ErrorResponse("ACCESS_FORBIDDEN", message)).build();
+    }
 }
