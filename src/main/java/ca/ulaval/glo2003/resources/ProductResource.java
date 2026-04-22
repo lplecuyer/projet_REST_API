@@ -89,7 +89,7 @@ public class ProductResource {
     if (productService.getSeller(sellerId) == null) {
       return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse("NOT_FOUND", "Given seller does not exists")).build();
     }
-    if (!productService.BuyerHasOfferOnProduct(buyerUsername.username(), productId)) {
+    if (!productService.buyerHasOfferOnProduct(buyerUsername.username(), productId)) {
       return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse("NOT_FOUND", "No offer with given username exists")).build();
     }
     if (Objects.equals(productService.getProduct(productId).saleStatus(), "sold")) {
