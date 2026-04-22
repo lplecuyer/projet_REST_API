@@ -66,7 +66,7 @@ ___
 ___
 > Les responsables du repository parcourent les pull requests régulièrement. Il faut s'attendre à un délai d'au plus une semaine pour une réponse d'un responsable.
 > La réponse peut demander des changements légers ou même majeurs; il ne faut se décourager ! Confirmez que vous allez travailler sur ces changements au plus deux semaines après la réponse du responsable, sinon la pull request peut-être fermée pour inactivité.
-> Répondez au responsable lorsque les changements ont été efféctués jusqu'à la fusion de votre branche !
+> Répondez au responsable lorsque les changements ont été effectués jusqu'à la fusion de votre branche !
 
 # Attributions
 Ce guide s'est inspiré du modèle suivant :

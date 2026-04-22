@@ -69,14 +69,14 @@ Si l'enquête par les modérateur·ices évalue que ce Code de Conduite a été 
 2) Limitation d'activité temporaire
    1) Cas: La répétition d'infractions qui ont déjà donné lieu à des avertissements, ou le premier incident d'une infraction plus importante.
    2) Conséquences: Un avertissement privé écrit accompagné d'une période de retour au calme pour mettre en évidence l'importance de la situation et donner à la communauté le temps d'intégrer ce qui s'est passé. Ce temps de réflexion peut être limité à certains canaux de communication ou aux interactions avec certains membres de la communauté.
-   3) Réparation: Une réparation peut inclure la formulation d'excuses, l'utilisation d'un temps de retour au calme pour réfléchir aux actions et conséquences, et être plus consciencieu·se après la fin de la période, au retour dans les espaces communautaires.
+   3) Réparation: Une réparation peut inclure la formulation d'excuses, l'utilisation d'un temps de retour au calme pour réfléchir aux actions et conséquences, et être plus consciencieux·se après la fin de la période, au retour dans les espaces communautaires.
 3) Suspension provisoire
   1) Cas: Un schéma de répétition d'infraction auquel les modérateur·ices ont adressé des avertissements, ou une seule infraction d'importance.
   2) Conséquences: Un avertissement privé écrit informant des conditions de retour de suspension. En général, une suspension provisoire donne à la personne suspendue le temps d'introspection sur son comportement et sur les corrections qu'elle doit entreprendre.
   3) Réparation: Une réparation peut inclure la compréhension du motif de la suspension, le respect des conditions de retour, et réfléchir à comment réintégrer la communauté lorsque la suspension sera levé.
 4) Bannissement permanent
   1) Cas: Un schéma de répétition d'infractions du Code de Conduite où les premières étapes de résolution ont échoué, ou une infraction tellement importante que les modérateur·ices de la communauté déterminent qu'il n'y a aucun moyen de maintenir un espace communautaire sûr avec cette personne comme membre.
-  2) Conséquences: L'accès aux espaces communautaires, les outils, les canaux de communication sont révoqués. En général, les bannissements permanents devraient être rare, et doivent être appuyés de raisons fortes, et être le dernier recourt lorsque toutes les solutions ont échoué à corriger le comportement.
+  2) Conséquences: L'accès aux espaces communautaires, les outils, les canaux de communication sont révoqués. En général, les bannissements permanents devraient être rare, et doivent être appuyés de raisons fortes, et être le dernier recours lorsque toutes les solutions ont échoué à corriger le comportement.
   3) Réparation: Il n'y a aucune réparation possible pour des cas de cette sévérité.
 
 Cette échelle de mesure est une ligne directrice. Elle ne limite pas la capacité des modérateur·ices à utiliser leurs discrétions et leurs jugements, en adéquation avec l'intérêt de la communauté.
@@ -91,5 +91,5 @@ Ce Code de Conduite est adapté du _Contributor Covenant_, version 3.0, disponib
 
 Le _Contributor Covenant_ est géré par l'_Organization for Ethical Source_ et sous licence CC BY-SA 4.0. Pour accéder à une copie de cette licence, visitez [https://creativecommons.org/licenses/by-sa/4.0/deed.fr](https://creativecommons.org/licenses/by-sa/4.0/deed.fr).
 
-Pour répondre aux questions fréquentes à propos du _Contributor Covenant_, consultez la FAQ ici [https://www.contributor-covenant.org/faq](https://www.contributor-covenant.org/faq). Des traductions sont fournie ici [https://www.contributor-covenant.org/translations](https://www.contributor-covenant.org/translations). Des mesures additionnelles et des lignes directrices de communauté peuvent être trouvé ici [https://www.contributor-covenant.org/resources](https://www.contributor-covenant.org/resources). L'échelle des mesures est inspirée par le travail de [l'équipe du code de conduite de Mozilla](https://github.com/mozilla/inclusion).
+Pour répondre aux questions fréquentes à propos du _Contributor Covenant_, consultez la FAQ ici [https://www.contributor-covenant.org/faq](https://www.contributor-covenant.org/faq). Des traductions sont fournies ici [https://www.contributor-covenant.org/translations](https://www.contributor-covenant.org/translations). Des mesures additionnelles et des lignes directrices de communauté peuvent être trouvé ici [https://www.contributor-covenant.org/resources](https://www.contributor-covenant.org/resources). L'échelle des mesures est inspirée par le travail de [l'équipe du code de conduite de Mozilla](https://github.com/mozilla/inclusion).
 
