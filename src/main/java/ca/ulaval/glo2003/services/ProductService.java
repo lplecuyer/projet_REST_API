@@ -59,7 +59,7 @@ public class ProductService {
 
   public void sellProduct(String id, String buyerUsername) {
     Product product = productRepository.get(id);
-    product.setVendu(true);
+    product.setSold(true);
 
     Offer selectedOffer = product.getOffers()
         .stream()
@@ -86,7 +86,7 @@ public class ProductService {
     return new ProductAssembler.ProductsResponse(products);
   }
 
-  public boolean BuyerHasOfferOnProduct(String username, String productId) {
+  public boolean buyerHasOfferOnProduct(String username, String productId) {
     return productRepository.get(productId).offerForSameProductAndUserAlreadyExists(username);
   }
 
@@ -98,7 +98,7 @@ public class ProductService {
     Product product = productRepository.get(productId);
 
     if (product != null) {
-      if (!product.getVendu()) { throw new WebApplicationException(ErrorResponse.createForbiddenResponse());}
+      if (!product.getSold()) { throw new WebApplicationException(ErrorResponse.createForbiddenResponse());}
       if (product.getOffers().stream().noneMatch(o -> o.getBuyerUsername().equals(buyerUsername))) {
         throw new WebApplicationException(ErrorResponse.createForbiddenResponse());
       }

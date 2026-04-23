@@ -37,7 +37,7 @@ public final class SellerAssembler {
             String description = product.getDescription();
             float suggestedPrice = product.getSuggestedPrice();
             ProductCategory category = product.getCategory();
-            boolean vendu = product.getVendu();
+            boolean vendu = product.getSold();
 
             SellerAssembler.PartialSelectedOfferResponse selectedOffer = null;
             if (product.getSelectedOffer() != null) {
