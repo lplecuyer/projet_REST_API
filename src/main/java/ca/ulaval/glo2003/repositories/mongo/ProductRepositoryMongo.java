@@ -1,15 +1,12 @@
 package ca.ulaval.glo2003.repositories.mongo;
 
 import ca.ulaval.glo2003.models.Product;
-import ca.ulaval.glo2003.models.Seller;
 import ca.ulaval.glo2003.repositories.IProductRepository;
-import ca.ulaval.glo2003.repositories.mongo.SellerRepositoryMongo;
 import dev.morphia.Datastore;
 import dev.morphia.query.Query;
 import dev.morphia.query.filters.Filters;
 
 import java.util.Collection;
-import java.util.List;
 
 public class ProductRepositoryMongo implements IProductRepository {
   private final Datastore datastore;

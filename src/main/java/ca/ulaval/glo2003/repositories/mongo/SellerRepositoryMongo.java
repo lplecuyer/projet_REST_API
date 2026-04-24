@@ -1,9 +1,7 @@
 package ca.ulaval.glo2003.repositories.mongo;
 
-import ca.ulaval.glo2003.models.Product;
 import ca.ulaval.glo2003.models.Seller;
 import ca.ulaval.glo2003.repositories.ISellerRepository;
-import ca.ulaval.glo2003.repositories.inmemory.SellerRepository;
 import dev.morphia.Datastore;
 import dev.morphia.query.Query;
 import dev.morphia.query.filters.Filters;

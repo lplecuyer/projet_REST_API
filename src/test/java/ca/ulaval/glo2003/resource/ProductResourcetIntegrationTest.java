@@ -1,12 +1,12 @@
 package ca.ulaval.glo2003.resource;
 
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
+import ca.ulaval.glo2003.assemblers.SellerAssembler;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.exceptionhandlers.ProcessingExceptionMapper;
 import ca.ulaval.glo2003.exceptionhandlers.ValidationExceptionMapper;
 import ca.ulaval.glo2003.models.Product;
 import ca.ulaval.glo2003.models.ProductCategory;
-import ca.ulaval.glo2003.models.Review;
 import ca.ulaval.glo2003.models.Seller;
 import ca.ulaval.glo2003.resources.ProductResource;
 import ca.ulaval.glo2003.services.ProductService;
@@ -33,7 +33,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class ProducResourcetIntegrationTest extends JerseyTest {
+public class ProductResourcetIntegrationTest extends JerseyTest {
 
     private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -53,6 +53,11 @@ public class ProducResourcetIntegrationTest extends JerseyTest {
     private static final String VALID_PAYLOAD_CATEGORY = "beauty";
     private static final float VALID_PAYLOAD_PRICE = 200.0f;
     private static final String INVALID_SELLER_ID = "invalidId";
+
+    private static final String VALID_DISCOUNT_PRODUCT_ID = "product-1";
+    private static final String VALID_DISCOUNT_SELLER_ID = "seller-1";
+    private static final Float VALID_DISCOUNT = 25F;
+    private static final Float INVALID_DISCOUNT = 150F;
 
     private ProductService productService;
 
@@ -368,11 +373,137 @@ public class ProducResourcetIntegrationTest extends JerseyTest {
         LocalDateTime.now(),
         productResponse.seller(),
         productResponse.offers(),
-        productResponse.vendu(),
+        productResponse.sold(),
         productResponse.saleStatus(),
         productResponse.selectedOffer(),
-        reviewResponse
+        reviewResponse,
+        productResponse.discount()
     );
   }
 
+  private Response postDiscount(String productId, String sellerId, Map<String, Object> data) {
+    return target("products")
+        .path(productId)
+        .path("discount")
+        .request(MediaType.APPLICATION_JSON)
+        .header("X-Seller-Id", sellerId)
+        .post(Entity.json(data));
+  }
+
+  private Map<String, Object> validDiscountPayload(Float discount) {
+    Map<String, Object> data = new HashMap<>();
+    data.put("discount", discount);
+    return data;
+  }
+
+  private ProductAssembler.ProductResponse mockProductResponse() {
+    Seller seller = new Seller();
+    Product product = new Product();
+    product.setSellerId(VALID_DISCOUNT_SELLER_ID);
+
+    return ProductAssembler.makeProductResponse(product, seller);
+  }
+
+  @Test
+  void givenValidRequest_whenApplyDiscount_thenCreated() {
+    ProductAssembler.ProductResponse responseMock = mockProductResponse();
+
+    when(productService.getProduct(VALID_DISCOUNT_PRODUCT_ID)).thenReturn(responseMock);
+    when(productService.getSeller(VALID_DISCOUNT_SELLER_ID)).thenReturn(mock(SellerAssembler.SellerResponse.class));
+    when(productService.discountIsValid(any())).thenReturn(true);
+    when(productService.applyDiscount(any(), any(), any())).thenReturn(responseMock);
+
+    Response response = postDiscount(VALID_DISCOUNT_PRODUCT_ID, VALID_DISCOUNT_SELLER_ID, validDiscountPayload(VALID_DISCOUNT));
+
+    assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+    verify(productService, times(1))
+        .applyDiscount(eq(VALID_DISCOUNT_PRODUCT_ID), eq(VALID_DISCOUNT_SELLER_ID), any());
+  }
+
+  @Test
+  void givenMissingDiscount_whenApplyDiscount_then400() {
+    Map<String, Object> data = new HashMap<>();
+
+    Response response = postDiscount(VALID_DISCOUNT_PRODUCT_ID, VALID_DISCOUNT_SELLER_ID, data);
+
+    assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+
+    ErrorResponse err = response.readEntity(ErrorResponse.class);
+    assertEquals("MISSING_PARAMETER", err.error);
+  }
+
+  @Test
+  void givenInvalidDiscount_whenApplyDiscount_then400() {
+    ProductAssembler.ProductResponse productResponse = mockProductResponse();
+
+    when(productService.getProduct(VALID_DISCOUNT_PRODUCT_ID)).thenReturn(productResponse);
+    when(productService.getSeller(VALID_DISCOUNT_SELLER_ID)).thenReturn(mock(SellerAssembler.SellerResponse.class));
+    when(productService.discountIsValid(any())).thenReturn(false);
+
+    Response response = postDiscount(VALID_DISCOUNT_PRODUCT_ID, VALID_DISCOUNT_SELLER_ID, validDiscountPayload(INVALID_DISCOUNT));
+
+    assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+
+    ErrorResponse err = response.readEntity(ErrorResponse.class);
+    assertEquals("INVALID_PARAMETER", err.error);
+  }
+
+  @Test
+  void givenProductNotFound_whenApplyDiscount_then404() {
+    when(productService.getProduct(VALID_DISCOUNT_PRODUCT_ID)).thenReturn(null);
+
+    Response response = postDiscount(VALID_DISCOUNT_PRODUCT_ID, VALID_DISCOUNT_SELLER_ID, validDiscountPayload(VALID_DISCOUNT));
+
+    assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+
+    ErrorResponse err = response.readEntity(ErrorResponse.class);
+    assertEquals("NOT_FOUND", err.error);
+  }
+
+  @Test
+  void givenSellerNotFound_whenApplyDiscount_then404() {
+    ProductAssembler.ProductResponse productResponse = mockProductResponse();
+
+    when(productService.getProduct(VALID_DISCOUNT_PRODUCT_ID)).thenReturn(productResponse);
+    when(productService.getSeller(VALID_DISCOUNT_SELLER_ID)).thenReturn(null);
+
+    Response response = postDiscount(VALID_DISCOUNT_PRODUCT_ID, VALID_DISCOUNT_SELLER_ID, validDiscountPayload(VALID_DISCOUNT));
+
+    assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+
+    ErrorResponse err = response.readEntity(ErrorResponse.class);
+    assertEquals("NOT_FOUND", err.error);
+  }
+
+  @Test
+  void givenUnauthorizedSeller_whenApplyDiscount_then403() {
+    ProductAssembler.ProductResponse productResponse = mockProductResponse();
+
+    ProductAssembler.ProductResponse wrongOwnerProduct =
+        new ProductAssembler.ProductResponse(
+            productResponse.id(),
+            productResponse.title(),
+            productResponse.description(),
+            productResponse.category(),
+            productResponse.suggestedPrice(),
+            productResponse.createdAt(),
+            productResponse.seller(),
+            productResponse.offers(),
+            productResponse.sold(),
+            productResponse.saleStatus(),
+            productResponse.selectedOffer(),
+            productResponse.review(),
+            productResponse.discount()
+        );
+
+    when(productService.getProduct(VALID_DISCOUNT_PRODUCT_ID)).thenReturn(wrongOwnerProduct);
+    when(productService.getSeller(SELLER_ID_OF_INVALID_PRODUCT)).thenReturn(mock(SellerAssembler.SellerResponse.class));
+
+    Response response = postDiscount(VALID_DISCOUNT_PRODUCT_ID, SELLER_ID_OF_INVALID_PRODUCT, validDiscountPayload(VALID_DISCOUNT));
+
+    assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+
+    ErrorResponse err = response.readEntity(ErrorResponse.class);
+    assertEquals("ACCESS_FORBIDDEN", err.error);
+  }
 }

@@ -4,8 +4,6 @@ import ca.ulaval.glo2003.services.OfferService;
 import ca.ulaval.glo2003.assemblers.ProductAssembler;
 import ca.ulaval.glo2003.exceptionhandlers.ErrorResponse;
 import ca.ulaval.glo2003.models.*;
-import ca.ulaval.glo2003.models.Offer;
-import ca.ulaval.glo2003.repositories.inmemory.ProductRepository;
 import ca.ulaval.glo2003.assemblers.OfferAssembler;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;

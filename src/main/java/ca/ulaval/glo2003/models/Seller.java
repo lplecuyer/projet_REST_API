@@ -1,17 +1,12 @@
 package ca.ulaval.glo2003.models;
 
-import ca.ulaval.glo2003.repositories.inmemory.ProductRepository;
 import dev.morphia.annotations.Id;
-import dev.morphia.annotations.Reference;
-import dev.morphia.annotations.Transient;
-import jakarta.validation.Valid;
 import jakarta.validation.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.time.Period;
 import jakarta.json.bind.annotation.JsonbTransient;

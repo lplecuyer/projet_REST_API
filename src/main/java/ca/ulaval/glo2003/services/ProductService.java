@@ -117,4 +117,23 @@ public class ProductService {
     }
     else return null;
   }
+
+  public ProductAssembler.ProductResponse applyDiscount(String productId, String sellerId, ProductAssembler.@Valid DiscountRequest discountRequest) {
+
+    Product product = productRepository.get(productId);
+    Seller seller = sellerRepository.get(sellerId);
+
+    if (product != null && seller != null && product.getSellerId().equals(sellerId)) {
+      product.setDiscount(discountRequest.discount());
+      productRepository.save(product);
+      return ProductAssembler.makeProductResponse(product, seller);
+    }
+    else return null;
+  }
+
+  public boolean discountIsValid(ProductAssembler.@Valid DiscountRequest discountRequest) {
+    if (discountRequest.discount() < 0 || discountRequest.discount() > 100) {
+      return false;
+    } else return true;
+  }
 }

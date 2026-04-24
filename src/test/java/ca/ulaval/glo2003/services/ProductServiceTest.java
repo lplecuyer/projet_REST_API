@@ -28,13 +28,14 @@ class ProductServiceTest {
   private static final String A_DESCRIPTION = "Peu importe";
   private static final ProductCategory PRODUCT_CATEGORY_1_AND_3 = ProductCategory.electronics;
   private static final ProductCategory PRODUCT_CATEGORY_2 = ProductCategory.beauty;
-  private static final float HIGHER_PRICE = 100.0f;
+  private static final float HIGHER_PRICE = 10000.0f;
   private static final float LOWER_PRICE = 10.0f;
   private static final float MIDDLE_PRICE = 20.0f;
+  private static final ProductAssembler.DiscountRequest VALID_DISCOUNT = new ProductAssembler.DiscountRequest(30F);
 
-  private static final Product product1 = new Product(PRODUCT_TITLE_1, A_DESCRIPTION, PRODUCT_CATEGORY_1_AND_3, HIGHER_PRICE);
-  private static final Product product2 = new Product(PRODUCT_TITLE_2, A_DESCRIPTION, PRODUCT_CATEGORY_2, LOWER_PRICE);
-  private static final Product product3 = new Product(PRODUCT_TITLE_3, A_DESCRIPTION, PRODUCT_CATEGORY_1_AND_3, MIDDLE_PRICE);
+  private static Product product1 = new Product(PRODUCT_TITLE_1, A_DESCRIPTION, PRODUCT_CATEGORY_1_AND_3, HIGHER_PRICE);
+  private static Product product2 = new Product(PRODUCT_TITLE_2, A_DESCRIPTION, PRODUCT_CATEGORY_2, LOWER_PRICE);
+  private static Product product3 = new Product(PRODUCT_TITLE_3, A_DESCRIPTION, PRODUCT_CATEGORY_1_AND_3, MIDDLE_PRICE);
 
   private static final String VALID_SELLER_ID = "23";
   private static final String INEXISTANT_SELLER_ID = "-1";
@@ -44,7 +45,7 @@ class ProductServiceTest {
   private static final float VALID_PRICE = 10.0f;
   private static final float INVALID_PRICE = 0.0f;
   private static final String INEXISTiNG_PRODUCT_ID = "-1";
-  private static final String EXISTiNG_PRODUCT_ID = "9832";
+  private static final String EXISTING_PRODUCT_ID = "9832";
   private static final ProductAssembler.ProductRequest invalidProductRequest
       = new ProductAssembler.ProductRequest(null,null, VALID_CATEGORY, INVALID_PRICE);
   private static final ProductAssembler.ProductRequest validProductRequest
@@ -63,6 +64,9 @@ class ProductServiceTest {
     productService = new ProductService(productRepository, sellerRepository);
 
     allProducts = new ArrayList<>();
+    product1 = new Product(PRODUCT_TITLE_1, A_DESCRIPTION, PRODUCT_CATEGORY_1_AND_3, HIGHER_PRICE);
+    product2 = new Product(PRODUCT_TITLE_2, A_DESCRIPTION, PRODUCT_CATEGORY_2, LOWER_PRICE);
+    product3 = new Product(PRODUCT_TITLE_3, A_DESCRIPTION, PRODUCT_CATEGORY_1_AND_3, MIDDLE_PRICE);
     fillArrayList();
 
     when(productRepository.getAll()).thenReturn(allProducts);
@@ -124,11 +128,11 @@ class ProductServiceTest {
     Product product = new Product();
     Seller seller = new Seller();
     product.setSellerId(seller.getId());
-    when(productRepository.get(EXISTiNG_PRODUCT_ID)).thenReturn(product);
+    when(productRepository.get(EXISTING_PRODUCT_ID)).thenReturn(product);
     when(sellerRepository.get(seller.getId())).thenReturn(seller);
 
     ProductAssembler.ProductResponse productResponse =
-        productService.getProduct(EXISTiNG_PRODUCT_ID);
+        productService.getProduct(EXISTING_PRODUCT_ID);
 
     Assertions.assertNotNull(productResponse);
   }
@@ -222,6 +226,39 @@ class ProductServiceTest {
     assertEquals(expectedNumberOfItems, actualNumberOfItems);
   }
 
+  @Test
+  void givenValidParams_whenApplyDiscount_thenDiscountIsApplied() {
+    when(productRepository.get(EXISTING_PRODUCT_ID)).thenReturn(product1);
+    when(sellerRepository.get(any())).thenReturn(new Seller());
 
+    productService.applyDiscount(EXISTING_PRODUCT_ID, SELLER_ID_1_AND_2, VALID_DISCOUNT);
 
+    assertEquals(VALID_DISCOUNT.discount(), product1.getDiscount());
+    verify(productRepository, times(1)).save(product1);
+  }
+
+  @Test
+  void givenNonExistingProduct_whenApplyDiscount_thenProductUnchanged() {
+    when(productRepository.get(EXISTING_PRODUCT_ID)).thenReturn(null);
+
+    assertNull(productService.applyDiscount(EXISTING_PRODUCT_ID, SELLER_ID_1_AND_2, VALID_DISCOUNT));
+
+    verify(productRepository, never()).save(any());
+  }
+
+  @Test
+  void givenUnauthorizedSeller_whenApplyDiscount_thenProductUnchanged() {
+    Seller anotherSeller = new Seller();
+
+    float initialDiscount = product1.getDiscount();
+
+    when(productRepository.get(EXISTING_PRODUCT_ID)).thenReturn(product1);
+    when(sellerRepository.get(anotherSeller.getId())).thenReturn(anotherSeller);
+
+    assertNull(productService.applyDiscount(EXISTING_PRODUCT_ID, anotherSeller.getId(), VALID_DISCOUNT));
+
+    assertEquals(initialDiscount, product1.getDiscount());
+
+    verify(productRepository, never()).save(any());
+  }
 }
