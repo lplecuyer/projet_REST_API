@@ -408,8 +408,8 @@ public class ProductResourcetIntegrationTest extends JerseyTest {
   void givenValidRequest_whenApplyDiscount_thenCreated() {
     ProductAssembler.ProductResponse responseMock = mockProductResponse();
 
-    when(productService.getProduct(VALID_DISCOUNT_SELLER_ID)).thenReturn(responseMock);
-    when(productService.getSeller(VALID_DISCOUNT_PRODUCT_ID)).thenReturn(mock(SellerAssembler.SellerResponse.class));
+    when(productService.getProduct(VALID_DISCOUNT_PRODUCT_ID)).thenReturn(responseMock);
+    when(productService.getSeller(VALID_DISCOUNT_SELLER_ID)).thenReturn(mock(SellerAssembler.SellerResponse.class));
     when(productService.discountIsValid(any())).thenReturn(true);
     when(productService.applyDiscount(any(), any(), any())).thenReturn(responseMock);
 
@@ -433,7 +433,7 @@ public class ProductResourcetIntegrationTest extends JerseyTest {
   }
 
   @Test
-  void givenInvalidDiscount_whenApplyDiscount_then404() {
+  void givenInvalidDiscount_whenApplyDiscount_then400() {
     ProductAssembler.ProductResponse productResponse = mockProductResponse();
 
     when(productService.getProduct(VALID_DISCOUNT_PRODUCT_ID)).thenReturn(productResponse);
@@ -442,7 +442,7 @@ public class ProductResourcetIntegrationTest extends JerseyTest {
 
     Response response = postDiscount(VALID_DISCOUNT_PRODUCT_ID, VALID_DISCOUNT_SELLER_ID, validDiscountPayload(INVALID_DISCOUNT));
 
-    assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+    assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
 
     ErrorResponse err = response.readEntity(ErrorResponse.class);
     assertEquals("INVALID_PARAMETER", err.error);
@@ -497,11 +497,11 @@ public class ProductResourcetIntegrationTest extends JerseyTest {
         );
 
     when(productService.getProduct(VALID_DISCOUNT_PRODUCT_ID)).thenReturn(wrongOwnerProduct);
-    when(productService.getSeller(VALID_DISCOUNT_SELLER_ID)).thenReturn(mock(SellerAssembler.SellerResponse.class));
+    when(productService.getSeller(SELLER_ID_OF_INVALID_PRODUCT)).thenReturn(mock(SellerAssembler.SellerResponse.class));
 
-    Response response = postDiscount(VALID_DISCOUNT_PRODUCT_ID, VALID_DISCOUNT_SELLER_ID, validDiscountPayload(VALID_DISCOUNT));
+    Response response = postDiscount(VALID_DISCOUNT_PRODUCT_ID, SELLER_ID_OF_INVALID_PRODUCT, validDiscountPayload(VALID_DISCOUNT));
 
-    assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+    assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
 
     ErrorResponse err = response.readEntity(ErrorResponse.class);
     assertEquals("ACCESS_FORBIDDEN", err.error);
