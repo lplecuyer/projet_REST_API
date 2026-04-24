@@ -36,31 +36,39 @@ Il suggère plusieurs sections qu'il ne faut pas ommettre comme la clause sur le
 ## ScreenShots
 
 ### L'architecture de classes
+![](./images/)
 
 ### GithubProject
-
+![GithubProject](./images/Projet.png)
 
 ### Milestone
-
+![Milestone](./images/Milestone.png)
 
 ### Issue 1
+![Issue1](./images/Issue1-1.png)
+![Issue1](./images/Issue1-2.png)
 
 
 ### Issue 2
-
+![Issue2](./images/Issue2-1.png)
+![Issue2](./images/Issue2-2.png)
 
 ### Issue 3
+![Issue3](./images/Issue3.png)
 
 ### Pull request 1
-
+![PR1-1](./images/PR1-1.png)
+![PR1-2](./images/PR1-2.png)
 ### Pull request 2
-
+![PR2-1](./images/PR2-1.png)
+![PR2-2](./images/PR2-2.png)
 
 ### Pull request 3
-
+![PR3-1](./images/PR3-1.png)
+![PR3-2](./images/PR3-2.png)
 
 ### Arbre de commits
-
+![](./images/)
 
 
 ## Déclaration d'utilisation de l'IA
