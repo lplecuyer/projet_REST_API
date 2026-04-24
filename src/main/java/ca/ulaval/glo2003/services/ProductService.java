@@ -130,4 +130,10 @@ public class ProductService {
     }
     else return null;
   }
+
+  public boolean discountIsValid(ProductAssembler.@Valid DiscountRequest discountRequest) {
+    if (discountRequest.discount() < 0 || discountRequest.discount() > 100) {
+      return false;
+    } else return true;
+  }
 }

@@ -187,7 +187,6 @@ public class Product {
   public void setDiscount(Float discount) {
     this.suggestedPrice = revertDiscount();
     this.discount = discount;
-    validate();
     this.suggestedPrice = getPriceAfterDiscount();
   }
 

@@ -147,7 +147,10 @@ public class ProductResource {
       return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse("NOT_FOUND", "Given seller does not exists")).build();
     }
     if (!(productService.getProduct(productId)).seller().id().equals(sellerId)) {
-      return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse("ACCESS_FORBIDDEN", "Seller does not have this product")).build();
+      return Response.status(Response.Status.FORBIDDEN).entity(new ErrorResponse("ACCESS_FORBIDDEN", "Seller does not have this product")).build();
+    }
+    if (!productService.discountIsValid(discountRequest)) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse("INVALID_PARAMETER", "Discount must be between 0 and 100")).build();
     }
 
     ProductAssembler.ProductResponse response = productService.applyDiscount(productId, sellerId, discountRequest);

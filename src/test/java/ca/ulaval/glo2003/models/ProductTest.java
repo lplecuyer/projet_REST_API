@@ -23,6 +23,10 @@ class ProductTest {
   private static final ProductCategory VALID_CATEGORY = ProductCategory.electronics;
   private static final String EMPTY_STRING = "";
   private static final Float INVALID_PRICE = 0F;
+  private static final Float VALID_DISCOUNT = 50F;
+  private static final Float VALID_DISCOUNT_ZERO = 0F;
+  private static final Float INVALID_DISCOUNT_TOO_LOW = -1F;
+  private static final Float INVALID_DISCOUNT_TOO_HIGH = 101F;
 
   private static Validator validator;
   private static final Offer offer1 = new Offer(VALID_PRICE_1, VALID_OFFER_MESSAGE, BUYERS_NAME);
@@ -131,5 +135,75 @@ class ProductTest {
     float actualAverage = productWithOffers.getAvgOfferAmount();
     float errorMargin = 0.001f;
     Assertions.assertEquals(expectedAverage, actualAverage, errorMargin);
+  }
+
+  @Test
+  void givenValidDiscount_whenValidate_thenNoViolation() {
+    product.setDiscount(VALID_DISCOUNT);
+
+    Set<ConstraintViolation<Product>> violations = validator.validate(product);
+
+    Assertions.assertTrue(violations.isEmpty());
+  }
+
+  @Test
+  void givenNegativeDiscount_whenValidate_thenViolation() {
+    product.setDiscount(INVALID_DISCOUNT_TOO_LOW);
+
+    Set<ConstraintViolation<Product>> violations = validator.validate(product);
+
+    String actualMessage = violations.iterator().next().getMessage();
+    Assertions.assertTrue(actualMessage.contains(INVALID_PARAMETER));
+  }
+
+  @Test
+  void givenDiscountGreaterThan100_whenValidate_thenViolation() {
+    product.setDiscount(INVALID_DISCOUNT_TOO_HIGH);
+
+    Set<ConstraintViolation<Product>> violations = validator.validate(product);
+
+    String actualMessage = violations.iterator().next().getMessage();
+    Assertions.assertTrue(actualMessage.contains(INVALID_PARAMETER));
+  }
+
+  @Test
+  void givenDiscountApplied_whenGetPrice_thenCorrectValue() {
+    product.setSuggestedPrice(VALID_PRICE_1);
+    product.setDiscount(VALID_DISCOUNT);
+
+    float expected = VALID_PRICE_1/2;
+    float actual = product.getSuggestedPrice();
+
+    Assertions.assertEquals(expected, actual, 0.001f);
+  }
+
+  @Test
+  void givenDiscountApplied_whenGetPriceAfterDiscount_thenCorrectValue() {
+    product.setSuggestedPrice(VALID_PRICE_1);
+    product.setDiscount(VALID_DISCOUNT);
+
+    float expected = VALID_PRICE_1/2;
+    float actual = product.getSuggestedPrice();
+
+    Assertions.assertEquals(expected, actual, 0.001f);
+  }
+
+  @Test
+  void givenDefaultDiscount_whenGetPriceAfterDiscount_thenSamePrice() {
+    product.setSuggestedPrice(VALID_PRICE_1);
+
+    float actual = product.getSuggestedPrice();
+
+    Assertions.assertEquals(VALID_PRICE_1, actual);
+  }
+
+  @Test
+  void givenZeroDiscount_whenGetPriceAfterDiscount_thenSamePrice() {
+    product.setSuggestedPrice(VALID_PRICE_1);
+    product.setDiscount(VALID_DISCOUNT_ZERO);
+
+    float actual = product.getSuggestedPrice();
+
+    Assertions.assertEquals(VALID_PRICE_1, actual);
   }
 }
