@@ -32,7 +32,11 @@ public class Product {
 
   @NotNull(message = "MISSING_PARAMETER: suggested price is mandatory")
   @DecimalMin(value = "1", message = "INVALID_PARAMETER: suggested price must be higher than 1$")
-  private Float suggestedPrice = 0F;
+  private Float suggestedPrice = 1F;
+
+  @Min(value = 0, message = "INVALID_PARAMETER: discount must be >= 0")
+  @Max(value = 100, message = "INVALID_PARAMETER: discount must be <= 100")
+  private Float discount = 0F;
 
   private final LocalDateTime createdAt = LocalDateTime.now();
 
@@ -178,5 +182,24 @@ public class Product {
 
   public void setSelectedOffer(Offer selectedOffer) {
     this.selectedOffer = selectedOffer;
+  }
+
+  public void setDiscount(Float discount) {
+    this.suggestedPrice = revertDiscount();
+    this.discount = discount;
+    validate();
+    this.suggestedPrice = getPriceAfterDiscount();
+  }
+
+  public Float getDiscount() {
+    return discount;
+  }
+
+  public float revertDiscount() {
+    return suggestedPrice / (1 - discount / 100);
+  }
+
+  public float getPriceAfterDiscount() {
+    return suggestedPrice * (1 - discount / 100);
   }
 }

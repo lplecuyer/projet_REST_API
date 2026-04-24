@@ -37,7 +37,7 @@ public final class SellerAssembler {
             String description = product.getDescription();
             float suggestedPrice = product.getSuggestedPrice();
             ProductCategory category = product.getCategory();
-            boolean vendu = product.getSold();
+            boolean sold = product.getSold();
 
             SellerAssembler.PartialSelectedOfferResponse selectedOffer = null;
             if (product.getSelectedOffer() != null) {
@@ -51,7 +51,7 @@ public final class SellerAssembler {
             }
 
             SellerAssembler.PartialOfferResponse offers = new PartialOfferResponse(product.getOfferCount(), product.getAvgOfferAmount(), product.getMinOfferAmount(), product.getMaxOfferAmount(), items);
-            products.add(new PartialProductResponse(productId, productCreatedAt, title, description, suggestedPrice, category, offers, vendu ? "sold" : "ongoing", selectedOffer));
+            products.add(new PartialProductResponse(productId, productCreatedAt, title, description, suggestedPrice, category, offers, sold ? "sold" : "ongoing", selectedOffer));
         }
         return products;
     }

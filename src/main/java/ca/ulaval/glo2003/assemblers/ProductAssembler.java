@@ -20,9 +20,10 @@ public final class ProductAssembler {
     ProductCategory category = product.getCategory();
     Float suggestedPrice = product.getSuggestedPrice();
     LocalDateTime createdAt = product.getCreatedAt();
+    Float discount = product.getDiscount();
     PartialSellerResponse sellerResponse = new PartialSellerResponse(product.getSellerId(), seller.getName());
     PartialOfferResponse offerResponse = new PartialOfferResponse(product.getOfferCount(), product.getAvgOfferAmount());
-    boolean vendu = product.getSold();
+    boolean sold = product.getSold();
 
     SelectedOfferResponse selectedOffer = null;
     if (product.getSelectedOffer() != null) {
@@ -47,10 +48,11 @@ public final class ProductAssembler {
         createdAt,
         sellerResponse,
         offerResponse,
-        vendu,
-        vendu ? "sold" : "ongoing",
+        sold,
+        sold ? "sold" : "ongoing",
         selectedOffer,
-        review
+        review,
+        discount
     );
   }
 
@@ -61,8 +63,8 @@ public final class ProductAssembler {
   public record ProductResponse(String id, String title, String description,
                                 ProductCategory category, float suggestedPrice,
                                 LocalDateTime createdAt, PartialSellerResponse seller,
-                                PartialOfferResponse offers, boolean vendu, String saleStatus,
-                                SelectedOfferResponse selectedOffer, ReviewResponse review) {
+                                PartialOfferResponse offers, boolean sold, String saleStatus,
+                                SelectedOfferResponse selectedOffer, ReviewResponse review, Float discount) {
   }
 
   public record ProductsResponse(java.util.Collection<ProductAssembler.ProductResponse> products) { }
@@ -81,5 +83,7 @@ public final class ProductAssembler {
       Float rating
   ) {}
 
-  public record ReviewResponse(String comment, Float rating, String buyerUsername) {}
+  public record ReviewResponse(String comment, Float rating, String buyerUsername) { }
+
+  public record DiscountRequest(Float discount) { }
 }

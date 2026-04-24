@@ -368,10 +368,11 @@ public class ProducResourcetIntegrationTest extends JerseyTest {
         LocalDateTime.now(),
         productResponse.seller(),
         productResponse.offers(),
-        productResponse.vendu(),
+        productResponse.sold(),
         productResponse.saleStatus(),
         productResponse.selectedOffer(),
-        reviewResponse
+        reviewResponse,
+        productResponse.discount()
     );
   }
 
