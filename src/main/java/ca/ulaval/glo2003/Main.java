@@ -29,18 +29,7 @@ public class Main {
   public static final String BASE_URI = "http://0.0.0.0:8080/";
 
   public static void startServer() {
-    String sentryDsn = System.getenv("SENTRY_DSN");
-    if(!sentryDsn.equals(null)) {
-      Sentry.init(options -> {
-        options.setDsn(System.getenv("SENTRY_DSN"));
-        options.setSendDefaultPii(true);
-        options.getLogs().setEnabled(true);
-        options.setTracesSampleRate(1.0);
-        options.setProfileSessionSampleRate(1.0);
-        options.setProfileLifecycle(ProfileLifecycle.TRACE);
-        options.setDebug(true);
-      });
-    }
+    setupSentry();
 
     String persistence = System.getProperty("persistence", "inmemory");
 
@@ -78,6 +67,21 @@ public class Main {
         });
 
     GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
+  }
+
+  private static void setupSentry() {
+    String sentryDsn = System.getenv("SENTRY_DSN");
+    if(!sentryDsn.equals(null)) {
+      Sentry.init(options -> {
+        options.setDsn(System.getenv("SENTRY_DSN"));
+        options.setSendDefaultPii(true);
+        options.getLogs().setEnabled(true);
+        options.setTracesSampleRate(1.0);
+        options.setProfileSessionSampleRate(1.0);
+        options.setProfileLifecycle(ProfileLifecycle.TRACE);
+        options.setDebug(true);
+      });
+    }
   }
 
   public static void main(String[] args) {
