@@ -1,0 +1,36 @@
+on:
+  push:
+    branches:
+      - "**"
+jobs:
+  Securite-Continue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Mettre la DB en cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository/org/owasp/dependency-check-data
+          key: dc-data-${{ runner.os }}
+
+      - name: Analyse de securite
+        run: >
+          mvn dependency-check:check
+          -DnvdApiKey=f645e43c-831b-452e-bc3a-f415c1a2ab83
+          -DdataDirectory=$HOME/.m2/repository/org/owasp/dependency-check-data
+
+      - name: Generation de l'artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-report
+          path: target/dependency-check-report.html
