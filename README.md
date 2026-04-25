@@ -75,3 +75,5 @@ ___
 ___
 
 [![.github/workflows/integration.yml](https://github.com/Floppa-H26-Team01/FloppaEq01/actions/workflows/integration.yml/badge.svg)](https://github.com/Floppa-H26-Team01/FloppaEq01/actions/workflows/integration.yml)
+[![.github/workflows/deploiement.yml](https://github.com/Floppa-H26-Team01/FloppaEq01/actions/workflows/deploiement.yml/badge.svg)](https://github.com/Floppa-H26-Team01/FloppaEq01/actions/workflows/deploiement.yml)
+[![.github/workflows/securite.yml](https://github.com/Floppa-H26-Team01/FloppaEq01/actions/workflows/securite.yml/badge.svg)](https://github.com/Floppa-H26-Team01/FloppaEq01/actions/workflows/securite.yml)
