@@ -73,3 +73,5 @@ ___
 
 ## Badges
 ___
+
+[![.github/workflows/integration.yml](https://github.com/Floppa-H26-Team01/FloppaEq01/actions/workflows/integration.yml/badge.svg)](https://github.com/Floppa-H26-Team01/FloppaEq01/actions/workflows/integration.yml)
