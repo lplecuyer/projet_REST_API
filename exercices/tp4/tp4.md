@@ -2,6 +2,19 @@
 
 ## Rétrospective
 
+1. 1. Les pull requests restaient trop longtemps sans review. Une première solution potentielle serait l'assignation formelle d'une personne à la révision de celle-ci. Une deuxième solution pourrait être la révision en équipe après la rencontre hebdomadaire.
+   2. Nous aurions pu être plus assidus pour la tenue des rencontres. Certaines étaient négligées, car aucun progrès n'avait été fait depuis la dernière rencontre. Pour y remédier, nous aurions du nommer un facilitateur qui s'assure de la régularisation des rencontres. Une autre façon de régler ce problème serait de planifier la rencontre brèvement après la plage horaire des laboratoires, qui prennent rarement tout le temps attribué, rendant tout le monde disponible.
+
+2. Selon les sites suggérés, nous avons exploré un repository maven, où plusieurs extensions étaient proposées.
+ 
+3. 1. Nous révisons notre code en vue de l'améliorer en effectuant du réusinage : par exemple, suite à la première remise, nous avons effectué un réusinage de grande envergure en séparant la logique de notre API en créant trois services dédiées.
+   2. Les tests et le CI nous ont permis d'avoir une rétrospective lorsqu'une incohérence s'est glissée dans une fonctionnalité que nous n'aurions pas remarqués facilement. En conséquent, nous sommes fiers de la grande gamme de tests que nous avons mis en place.
+   3. Nous sommes fier de la synergie que nous avons développée pour aboutir en une équipe maillée. Nous avons efficacement discuté et travaillé ensemble pour résoudre les problèmes rencontrés.
+
+4. Nous conseillerions de ne pas avoir peur d'adopter ou au moins essayer de nouvelles méthodes de programmation comme la programmation par paires et le TDD. Celles-ci peuvent être très utiles à l'apprentissage. Nous conseillerions aussi de nommer un facilitateur chargé de vérifier le bon déroulement du processus.
+
+5. 1. Les mocks sont un outil très utile pour tester des composantes utilisant plusieurs autres objets complexes.
+   2. Les github actions sont très pratiques pour effectuer différentes vérifications automatiques à des moments spécifiques donnés.
 
 ## Open sourcing
 
@@ -13,7 +26,7 @@
    2. Coordonner la communauté qui participe au développement peut être difficile. Contrairement au personnel d'entreprise, les contributeurs ne sont pas nécessairement au courant des dernières décisions prises et ceux-ci ont potentiellement des façons de travailler ou de structurer leur code très différentes. Il faut alors implémenter des canaux/voies de communications efficaces et des standards précis pour contrôler la qualité.
    3. Si le projet s'appuie sur d'autres projets ou librairies, il peut être alors pénible et exigeant de vérifier quelles sont les permissions de distribution de chacun et d'en conclure quelle sera la license appropriée que l'on pourra choisir pour notre projet.
  
-3. 
+3. Facebook contribue à l'open-source à travers divers projets; elle est récomponsée par l'innovation qu'apporte parfois ces nouveaux projet et  peut les réutiliser pour ses propres outils.
 
 ### Code of conduct
 Le modèle de code de conduite est le [Contributor Covenant](https://www.contributor-covenant.org/).
@@ -33,33 +46,94 @@ Ces clauses, qui ne sont pas dans les license du MIT ni du BSD sont intéressant
 Le guide de contribution s'est en partie inspiré du template suivant : [contributing-template](https://github.com/nayafia/contributing-template). 
 Il suggère plusieurs sections qu'il ne faut pas ommettre comme la clause sur les vulnérabilités. Ce modèle donne une bonne idée de la démarche à suivre tout en étant clair et concis.
 
+## Pratiques de sécurité
+
+1. Intégrer un processus automatisé d'analyse de sécurité
+
+   La conception d'un système d'analyse de sécurité automatisé permet de faire des vérifications en continu des
+   failles de sécurité potentielles dans la base de code. Celui-ci s'intègre bien dans un pipeline comme celui
+   du CI/CD.
+
+
+2. Analyser la sécurité de façon itérative
+
+   Une grande partie de l'industrie du logiciel aujourd'hui utilise un processus itératif pour développer leurs
+   logiciels. L'ajout d'une étape de sécurité avec les vérifications de code permet d'obtenir les bénéfices
+   de l'agilité (l'amélioration continue, la séparation en livrables plus simples) pour cette étape de
+   développement.
+
+
+3. Utiliser des environnements de developpement qui prennent en compte la sécurité
+
+   Il est complexe pour les développeurs de faire des analyses de sécurité pendant l'étape de création de code.
+   Cependant, certains IDE vont détecter des failles de sécurité automatiquement pendant son implémentation.
+   Prioriser et corriger ces erreurs pendant le développement est moins couteux que dans une autre étape par
+   la suite.
+
 ## ScreenShots
 
 ### L'architecture de classes
+![Architecture](./images/Architecture.png)
 
 ### GithubProject
-
+![GithubProject](./images/Projet.png)
 
 ### Milestone
-
+![Milestone](./images/Milestone.png)
 
 ### Issue 1
+![Issue1](./images/Issue1-1.png)
+![Issue1](./images/Issue1-2.png)
 
 
 ### Issue 2
-
+![Issue2](./images/Issue2-1.png)
+![Issue2](./images/Issue2-2.png)
 
 ### Issue 3
+![Issue3](./images/Issue3.png)
 
 ### Pull request 1
-
+![PR1-1](./images/PR1-1.png)
+![PR1-2](./images/PR1-2.png)
 ### Pull request 2
-
+![PR2-1](./images/PR2-1.png)
+![PR2-2](./images/PR2-2.png)
 
 ### Pull request 3
-
+![PR3-1](./images/PR3-1.png)
+![PR3-2](./images/PR3-2.png)
 
 ### Arbre de commits
+![Tree1](./images/Tree1.png)
+![Tree2](./images/Tree2.png)
+
+### Pratiques de sécurité
+#### Sommaire
+
+![sommaire1](images/rapportVulnerabilitesSommaire1.png)
+![sommaire2](images/rapportVulnerabilitesSommaire2.png)
+![sommaire3](images/rapportVulnerabilitesSommaire3.png)
+
+#### Détaillé
+
+1. aopalliance-repackaged-3.0.6.jar
+   ![detaille1](images/rapportVulnerabilitesDetaille1.png)
+   ![detaille1.1](images/rapportVulnerabilitesDetaille1.1.png)
+
+2. asm-9.7.1.jar
+   ![detaille2](images/rapportVulnerabilitesDetaille2.png)
+   ![detaille2.1](images/rapportVulnerabilitesDetaille2.1.png)
+   ![detaille2.2](images/rapportVulnerabilitesDetaille2.2.png)
+
+3. bson-5.6.1.jar
+   ![detaille3](images/rapportVulnerabilitesDetaille3.png)
+   ![detaille3.1](images/rapportVulnerabilitesDetaille3.1.png)
+
+
+### Sentry
+![sentry1](images/Sentry1.png)
+![sentry2](images/Sentry2.png)
 
 
 
@@ -73,51 +147,3 @@ Il suggère plusieurs sections qu'il ne faut pas ommettre comme la clause sur le
 
 ## Formattage
 `mvn editorconfig:check`
-
-
-## Rapport de vulnérabilités
-
-### Sommaire
-
-![sommaire1](images/rapportVulnerabilitesSommaire1.png)
-![sommaire2](images/rapportVulnerabilitesSommaire2.png)
-![sommaire3](images/rapportVulnerabilitesSommaire3.png)
-
-### Détaillé
-
-1. aopalliance-repackaged-3.0.6.jar
-    ![detaille1](images/rapportVulnerabilitesDetaille1.png)
-    ![detaille1.1](images/rapportVulnerabilitesDetaille1.1.png)
-
-2. asm-9.7.1.jar
-   ![detaille2](images/rapportVulnerabilitesDetaille2.png)
-   ![detaille2.1](images/rapportVulnerabilitesDetaille2.1.png)
-   ![detaille2.2](images/rapportVulnerabilitesDetaille2.2.png)
-
-3. bson-5.6.1.jar
-   ![detaille3](images/rapportVulnerabilitesDetaille3.png)
-   ![detaille3.1](images/rapportVulnerabilitesDetaille3.1.png)
-
-### Pratiques de sécurité
-
-1. Intégrer un processus automatisé d'analyse de sécurité
-
-    La conception d'un système d'analyse de sécurité automatisé permet de faire des vérifications en continu des
-    failles de sécurité potentielles dans la base de code. Celui-ci s'intègre bien dans un pipeline comme celui
-    du CI/CD.
-
-
-2. Analyser la sécurité de façon itérative
-
-    Une grande partie de l'industrie du logiciel aujourd'hui utilise un processus itératif pour développer leurs
-    logiciels. L'ajout d'une étape de sécurité avec les vérifications de code permet d'obtenir les bénéfices
-    de l'agilité (l'amélioration continue, la séparation en livrables plus simples) pour cette étape de
-    développement.
-
-
-3. Utiliser des environnements de developpement qui prennent en compte la sécurité
-
-    Il est complexe pour les développeurs de faire des analyses de sécurité pendant l'étape de création de code.
-    Cependant, certains IDE vont détecter des failles de sécurité automatiquement pendant son implémentation.
-    Prioriser et corriger ces erreurs pendant le développement est moins couteux que dans une autre étape par
-    la suite.
